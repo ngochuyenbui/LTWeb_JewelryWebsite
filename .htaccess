@@ -1,0 +1,3 @@
+RewriteEngine On
+# Chuyển hướng mọi yêu cầu vào thư mục public
+RewriteRule ^(.*)$ public/$1 [L]

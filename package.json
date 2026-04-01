@@ -1,0 +1,17 @@
+{
+  "name": "jewelryweb",
+  "version": "1.0.0",
+  "description": "Du an web theo huong MVC (dang o giai doan khoi tao) va su dung Tailwind CSS de xu ly giao dien.",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "tailwindcss -i ./public/assets/css/input.css -o ./public/assets/css/output.css --minify",
+    "watch:css": "tailwindcss -i ./public/assets/css/input.css -o ./public/assets/css/output.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  }
+}
