@@ -19,6 +19,7 @@ Mỗi thành viên khi được giao một nhiệm vụ (ví dụ: Thành viên 
 ### Bước 1: Tạo Controller (Xử lý Logic)
 Tạo file mới trong app/controllers/ (ví dụ: News.php). File này phải kế thừa từ lớp Controller cốt lõi.
 
+```
 <?php
 class News extends Controller {
     // Hàm mặc định khi truy cập /news
@@ -33,6 +34,7 @@ class News extends Controller {
         $this->view("client/news_detail", ["id" => $id]);
     }
 }
+```
 
 ### Bước 2: Tạo View (Giao diện)
 Tạo file tương ứng trong app/views/client/ (ví dụ: news_list.php). Tại đây, bạn sử dụng HTML5/CSS3 (Tailwind) để dựng giao diện. Đừng quên nhúng Header/Footer dùng chung để đảm bảo tính nhất nhất.
