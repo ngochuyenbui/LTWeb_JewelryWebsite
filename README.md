@@ -1,3 +1,4 @@
+# Note: Có một README về XAMPP ở trong thư mục database
 # Hướng Dẫn Điều Hướng Router
 ## 1. Nguyên lý hoạt động của Router
 Thay vì truy cập trực tiếp vào từng file (ví dụ: about.php), tất cả mọi yêu cầu từ trình duyệt đều phải đi qua "cánh cửa duy nhất" là file public/index.php. Tại đây, lớp App (Router) sẽ phân tích URL để quyết định gọi Controller nào và Hàm (Action) nào.
@@ -32,6 +33,7 @@ class News extends Controller {
         $this->view("client/news_detail", ["id" => $id]);
     }
 }
+
 ### Bước 2: Tạo View (Giao diện)
 Tạo file tương ứng trong app/views/client/ (ví dụ: news_list.php). Tại đây, bạn sử dụng HTML5/CSS3 (Tailwind) để dựng giao diện. Đừng quên nhúng Header/Footer dùng chung để đảm bảo tính nhất nhất.
 
