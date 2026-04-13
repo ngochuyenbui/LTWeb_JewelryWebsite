@@ -69,7 +69,7 @@ class Database {
     // Lấy một dòng kết quả
     public function single() {
         $this->execute();
-        return $this->stmt->fetch();
+        return $this->stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     // Lấy số lượng hàng bị ảnh hưởng
