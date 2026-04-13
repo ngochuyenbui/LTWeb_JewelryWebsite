@@ -6,6 +6,9 @@ class Auth extends Controller{
         parent::__construct();
         $this->userModel = $this->model('UserModel');
     }
+    public function index(){
+        $this->view('client/Login');
+    }
 
     public function login()
     {
@@ -14,12 +17,23 @@ class Auth extends Controller{
             $password = trim($_POST['password']);
             
             if (empty($username) || empty($password)) {
-                $this->view('client/Login', ['error' => 'Vui lòng điền đầy đủ thông tin']);
-                return;
+                // $data['error'] = 'Vui lòng điền đầy đủ thông tin';
+                // $this->view('client/Login', $data);
+                // return;
+                $_SESSION['error'] = 'Vui lòng điền đầy đủ thông tin';
+                header('Location: ' . URLROOT . '/Auth/login');
+                exit();
             }
             
             $user = $this->userModel->getUserByUsername($username);
-            if ($user && password_verify($password, $user['password'])) {
+            if (!$user) {
+                $_SESSION['error'] = 'Tài khoản không tồn tại';
+                header('Location: ' . URLROOT . '/Auth/login');
+                exit();
+                //$this->view('client/Login', []);
+                //return;
+            }
+            if ($user && password_verify($password, $user['pwd_hash'])) {
                 $_SESSION['user_id'] = $user['userId'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['user_role'] = $user['role'];
@@ -33,11 +47,16 @@ class Auth extends Controller{
                 }
             }
             else{
-                $this->view('client/Login', ['error' => 'Sai tài khoản hoặc mật khẩu']);
+                //$data['error'] = 'Sai tài khoản hoặc mật khẩu';
+                //$this->view('client/Login', $data);
+                $_SESSION['error'] = 'Sai tài khoản hoặc mật khẩu';
+                header('Location: ' . URLROOT . '/Auth/login');
             }
         }
         else{
-            $this->view('client/Login');
+            $data = ['error' => $_SESSION['error'] ?? '',];
+            unset($_SESSION['error']);
+            $this->view('client/Login', $data);
         }
     }
 
@@ -60,34 +79,52 @@ class Auth extends Controller{
             ];
             
             if (empty($data['username']) || empty($data['email']) || empty($data['password']) || empty($data['confirm_password'])) {
-                $data['error'] = 'Vui lòng điền đầy đủ thông tin';
-                $this->view('client/Register', $data);
-                return;
+                //$data['error'] = 'Vui lòng điền đầy đủ thông tin';
+                //$this->view('client/Register', $data);
+                //return;
+                $_SESSION['error'] = 'Vui lòng điền đầy đủ thông tin';
+                header('Location: ' . URLROOT . '/Auth/register');
+                exit();
             }
             if (strlen($data['username']) < 3 || strlen($data['username']) > 50) {
-                $data['error'] = 'Tên đăng nhập phải từ 3-50 ký tự';
-                $this->view('client/Register', $data);
-                return;
+                $_SESSION['error'] = 'Tên đăng nhập phải từ 3-50 ký tự';
+                header('Location: ' . URLROOT . '/Auth/register');
+                exit();
+                // $data['error'] = 'Tên đăng nhập phải từ 3-50 ký tự';
+                // $this->view('client/Register', $data);
+                // return;
             }
             if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-                $data['error'] = 'Email không hợp lệ';
-                $this->view('client/Register', $data);
-                return;
+                $_SESSION['error'] = 'Email không hợp lệ';
+                header('Location: ' . URLROOT . '/Auth/register');
+                exit();
+                // $data['error'] = 'Email không hợp lệ';
+                // $this->view('client/Register', $data);
+                // return;
             }
             if ($data['password'] !== $data['confirm_password']) {
-                $data['error'] = 'Mật khẩu xác nhận không khớp';
-                $this->view('client/Register', $data);
-                return;
+                $_SESSION['error'] = 'Mật khẩu xác nhận không khớp';
+                header('Location: ' . URLROOT . '/Auth/register');
+                exit();
+                // $data['error'] = 'Mật khẩu xác nhận không khớp';
+                // $this->view('client/Register', $data);
+                // return;
             }
             if (strlen($data['password']) < 6) {
-                $data['error'] = 'Mật khẩu phải có ít nhất 6 ký tự';
-                $this->view('client/Register', $data);
-                return;
+                $_SESSION['error'] = 'Mật khẩu phải có ít nhất 6 ký tự';
+                header('Location: ' . URLROOT . '/Auth/register');
+                exit();
+                // $data['error'] = 'Mật khẩu phải có ít nhất 6 ký tự';
+                // $this->view('client/Register', $data);
+                // return;
             }
             if ($this->userModel->getUserByUsername($data['username'])) {
-                $data['error'] = 'Tên đăng nhập đã tồn tại';
-                $this->view('client/Register', $data);
-                return;
+                $_SESSION['error'] = 'Tên đăng nhập đã tồn tại';
+                header('Location: ' . URLROOT . '/Auth/register');
+                exit();
+                // $data['error'] = 'Tên đăng nhập đã tồn tại';
+                // $this->view('client/Register', $data);
+                // return;
             }
 
             $_SESSION['temp_user'] = [
@@ -102,8 +139,9 @@ class Auth extends Controller{
                 header('Location: ' . URLROOT . '/Auth/verify_email');
                 exit();
             } else {
-                $data['error'] = 'Gửi mã OTP thất bại. Vui lòng thử lại sau.';
-                $this->view('client/Register', $data);
+                $_SESSION['error'] = 'Gửi mã OTP thất bại. Vui lòng thử lại sau.';
+                header('Location: ' . URLROOT . '/Auth/register');
+                exit();
             }
             
             // $this->userModel->addUser([
@@ -112,7 +150,9 @@ class Auth extends Controller{
             //     'password' => password_hash($password, PASSWORD_DEFAULT)
             // ]);
         } else {
-            $this->view('client/Register');
+            $data['error'] = $_SESSION['error'] ?? '';
+            unset($_SESSION['error']);
+            $this->view('client/Register', $data);
         }
     }
     public function verify_email(){
@@ -124,9 +164,15 @@ class Auth extends Controller{
             $otp = trim($_POST['otp']);
 
             if (time() > $_SESSION['otp_exp']) {
-                $this->view("client/VerifyEmail", ['error' =>'Mã OTP đã hết hạn!']);
+                $_SESSION['error'] = 'Mã OTP đã hết hạn!';
+                header("Location: " . URLROOT . "/Auth/verify_email");
+                exit();
+                //$this->view("client/VerifyEmail", ['error' =>'Mã OTP đã hết hạn!']);
             } elseif ($otp != $_SESSION['otp']) {
-                $this->view("client/VerifyEmail", ['error' =>'Mã OTP không chính xác!']);
+                //$this->view("client/VerifyEmail", ['error' =>'Mã OTP không chính xác!']);
+                $_SESSION['error'] = 'Mã OTP không chính xác!';
+                header("Location: " . URLROOT . "/Auth/verify_email");
+                exit();
             } else {
                 if ($this->userModel->addUser($_SESSION['temp_user'])) {
                     unset($_SESSION['temp_user'], $_SESSION['otp'], $_SESSION['otp_exp']);
@@ -135,8 +181,11 @@ class Auth extends Controller{
                 }
             }
         } else {
-            header("Location: " . URLROOT . "/Auth/register");
-            exit();
+            $data['error'] = $_SESSION['error'] ?? '';
+            unset($_SESSION['error']);
+            $this->view("client/VerifyEmail", $data);
+            //header("Location: " . URLROOT . "/Auth/register");
+            //exit();
         }
     }
     public function resendOTP(){

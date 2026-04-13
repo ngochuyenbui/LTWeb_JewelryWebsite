@@ -17,7 +17,7 @@
 
 <hr>
 <p>Không nhận được mã?</p>
-<form action="<?= URLROOT ?>/Auth/resenOTP" method="POST">
+<form action="<?= URLROOT ?>/Auth/resendOTP" method="POST">
     <button type="submit" id="btn-resend">Gửi lại mã OTP</button>
 </form>
 
