@@ -12,11 +12,12 @@ class Mail {
             $mail->Username   = $_ENV['MAIL_USER'];                     
             $mail->Password   = $_ENV['MAIL_PASS'];                               
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         
-            $mail->Port       = $_ENV['MAIL_PORT'];                    
+            $mail->Port       = $_ENV['MAIL_PORT'];   
+                             
 
             $mail->setFrom($_ENV['MAIL_USER'], $_ENV['SITENAME']);
             $mail->addAddress($email);     
-
+            $mail->CharSet = 'UTF-8';
             $mail->Subject = 'Mã xác nhận OTP - ' . $_ENV['SITENAME'];
             $mail->Body    = "Mã OTP của bạn là: $otp. Mã có hiệu lực trong 5 phút.";
             $mail->send();
