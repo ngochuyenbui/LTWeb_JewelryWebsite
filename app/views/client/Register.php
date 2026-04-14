@@ -1,6 +1,6 @@
 <h2>Đăng ký tài khoản</h2>
 
-<p id="error"></p>
+<p id="error"><?= $data['error'] ?? ''?></p>
 
 <form id="registerForm" action="<?= URLROOT ?>/Auth/register" method="POST">
     <div>
@@ -134,7 +134,6 @@
             document.getElementById('error').innerText = "Vui lòng kiểm tra lại thông tin đăng ký!";
             return;
         }
-
         let formData = new FormData(this);
         try {
             let response = await fetch(this.action, {
@@ -143,10 +142,10 @@
             });
             if (response.redirected) {
                 window.location.href = response.url;
-                return;
             }
         } catch (error) {
-            console.log("Đăng ký thất bại. Vui lòng thử lại sau.");
+            console.log('Error:', error);
+            document.getElementById('error').innerText= "Đăng ký thất bại. Vui lòng thử lại sau.";
         }
     });
 </script>

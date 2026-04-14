@@ -97,7 +97,7 @@ class Auth extends Controller{
                 header('Location: ' . URLROOT . '/Auth/verify_email');
                 exit();
             } else {
-                $_SESSION['error'] = 'Gửi mã OTP thất bại. Vui lòng thử lại sau.';
+                $_SESSION['error'] = 'Đăng ký thất bại. Vui lòng thử lại sau.';
                 header('Location: ' . URLROOT . '/Auth/register');
                 exit();
             }
@@ -127,44 +127,67 @@ class Auth extends Controller{
         }
     }
 
-
-
     public function verify_email(){
-        if (!isset($_SESSION['temp_user'])) {
-            header("Location: " . URLROOT . "/Auth/register");
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            if (!isset($_SESSION['temp_user']) || !isset($_SESSION['otp'])) {
+                header("Location: " . URLROOT . "/Auth/register");
+                exit();
+            }
+            else{
+                $this->view("client/VerifyEmail");
+            }
+        }
+        if (!isset($_SESSION['attempts'])) {
+            $_SESSION['attempts'] = 0;
+        }
+        if ($_SESSION['attempts'] >= 5) {
+            unset($_SESSION['temp_user'], $_SESSION['otp'], $_SESSION['otp_exp'], $_SESSION['attempts']);
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Bạn đã nhập sai quá nhiều lần. Vui lòng đăng ký lại.',
+            'redirect' => URLROOT . '/Auth/register']);
             exit();
         }
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_SESSION['attempts']++;
             $otp = trim($_POST['otp']);
+            if (empty($otp) || !preg_match('/^\d{6}$/', $otp)) {
+                header('Content-Type: application/json');
+                echo json_encode(['error'=> 'Mã OTP không hợp lệ!']);
+                exit();
+            }
 
             if (time() > $_SESSION['otp_exp']) {
-                $_SESSION['error'] = 'Mã OTP đã hết hạn!';
-                header("Location: " . URLROOT . "/Auth/verify_email");
-                exit();
+                $error = 'Mã OTP đã hết hạn!';
             } elseif ($otp != $_SESSION['otp']) {
-                $_SESSION['error'] = 'Mã OTP không chính xác!';
-                header("Location: " . URLROOT . "/Auth/verify_email");
+                $error = 'Mã OTP không chính xác!';
+            } 
+            if (!empty($error)) {
+                header('Content-Type: application/json');
+                echo json_encode(['error' => $error]);
                 exit();
-            } else {
-                try{
-                    if ($this->userModel->addUser($_SESSION['temp_user'])) {
-                        unset($_SESSION['temp_user'], $_SESSION['otp'], $_SESSION['otp_exp']);
-                        header("Location: " . URLROOT . "/Auth/login?register=success");
-                        exit;
-                    }
-                } catch (Exception $e){
-                    $_SESSION['error'] = 'Đăng ký thất bại. Vui lòng thử lại.';
-                    header("Location: " . URLROOT . "/Auth/register");
-                    exit();
-                }
             }
-        } else {
-            $data['error'] = $_SESSION['error'] ?? '';
-            unset($_SESSION['error']);
-            $this->view("client/VerifyEmail", $data);
+            try{
+                if ($this->userModel->addUser($_SESSION['temp_user'])) {
+                    unset($_SESSION['temp_user'], $_SESSION['otp'], $_SESSION['otp_exp']);
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => true, 'redirect' => URLROOT . '/Auth/login?register=success']);
+                    exit;
+                }
+            } catch (Exception $e){
+                header('Content-Type: application/json');
+                echo json_encode(['error' => 'Đăng ký thất bại. Vui lòng thử lại.',
+                'redirect' => URLROOT . '/Auth/register']);
+                exit();
+            }
+        }
+            
+        //} else {
+            //$data['error'] = $_SESSION['error'] ?? '';
+            //unset($_SESSION['error']);
+            //$this->view("client/VerifyEmail");
             //header("Location: " . URLROOT . "/Auth/register");
             //exit();
-        }
+        //}
     }
     public function resendOTP(){
         if (!isset($_SESSION['temp_user'])) {
@@ -176,11 +199,15 @@ class Auth extends Controller{
             $_SESSION['otp'] = $otp;
             $_SESSION['otp_exp'] = time() + 300;
             if(Mail::sendOTP($_SESSION['temp_user']['email'], $otp)){
-                header('Location: ' . URLROOT . '/Auth/verify_email?resend=success');
-                exit();
+                //header('Location: ' . URLROOT . '/Auth/verify_email?resend=success');
+                header('Content-Type: application/json');
+                echo json_encode(['success' => true]);
+                //exit();
             } else {
-                header('Location: ' . URLROOT . '/Auth/verify_email?resend=fail');
-                exit();
+                //header('Location: ' . URLROOT . '/Auth/verify_email?resend=fail');
+                header('Content-Type: application/json');
+                echo json_encode(['error' => 'Không thể gửi mã OTP. Vui lòng thử lại.']);
+                //exit();
             }
         }
         else{
