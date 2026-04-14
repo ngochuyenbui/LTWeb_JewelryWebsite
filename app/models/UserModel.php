@@ -7,6 +7,12 @@ class UserModel extends Database
         $this->bind(':username', $username);
         return $this->single();
     }
+    public function getUserByEmail($email)
+    {
+        $this->query("SELECT * FROM user WHERE email = :email");
+        $this->bind(':email', $email);
+        return $this->single();
+    }
     public function addUser($data){
         $this->query("INSERT INTO user (username, pwd_hash, email, role) VALUES (:username, :pwd_hash, :email, :role)");
         $this->bind(':username', $data['username']);
