@@ -132,8 +132,12 @@
         const isReady = Object.values(validation).every(val => val === true);
         if (!isReady) {
             document.getElementById('error').innerText = "Vui lòng kiểm tra lại thông tin đăng ký!";
+            document.getElementById('btn-register').disabled = false;
             return;
         }
+        else{    
+            document.getElementById('error').innerText = "";
+    }
         let formData = new FormData(this);
         try {
             let response = await fetch(this.action, {
