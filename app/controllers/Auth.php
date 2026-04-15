@@ -13,45 +13,42 @@ class Auth extends Controller{
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            
             $username = trim($_POST['username']);
             $password = trim($_POST['password']);
             
             if (empty($username) || empty($password)) {
-                $_SESSION['error'] = 'Vui lòng điền đầy đủ thông tin';
-                header('Location: ' . URLROOT . '/Auth/login');
+                header('Content-Type: application/json');
+                echo json_encode(['error' => 'Vui lòng điền đầy đủ thông tin']);
                 exit();
             }
             
             $user = $this->userModel->getUserByUsername($username);
-            if (!$user) {
-                $_SESSION['error'] = 'Tài khoản không tồn tại';
-                header('Location: ' . URLROOT . '/Auth/login');
-                exit();
-            }
             if ($user && password_verify($password, $user['pwd_hash'])) {
                 $_SESSION['user_id'] = $user['userId'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['user_role'] = $user['role'];
                 $_SESSION['last_activity'] = time();
                 if ($user['role'] == ROLE_ADMIN) {
-                    header('Location: ' . URLROOT . '/admin/Dashboard');
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => true, 'redirect' => URLROOT . '/admin/Dashboard']);
                     exit();
                 } else {
-                    header('Location: ' . URLROOT . '/Home');
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => true, 'redirect' => URLROOT . '/Home']);
                     exit();
                 }
             }
             else{
-                //$data['error'] = 'Sai tài khoản hoặc mật khẩu';
-                //$this->view('client/Login', $data);
-                $_SESSION['error'] = 'Sai tài khoản hoặc mật khẩu';
-                header('Location: ' . URLROOT . '/Auth/login');
+                header('Content-Type: application/json');
+                echo json_encode(['error' => 'Sai tài khoản hoặc mật khẩu']);
+                exit();
             }
         }
         else{
-            $data = ['error' => $_SESSION['error'] ?? '',];
-            unset($_SESSION['error']);
-            $this->view('client/Login', $data);
+            //$data = ['error' => $_SESSION['error'] ?? '',];
+            //unset($_SESSION['error']);
+            $this->view('client/Login');
         }
     }
 
@@ -81,7 +78,7 @@ class Auth extends Controller{
                 $data['password'] !== $data['confirm_password'] ||
                 $this->userModel->getUserByUsername($data['username']) ||
                 $this->userModel->getUserByEmail($data['email'])) {
-                    $_SESSION['input_data'] = $data;
+                $_SESSION['input_data'] = $data;
                 header('Location: ' . URLROOT . '/Auth/register');
                 exit();
                 }
@@ -143,7 +140,7 @@ class Auth extends Controller{
         if ($_SESSION['attempts'] >= 5) {
             unset($_SESSION['temp_user'], $_SESSION['otp'], $_SESSION['otp_exp'], $_SESSION['attempts']);
             header('Content-Type: application/json');
-            echo json_encode(['error' => 'Bạn đã nhập sai quá nhiều lần. Vui lòng đăng ký lại.',
+            echo json_encode(['error' => 'Bạn đã nhập sai quá 5 lần. Vui lòng đăng ký lại.',
             'redirect' => URLROOT . '/Auth/register']);
             exit();
         }
@@ -194,7 +191,18 @@ class Auth extends Controller{
             header("Location: " . URLROOT . "/Auth/register");
             exit();
         }
+        if (isset($_SESSION['last_sent'])){
+            $timePass = time() - $_SESSION['last_sent'];
+            if ($timePass < 60){
+                $remain = 60 - $timePass;
+                header('Content-Type: application/json');
+                echo json_encode(['error' => "Gửi lại sau {$remain}s"]);
+                exit();
+            }
+        }
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_SESSION['last_otp_sent'] =time();
+            unset($_SESSION['attempts']);
             $otp = rand(100000, 999999);
             $_SESSION['otp'] = $otp;
             $_SESSION['otp_exp'] = time() + 300;
