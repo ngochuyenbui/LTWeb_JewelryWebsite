@@ -23,8 +23,8 @@ class Test extends Controller {
     }
 
     public function import() {
-        // Import data from pnj_full_data.csv
-        $csvFile = APPROOT . '/database/pnj_full_data.csv';
+        // Import data from skymond_results.csv
+        $csvFile = APPROOT . '/database/skymond_results.csv';
         if (!file_exists($csvFile)) {
             die("Không tìm thấy file CSV tại: " . $csvFile);
         }
@@ -50,6 +50,14 @@ class Test extends Controller {
         
         $articleModel = $this->model('ArticleModel');
 
+        // Xoá dữ liệu cũ trước khi import dữ liệu mới
+        try {
+            $db->query("DELETE FROM article");
+            $db->execute();
+            $db->query("DELETE FROM content");
+            $db->execute();
+        } catch(PDOException $e) {}
+
         echo "<h2>Đang tiến hành Import dữ liệu từ CSV...</h2>";
         echo "<ul>";
 
@@ -70,7 +78,7 @@ class Test extends Controller {
                 $cateId = (int)trim($data[5]);
                 
                 // Gắn thêm đường dẫn upload cho thumbnail (nếu có)
-                $thumbnailPath = empty($thumbnail) ? '' : 'assets/uploads/articles/' . $thumbnail;
+                $thumbnailPath = empty($thumbnail) ? '' : 'assets/news/' . $thumbnail;
                 
                 // 1. Tạo một record trong bảng `content` để lấy `contentId`
                 $db->query("INSERT INTO content () VALUES ()");

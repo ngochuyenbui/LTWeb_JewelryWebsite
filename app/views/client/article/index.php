@@ -197,6 +197,7 @@
             margin-bottom: 0.75rem;
             font-size: 0.7rem;
             color: #999;
+            align-items: center;
         }
 
         .card-title {
@@ -221,6 +222,21 @@
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
+        }
+
+        .meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .meta-icon {
+            width: 12px;
+            height: 12px;
+            stroke: #b5852d;
+            stroke-width: 1.8;
+            fill: none;
+            flex-shrink: 0;
         }
 
         .read-more {
@@ -341,9 +357,13 @@
     <div class="search-wrapper">
         <form action="<?= URLROOT ?>/News/index" method="GET" class="search-form">
             <input type="text" name="search" value="<?= htmlspecialchars($searchKeyword) ?>"
-                   placeholder="🔍 Tìm kiếm bài viết..." class="search-input">
+                   placeholder="Tìm kiếm bài viết..." class="search-input">
             <button type="submit" class="search-btn">
-                <span>🔍</span> Tìm kiếm
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.3-4.3"></path>
+                </svg>
+                Tìm kiếm
             </button>
         </form>
     </div>
@@ -351,7 +371,11 @@
     <!-- Articles Grid -->
     <?php if (empty($articles)): ?>
         <div class="empty-state">
-            <div class="empty-state-icon">💎</div>
+            <svg class="empty-state-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="14"></line>
+            </svg>
             <p>Không tìm thấy bài viết nào phù hợp với tìm kiếm của bạn.</p>
         </div>
     <?php else: ?>
@@ -364,8 +388,11 @@
                                 <img src="<?= URLROOT . '/' . htmlspecialchars($article->thumbnail) ?>"
                                      alt="<?= htmlspecialchars($article->title) ?>">
                             <?php else: ?>
-                                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #d9b461 0%, #b5852d 100%); display: flex; align-items: center; justify-content: center; color: white;">
-                                    <span style="font-size: 2rem;">💎</span>
+                                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #d9b461 0%, #b5852d 100%); display: flex; align-items: center; justify-content: center;">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
+                                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
                                 </div>
                             <?php endif; ?>
                             <div class="category-tag">
@@ -375,8 +402,20 @@
                         
                         <div class="card-content">
                             <div class="card-meta">
-                                <span>📅 <?= date('d/m/Y', strtotime($article->published_at ?? $article->created_at ?? 'now')) ?></span>
-                                <span>✍️ <?= htmlspecialchars($article->author_name ?? 'Aurelia') ?></span>
+                                <span class="meta-item">
+                                    <svg class="meta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    <?= htmlspecialchars($article->author_name ?? 'Aurelia') ?>
+                                </span>
+                                <span class="meta-item">
+                                    <svg class="meta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    <?= date('d/m/Y', strtotime($article->published_at ?? $article->created_at ?? 'now')) ?>
+                                </span>
                             </div>
                             
                             <h2 class="card-title"><?= htmlspecialchars($article->title) ?></h2>
@@ -390,7 +429,11 @@
                             </div>
                             
                             <div class="read-more">
-                                Đọc tiếp →
+                                Đọc tiếp
+                                <svg class="read-more-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
                             </div>
                         </div>
                     </a>
@@ -398,7 +441,6 @@
             <?php endforeach; ?>
         </div>
 
-        <!-- Pagination -->
         <?php if ($totalPages > 1): ?>
             <div class="pagination">
                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>

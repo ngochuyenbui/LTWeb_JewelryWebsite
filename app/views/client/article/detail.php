@@ -23,7 +23,6 @@
             padding: 2rem 1.5rem;
         }
 
-        /* Article header - tone vàng/đồng */
         .article-header {
             text-align: center;
             margin-bottom: 2.5rem;
@@ -70,12 +69,25 @@
         .article-meta {
             display: flex;
             justify-content: center;
-            gap: 1.5rem;
+            gap: 2rem;
             font-size: 0.8rem;
             opacity: 0.7;
         }
 
-        /* Thumbnail container - kích thước đồng bộ 16:9 */
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .meta-icon {
+            width: 14px;
+            height: 14px;
+            stroke: #d9b461;
+            stroke-width: 1.5;
+            fill: none;
+        }
+
         .thumbnail-wrapper {
             margin-bottom: 2.5rem;
             border-radius: 20px;
@@ -96,7 +108,6 @@
             transform: scale(1.02);
         }
 
-        /* Nội dung bài viết */
         .article-content {
             background: white;
             border-radius: 20px;
@@ -132,7 +143,6 @@
             margin: 1.5rem 0;
         }
 
-        /* Phần bình luận */
         .comments-section {
             background: white;
             border-radius: 20px;
@@ -154,6 +164,17 @@
             font-size: 1.3rem;
             font-weight: 700;
             color: #1e1b1a;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .comment-icon {
+            width: 22px;
+            height: 22px;
+            stroke: #d9b461;
+            stroke-width: 1.5;
+            fill: none;
         }
 
         .comments-count {
@@ -165,7 +186,6 @@
             font-weight: 600;
         }
 
-        /* Form bình luận */
         .comment-form {
             background: #f8f6f2;
             padding: 1.5rem;
@@ -211,6 +231,9 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .submit-btn:hover {
@@ -218,7 +241,14 @@
             box-shadow: 0 5px 15px rgba(185, 133, 45, 0.3);
         }
 
-        /* Card bình luận */
+        .submit-icon {
+            width: 16px;
+            height: 16px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+
         .comment-card {
             display: flex;
             gap: 1rem;
@@ -273,7 +303,6 @@
             line-height: 1.5;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .detail-container {
                 padding: 1rem;
@@ -289,7 +318,8 @@
             
             .article-meta {
                 flex-direction: column;
-                gap: 0.3rem;
+                gap: 0.5rem;
+                align-items: center;
             }
             
             .article-content {
@@ -304,25 +334,39 @@
 </head>
 <body>
 <div class="detail-container">
-    <!-- Header tone vàng/đồng -->
     <div class="article-header">
         <span class="category-badge"><?= htmlspecialchars($article->category_name) ?></span>
         <h1><?= htmlspecialchars($article->title) ?></h1>
         <div class="article-meta">
-            <span>✍️ Bởi <?= htmlspecialchars($article->author_name) ?></span>
-            <span>📅 <?= date('d/m/Y', strtotime($article->published_at)) ?></span>
-            <span>⏱️ 5 phút đọc</span>
+            <span class="meta-item">
+                <svg class="meta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                Bởi <?= htmlspecialchars($article->author_name) ?>
+            </span>
+            <span class="meta-item">
+                <svg class="meta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <?= date('d/m/Y', strtotime($article->published_at)) ?>
+            </span>
+            <span class="meta-item">
+                <svg class="meta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                5 phút đọc
+            </span>
         </div>
     </div>
 
-    <!-- Thumbnail với kích thước đồng bộ 16:9 -->
     <?php if (!empty($article->thumbnail)): ?>
         <div class="thumbnail-wrapper">
             <img src="<?= URLROOT . '/' . htmlspecialchars($article->thumbnail) ?>" alt="<?= htmlspecialchars($article->title) ?>">
         </div>
     <?php endif; ?>
 
-    <!-- Nội dung bài viết -->
     <div class="article-content">
         <?php 
             $decodedContent = html_entity_decode($article->content, ENT_QUOTES, 'UTF-8');
@@ -331,10 +375,14 @@
         ?>
     </div>
 
-    <!-- Phần bình luận -->
     <div class="comments-section">
         <div class="comments-header">
-            <h3>💬 Phản hồi & Bình luận</h3>
+            <h3>
+                <svg class="comment-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                Phản hồi & Bình luận
+            </h3>
             <span class="comments-count"><?= count($comments) ?> bình luận</span>
         </div>
 
@@ -344,18 +392,35 @@
             
             <div class="form-row">
                 <?php if (!isset($_SESSION['user_id'])): ?>
-                    <input type="text" name="guest_name" required placeholder="👤 Tên của bạn">
+                    <div style="position: relative;">
+                        <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: #b5852d; stroke-width: 1.5; fill: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <input type="text" name="guest_name" required placeholder="Tên của bạn" style="padding-left: 2.5rem;">
+                    </div>
                 <?php endif; ?>
                 <select name="rating">
-                    <option value="5">⭐⭐⭐⭐⭐ Tuyệt vời</option>
-                    <option value="4">⭐⭐⭐⭐ Rất tốt</option>
-                    <option value="3">⭐⭐⭐ Bình thường</option>
+                    <option value="5">★★★★★ Tuyệt vời</option>
+                    <option value="4">★★★★☆ Rất tốt</option>
+                    <option value="3">★★★☆☆ Bình thường</option>
                 </select>
             </div>
             
-            <textarea name="content" rows="4" required placeholder="✍️ Viết bình luận của bạn..." style="margin-bottom: 1rem;"></textarea>
+            <div style="position: relative; margin-bottom: 1rem;">
+                <svg style="position: absolute; left: 12px; top: 14px; width: 16px; height: 16px; stroke: #b5852d; stroke-width: 1.5; fill: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <textarea name="content" rows="4" required placeholder="Viết bình luận của bạn..." style="padding-left: 2.5rem;"></textarea>
+            </div>
             
-            <button type="submit" class="submit-btn">💬 Gửi bình luận</button>
+            <button type="submit" class="submit-btn">
+                <svg class="submit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                Gửi bình luận
+            </button>
         </form>
 
         <div class="comments-list">
