@@ -12,25 +12,79 @@ class News extends Controller {
         $this->commentModel = $this->model('CommentModel');
     }
 
-    // Trang danh sách bài viết
+    // Trang danh sách bài viết (Hiển thị theo danh mục hoặc tìm kiếm)
     public function index() {
-        $limit = 6; // Số bài viết mỗi trang
+        $searchKeyword = isset($_GET['search']) ? trim($_GET['search']) : '';
+        
+        // Nếu có tìm kiếm thì hiện list phẳng
+        if (!empty($searchKeyword)) {
+            $limit = 6;
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            if ($page < 1) $page = 1;
+            $offset = ($page - 1) * $limit;
+
+            $articles = $this->articleModel->getAllArticles($limit, $offset, $searchKeyword);
+            $totalArticles = $this->articleModel->getTotalArticles($searchKeyword);
+            $totalPages = ceil($totalArticles / $limit);
+
+            $data = [
+                'title' => 'Kết quả tìm kiếm: ' . $searchKeyword,
+                'articles' => $articles,
+                'currentPage' => $page,
+                'totalPages' => $totalPages,
+                'searchKeyword' => $searchKeyword,
+                'isGrouped' => false
+            ];
+        } else {
+            // Không tìm kiếm -> Hiện theo nhóm danh mục
+            $categories = $this->articleModel->getAllCategories();
+            $groupedArticles = [];
+            
+            foreach ($categories as $cat) {
+                // Lấy 3 bài mới nhất mỗi danh mục
+                $catArticles = $this->articleModel->getArticlesByCategory($cat->cateId, 3, 0);
+                if (!empty($catArticles)) {
+                    $groupedArticles[] = [
+                        'category' => $cat,
+                        'articles' => $catArticles
+                    ];
+                }
+            }
+            
+            $data = [
+                'title' => 'Tin tức & Bài viết',
+                'groupedArticles' => $groupedArticles,
+                'searchKeyword' => '',
+                'isGrouped' => true
+            ];
+        }
+
+        $this->view('client/article/index', $data);
+    }
+
+    // Trang xem tất cả bài viết của 1 danh mục
+    public function category($cateId) {
+        $limit = 6;
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
 
-        $searchKeyword = isset($_GET['search']) ? trim($_GET['search']) : '';
-
-        $articles = $this->articleModel->getAllArticles($limit, $offset, $searchKeyword);
-        $totalArticles = $this->articleModel->getTotalArticles($searchKeyword);
+        // Lấy thông tin danh mục từ DB (để lấy tên). Giả lập lấy tên từ 1 bài đầu tiên hoặc viết hàm lấy Category by Id
+        // Vì chưa có model Category nên tạm thời lấy tên từ bài đầu tiên
+        $articles = $this->articleModel->getArticlesByCategory($cateId, $limit, $offset);
+        $totalArticles = $this->articleModel->getTotalArticlesByCategory($cateId);
         $totalPages = ceil($totalArticles / $limit);
+        
+        $categoryName = (!empty($articles)) ? $articles[0]->category_name : 'Danh mục';
 
         $data = [
-            'title' => 'Tin tức & Bài viết',
+            'title' => 'Chuyên mục: ' . $categoryName,
             'articles' => $articles,
             'currentPage' => $page,
             'totalPages' => $totalPages,
-            'searchKeyword' => $searchKeyword
+            'searchKeyword' => '',
+            'isGrouped' => false,
+            'cateId' => $cateId
         ];
 
         $this->view('client/article/index', $data);
@@ -46,10 +100,14 @@ class News extends Controller {
         // Lấy bình luận đã duyệt
         $comments = $this->commentModel->getCommentsByContentId($article->contentId);
 
+        // Lấy bài viết liên quan
+        $relatedArticles = $this->articleModel->getRelatedArticles($article->cateId, $article->articleId, 3);
+
         $data = [
             'title' => $article->title,
             'article' => $article,
-            'comments' => $comments
+            'comments' => $comments,
+            'relatedArticles' => $relatedArticles
         ];
 
         $this->view('client/article/detail', $data);
@@ -70,8 +128,8 @@ class News extends Controller {
             if (isset($_SESSION['user_id'])) {
                 $memberId = $_SESSION['user_id'];
             } else {
-                $guest_name = trim($_POST['guest_name']);
-                $guest_email = trim($_POST['guest_email']);
+                $guest_name = trim($_POST['guest_name'] ?? '');
+                $guest_email = trim($_POST['guest_email'] ?? '');
             }
 
             if (strlen($content) < 5) {
@@ -86,7 +144,7 @@ class News extends Controller {
                 'guest_email' => $guest_email,
                 'content' => $content,
                 'rating' => $rating,
-                'status' => 'pending' // Chờ duyệt
+                'status' => 'approved' // Hiện ngay sau khi gửi
             ];
 
             if ($this->commentModel->addComment($data)) {

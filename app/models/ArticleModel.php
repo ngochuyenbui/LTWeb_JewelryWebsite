@@ -17,7 +17,7 @@ class ArticleModel extends BaseModel {
                 LEFT JOIN user u ON a.authorId = u.userId";
         
         if (!empty($searchKeyword)) {
-            $sql .= " WHERE a.title LIKE :keyword OR a.content LIKE :keyword";
+            $sql .= " WHERE a.title LIKE :keyword";
         }
         
         $sql .= " ORDER BY a.published_at DESC, a.articleId DESC LIMIT :limit OFFSET :offset";
@@ -39,7 +39,7 @@ class ArticleModel extends BaseModel {
         $sql = "SELECT COUNT(*) as total FROM article a";
         
         if (!empty($searchKeyword)) {
-            $sql .= " WHERE a.title LIKE :keyword OR a.content LIKE :keyword";
+            $sql .= " WHERE a.title LIKE :keyword";
         }
         
         $this->db->query($sql);
@@ -48,6 +48,35 @@ class ArticleModel extends BaseModel {
             $this->db->bind(':keyword', '%' . $searchKeyword . '%');
         }
         
+        $result = $this->db->single();
+        return $result ? $result->total : 0;
+    }
+
+    // Lấy danh sách danh mục có bài viết
+    public function getAllCategories() {
+        $this->db->query("SELECT DISTINCT c.* FROM category c INNER JOIN article a ON c.cateId = a.cateId ORDER BY c.cateId ASC");
+        return $this->db->resultSet();
+    }
+
+    // Lấy bài viết theo danh mục (có phân trang)
+    public function getArticlesByCategory($cateId, $limit = 10, $offset = 0) {
+        $this->db->query("SELECT a.*, c.name as category_name, u.fullname as author_name 
+                          FROM article a
+                          LEFT JOIN category c ON a.cateId = c.cateId
+                          LEFT JOIN user u ON a.authorId = u.userId
+                          WHERE a.cateId = :cateId
+                          ORDER BY a.published_at DESC, a.articleId DESC 
+                          LIMIT :limit OFFSET :offset");
+        $this->db->bind(':cateId', $cateId, PDO::PARAM_INT);
+        $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+        $this->db->bind(':offset', $offset, PDO::PARAM_INT);
+        return $this->db->resultSet();
+    }
+
+    // Đếm tổng số bài viết theo danh mục
+    public function getTotalArticlesByCategory($cateId) {
+        $this->db->query("SELECT COUNT(*) as total FROM article WHERE cateId = :cateId");
+        $this->db->bind(':cateId', $cateId, PDO::PARAM_INT);
         $result = $this->db->single();
         return $result ? $result->total : 0;
     }
@@ -72,6 +101,21 @@ class ArticleModel extends BaseModel {
                           WHERE a.slug = :slug");
         $this->db->bind(':slug', $slug);
         return $this->db->single();
+    }
+
+    // Lấy danh sách bài viết liên quan (cùng danh mục)
+    public function getRelatedArticles($cateId, $currentArticleId, $limit = 3) {
+        $this->db->query("SELECT a.*, c.name as category_name, u.fullname as author_name 
+                          FROM article a
+                          LEFT JOIN category c ON a.cateId = c.cateId
+                          LEFT JOIN user u ON a.authorId = u.userId
+                          WHERE a.cateId = :cateId AND a.articleId != :currentId
+                          ORDER BY a.published_at DESC, a.articleId DESC
+                          LIMIT :limit");
+        $this->db->bind(':cateId', $cateId);
+        $this->db->bind(':currentId', $currentArticleId);
+        $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+        return $this->db->resultSet();
     }
 
     // Thêm bài viết mới

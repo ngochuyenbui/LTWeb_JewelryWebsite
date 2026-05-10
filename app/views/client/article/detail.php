@@ -375,7 +375,52 @@
         ?>
     </div>
 
+    <style>
+        .related-articles { margin-bottom: 3rem; }
+        .related-articles h3 { font-size: 1.5rem; margin-bottom: 1.5rem; color: #1e1b1a; border-left: 3px solid #d9b461; padding-left: 1rem; }
+        .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .related-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s ease; border: 1px solid rgba(218,165,32,0.1); }
+        .related-card:hover { transform: translateY(-5px); }
+        .related-img { width: 100%; height: 200px; object-fit: cover; }
+        .related-content { padding: 1rem; }
+        .related-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: #1e1b1a; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .alert-success { background: #d4edda; color: #155724; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #c3e6cb; }
+        .alert-error { background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #f5c6cb; }
+    </style>
+
+    <?php if (!empty($relatedArticles)): ?>
+    <div class="related-articles">
+        <h3>Bài viết liên quan</h3>
+        <div class="related-grid">
+            <?php foreach ($relatedArticles as $rel): ?>
+                <a href="<?= URLROOT ?>/News/detail/<?= $rel->articleId ?>" style="text-decoration: none;">
+                    <div class="related-card">
+                        <?php if (!empty($rel->thumbnail)): ?>
+                            <img src="<?= URLROOT . '/' . htmlspecialchars($rel->thumbnail) ?>" class="related-img" alt="<?= htmlspecialchars($rel->title) ?>">
+                        <?php endif; ?>
+                        <div class="related-content">
+                            <h4 class="related-title"><?= htmlspecialchars($rel->title) ?></h4>
+                            <span style="font-size: 0.8rem; color: #888;"><?= date('d/m/Y', strtotime($rel->published_at)) ?></span>
+                        </div>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <div class="comments-section">
+        <?php if (isset($_GET['success'])): ?>
+            <div class="alert-success">Cảm ơn bạn đã bình luận! Phản hồi của bạn đang chờ quản trị viên phê duyệt trước khi hiển thị.</div>
+        <?php endif; ?>
+        <?php if (isset($_GET['error'])): ?>
+            <?php if ($_GET['error'] == 'length'): ?>
+                <div class="alert-error">Bình luận quá ngắn. Vui lòng nhập ít nhất 5 ký tự.</div>
+            <?php else: ?>
+                <div class="alert-error">Có lỗi xảy ra, vui lòng thử lại.</div>
+            <?php endif; ?>
+        <?php endif; ?>
+
         <div class="comments-header">
             <h3>
                 <svg class="comment-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
