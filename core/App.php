@@ -6,13 +6,22 @@ class App {
 
     public function __construct() {
         $url = $this->urlProcess();
+        $controllerDir = "../app/controllers/";
 
-        // Kiểm tra Controller tồn tại trong app/controllers/ [cite: 100]
-        if (isset($url[0]) && file_exists("../app/controllers/" . ucfirst($url[0]) . ".php")) {
+        // Kiểm tra nếu URL đang truy cập vào thư mục admin
+        if (isset($url[0]) && strtolower($url[0]) === 'admin') {
+            $controllerDir .= 'admin/';
+            $this->controller = 'Dashboard'; // Controller mặc định của khu vực admin
+            unset($url[0]);
+            $url = array_values($url);
+        }
+
+        // Kiểm tra Controller tồn tại
+        if (isset($url[0]) && file_exists($controllerDir . ucfirst($url[0]) . ".php")) {
             $this->controller = ucfirst($url[0]);
             unset($url[0]);
         }
-        require_once "../app/controllers/" . $this->controller . ".php";
+        require_once $controllerDir . $this->controller . ".php";
         $this->controller = new $this->controller;
 
         // Kiểm tra Action (hàm) trong Controller
