@@ -1,28 +1,39 @@
 <?php
-class UserModel extends Database
+require_once 'BaseModel.php';
+class UserModel extends BaseModel
 {
     public function getUserByUsername($username)
     {
-        $this->query("SELECT * FROM user WHERE username = :username");
-        $this->bind(':username', $username);
-        return $this->single();
+        $this->db->query("SELECT * FROM user WHERE username = :username");
+        $this->db->bind(':username', $username);
+        return $this->db->single();
     }
     public function getUserByEmail($email)
     {
-        $this->query("SELECT * FROM user WHERE email = :email");
-        $this->bind(':email', $email);
-        return $this->single();
+        $this->db->query("SELECT * FROM user WHERE email = :email");
+        $this->db->bind(':email', $email);
+        return $this->db->single();
     }
     public function addUser($data){
-        $this->query("INSERT INTO user (username, pwd_hash, email, role) VALUES (:username, :pwd_hash, :email, :role)");
-        $this->bind(':username', $data['username']);
-        $this->bind(':pwd_hash', $data['password']);
-        $this->bind(':email', $data['email']);
-        $this->bind(':role', ROLE_USER);
-        return $this->execute();
+        $this->db->query("INSERT INTO user (username, pwd_hash, email, role) VALUES (:username, :pwd_hash, :email, :role)");
+        $this->db->bind(':username', $data['username']);
+        $this->db->bind(':pwd_hash', $data['password']);
+        $this->db->bind(':email', $data['email']);
+        $this->db->bind(':role', ROLE_USER);
+        
+        if ($this->db->execute()) {
+            $userId = $this->db->lastInsertId();
+            $this->db->query("INSERT INTO member (userId) VALUES (:userId)");
+            $this->db->bind(':userId', $userId);
+            return $this->db->execute();
+        }
+        return false;
+    }
+
+    public function getTotalUsers() {
+        $this->db->query("SELECT COUNT(*) as total FROM user WHERE role = :role");
+        $this->db->bind(':role', ROLE_USER);
+        $row = $this->db->single();
+        return $row ? (int)$row['total'] : 0;
     }
 }
-
-
-
-?>

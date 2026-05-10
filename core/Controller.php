@@ -29,11 +29,10 @@ class Controller {
         }
         $contentView = $viewFile;
         if (file_exists($layoutFile)) {
-            require_once $layoutFile;
+            require $layoutFile;
         } else {
-            require_once $viewFile;
+            require $viewFile;
         }
-        //require_once "../app/views/client/layout/layout.php";
         
     }
 
@@ -55,13 +54,17 @@ class Controller {
 
     protected function requireLogin(){
         if (!isset($_SESSION['user_id'])) {
-            header("Location: " . URLROOT . "/Auth/login");
+            header("Location: " . URLROOT . "/Login");
             exit();
         }
     }
 
     protected function requireAdmin(){
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != ROLE_ADMIN) {
+        if (!isset($_SESSION['user_id'])) {
+            header("Location: " . URLROOT . "/Login");
+            exit();
+        }
+        if ($_SESSION['user_role'] != ROLE_ADMIN) {
             header("Location: " . URLROOT . "/Home");
             exit();
         }
