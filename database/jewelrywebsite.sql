@@ -475,7 +475,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`userId`, `username`, `fullname`, `email`, `pwd_hash`, `avatar`, `role`, `created_at`, `last_login`) VALUES
-(1, 'alex_admin', 'Alex Johnson', 'alex@jewelry.com', 'hash1', NULL, 'admin', '2026-04-06 09:34:05', NULL),
+(1, 'alex_admin', 'Alex Johnson', 'alex@jewelry.com', '$2y$10$sADasAPEStI.BW8cKYSVM.gNWDKm5.chft58eq7TVJwILF.ix7STW', NULL, 'admin', '2026-04-06 09:34:05', NULL),
 (2, 'sarah_mgr', 'Sarah Williams', 'sarah@jewelry.com', 'hash2', NULL, 'admin', '2026-04-06 09:34:05', NULL),
 (3, 'mike_staff', 'Mike Brown', 'mike@jewelry.com', 'hash3', NULL, 'admin', '2026-04-06 09:34:05', NULL),
 (4, 'emily_editor', 'Emily Davis', 'emily@jewelry.com', 'hash4', NULL, 'admin', '2026-04-06 09:34:05', NULL),

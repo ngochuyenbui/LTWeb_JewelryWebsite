@@ -2,17 +2,22 @@
 require_once 'BaseModel.php';
 class UserModel extends BaseModel
 {
+    private function rowToArray($row)
+    {
+        return $row ? (array)$row : null;
+    }
+
     public function getUserByUsername($username)
     {
         $this->db->query("SELECT * FROM user WHERE username = :username");
         $this->db->bind(':username', $username);
-        return $this->db->single();
+        return $this->rowToArray($this->db->single());
     }
     public function getUserByEmail($email)
     {
         $this->db->query("SELECT * FROM user WHERE email = :email");
         $this->db->bind(':email', $email);
-        return $this->db->single();
+        return $this->rowToArray($this->db->single());
     }
     public function addUser($data){
         $this->db->query("INSERT INTO user (username, pwd_hash, email, role) VALUES (:username, :pwd_hash, :email, :role)");
@@ -33,7 +38,7 @@ class UserModel extends BaseModel
     public function getTotalUsers() {
         $this->db->query("SELECT COUNT(*) as total FROM user WHERE role = :role");
         $this->db->bind(':role', ROLE_USER);
-        $row = $this->db->single();
+        $row = $this->rowToArray($this->db->single());
         return $row ? (int)$row['total'] : 0;
     }
 }

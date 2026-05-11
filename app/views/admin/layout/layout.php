@@ -48,6 +48,8 @@ if (!isset($contentView) || !file_exists($contentView)) {
                         <ul class="list-unstyled">
                             <li><a href="<?= URLROOT ?>/AdminArticle"><i class="ti-receipt"></i> Quản lý Bài viết</a></li>
                             <li><a href="<?= URLROOT ?>/AdminComment"><i class="ti-comments"></i> Quản lý Bình luận</a></li>
+                            <li><a href="<?= URLROOT ?>/AdminAbout"><i class="ti-layout-grid2"></i> Quản lý About</a></li>
+                            <li><a href="<?= URLROOT ?>/AdminFaq"><i class="ti-help-alt"></i> Quản lý FAQ</a></li>
                             <li><a href="<?= URLROOT ?>/Home"><i class="ti-home"></i> Xem Website</a></li>
                         </ul>
                     </nav>

@@ -31,7 +31,7 @@ class Auth extends Controller{
                 $_SESSION['last_activity'] = time();
                 if ($user['role'] == ROLE_ADMIN) {
                     header('Content-Type: application/json');
-                    echo json_encode(['success' => true, 'redirect' => URLROOT . '/admin/Dashboard']);
+                    echo json_encode(['success' => true, 'redirect' => URLROOT . '/AdminArticle']);
                     exit();
                 } else {
                     header('Content-Type: application/json');
