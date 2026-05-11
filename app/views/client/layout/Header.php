@@ -81,7 +81,7 @@ $cartItems = (int)($_SESSION['cart_total_items'] ?? 0);
 				</svg>
 			</button>
 
-			<a href="<?= htmlspecialchars($toUrl('/login'), ENT_QUOTES, 'UTF-8') ?>" class="h-10 w-10 flex items-center justify-center rounded-md hover:bg-slate-100 transition-colors" aria-label="Đăng nhập">
+			<a href="<?= htmlspecialchars($toUrl('/Auth/login'), ENT_QUOTES, 'UTF-8') ?>" class="h-10 w-10 flex items-center justify-center rounded-md hover:bg-slate-100 transition-colors" aria-label="Đăng nhập">
 				<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 					<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
 					<circle cx="12" cy="7" r="4"></circle>

@@ -15,5 +15,5 @@ define('URLROOT', $_ENV['URLROOT']);
 define('SITENAME', $_ENV['SITENAME']);
 
 define('ROLE_ADMIN', 'admin');
-define('ROLE_USER', 'user');
+define('ROLE_USER', 'member');
 define('SESSION_TIMEOUT', (int)$_ENV['SESSION_TIMEOUT']);
