@@ -42,7 +42,7 @@ class Login extends Controller {
             $_SESSION['user_role'] = $user['role'];
             $_SESSION['last_activity'] = time();
             
-            $redirectUrl = ($user['role'] == ROLE_ADMIN) ? '/admin/Dashboard' : '/Home';
+            $redirectUrl = ($user['role'] == ROLE_ADMIN) ? '/AdminArticle' : '/Home';
             $this->jsonResponse(['success' => true, 'redirect' => URLROOT . $redirectUrl]);
         }
         
