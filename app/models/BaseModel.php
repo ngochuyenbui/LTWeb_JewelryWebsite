@@ -1,7 +1,7 @@
 <?php
 // app/models/BaseModel.php
 
-class BaseModel {
+class BaseModel{
     protected $db;
 
     public function __construct() {

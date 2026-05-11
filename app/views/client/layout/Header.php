@@ -2,7 +2,7 @@
 $navLinks = [
 	['href' => '/', 'label' => 'Trang chủ'],
 	['href' => '/about', 'label' => 'Giới thiệu'],
-	['href' => '/products', 'label' => 'Sản phẩm'],
+	['href' => '/client/Products', 'label' => 'Sản phẩm'],
 	['href' => '/pricing', 'label' => 'Bảng giá'],
 	['href' => '/news', 'label' => 'Tin tức'],
 	['href' => '/faq', 'label' => 'Hỏi đáp'],
@@ -28,7 +28,12 @@ if ($appBaseUrl !== '' && str_starts_with($normalizedPath, $appBaseUrl . '/')) {
 }
 
 $segments = array_values(array_filter(explode('/', trim($normalizedPath, '/'))));
-$currentPath = empty($segments) ? '/' : '/' . $segments[0];
+if (empty($segments)) {
+	$currentPath = '/';
+} else {
+	$currentPath = '/' . $segments[0];
+	if (strtolower($segments[0]) === 'client' && isset($segments[1])) $currentPath .= '/' . $segments[1];
+}
 
 $cartItems = (int)($_SESSION['cart_total_items'] ?? 0);
 ?>
@@ -81,14 +86,32 @@ $cartItems = (int)($_SESSION['cart_total_items'] ?? 0);
 				</svg>
 			</button>
 
-			<a href="<?= htmlspecialchars($toUrl('/login'), ENT_QUOTES, 'UTF-8') ?>" class="h-10 w-10 flex items-center justify-center rounded-md hover:bg-slate-100 transition-colors" aria-label="Đăng nhập">
-				<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-					<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-					<circle cx="12" cy="7" r="4"></circle>
-				</svg>
-			</a>
+			<div class="relative">
+				<?php if (isset($_SESSION['user_id']) && ($_SESSION['role'] ?? 'member') === 'member'): ?>
+					<button type="button" class="h-10 w-10 flex items-center justify-center rounded-md hover:bg-slate-100 transition-colors" aria-label="Tài khoản" data-user-menu-btn>
+						<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+							<circle cx="12" cy="7" r="4"></circle>
+						</svg>
+					</button>
+					<div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-slate-200 py-1 hidden" data-user-menu-dropdown>
+						<div class="px-4 py-2 border-b border-slate-100 mb-1">
+							<p class="text-sm font-medium text-slate-900 truncate">Xin chào, <?= htmlspecialchars($_SESSION['username'] ?? 'Bạn') ?></p>
+						</div>
+						<a href="<?= htmlspecialchars($toUrl('/client/Profile'), ENT_QUOTES, 'UTF-8') ?>" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-600 transition-colors">Thông tin tài khoản</a>
+						<a href="<?= htmlspecialchars($toUrl('/Login/logout'), ENT_QUOTES, 'UTF-8') ?>" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">Đăng xuất</a>
+					</div>
+				<?php else: ?>
+					<a href="<?= htmlspecialchars($toUrl('/Login'), ENT_QUOTES, 'UTF-8') ?>" class="h-10 w-10 flex items-center justify-center rounded-md hover:bg-slate-100 transition-colors" aria-label="Tài khoản">
+						<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+							<circle cx="12" cy="7" r="4"></circle>
+						</svg>
+					</a>
+				<?php endif; ?>
+			</div>
 
-			<a href="<?= htmlspecialchars($toUrl('/cart'), ENT_QUOTES, 'UTF-8') ?>" class="relative h-10 w-10 flex items-center justify-center rounded-md hover:bg-slate-100 transition-colors" aria-label="Giỏ hàng">
+			<a href="<?= htmlspecialchars($toUrl('/client/Cart'), ENT_QUOTES, 'UTF-8') ?>" class="relative h-10 w-10 flex items-center justify-center rounded-md hover:bg-slate-100 transition-colors" aria-label="Giỏ hàng">
 				<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 					<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
 					<path d="M3 6h18"></path>
@@ -146,6 +169,21 @@ $cartItems = (int)($_SESSION['cart_total_items'] ?? 0);
 					closeIcon.classList.toggle('hidden', !isHidden);
 				}
 			});
+
+			// Logic cho Dropdown Tài khoản
+			const userMenuBtn = document.querySelector('[data-user-menu-btn]');
+			const userMenuDropdown = document.querySelector('[data-user-menu-dropdown]');
+			if (userMenuBtn && userMenuDropdown) {
+				userMenuBtn.addEventListener('click', function(e) {
+					e.stopPropagation();
+					userMenuDropdown.classList.toggle('hidden');
+				});
+				document.addEventListener('click', function(e) {
+					if (!userMenuBtn.contains(e.target) && !userMenuDropdown.contains(e.target)) {
+						userMenuDropdown.classList.add('hidden');
+					}
+				});
+			}
 		})();
 	</script>
 </header>
