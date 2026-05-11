@@ -4,10 +4,15 @@ module.exports = {
     "./app/views/**/*.php",
     "./public/**/*.php",
     "./public/assets/js/**/*.js",
+    "./app/views/**/components/*.{php}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["Montserrat", "sans-serif"],
+        serif: ['"Playfair Display"', "serif"],
+      },
+    },
   },
   plugins: [],
-}
-
+};

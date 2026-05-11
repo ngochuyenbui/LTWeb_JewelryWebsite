@@ -81,4 +81,20 @@ class Database {
     public function lastInsertId() {
         return $this->dbh->lastInsertId();
     }
+
+    // Bắt đầu Transaction
+    public function beginTransaction() {
+        return $this->dbh->beginTransaction(); 
+    }
+
+    // Hoàn tất Transaction
+    public function commit() {
+        return $this->dbh->commit();
+    }
+
+    // Hủy bỏ Transaction nếu có lỗi
+    public function rollBack() {
+        return $this->dbh->rollBack();
+    }
+
 }

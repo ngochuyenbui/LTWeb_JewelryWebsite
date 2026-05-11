@@ -1,6 +1,6 @@
 <?php
 $footerLinks = [
-	['href' => '/products', 'label' => 'Bộ sưu tập'],
+	['href' => '/client/Products', 'label' => 'Bộ sưu tập'],
 	['href' => '/about', 'label' => 'Về chúng tôi'],
 	['href' => '/pricing', 'label' => 'Bảng giá vàng'],
 	['href' => '/news', 'label' => 'Tin tức'],
