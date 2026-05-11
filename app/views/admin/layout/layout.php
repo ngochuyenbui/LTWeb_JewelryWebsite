@@ -74,24 +74,24 @@ if (!isset($contentView) || !file_exists($contentView)) {
 
     <script>
         $(document).ready(function() {
-            // Khởi tạo cấu hình cho MetisMenu giống với Srtdash gốc
-            $('#menu').metisMenu({
-                toggle: true,
-                activeClass: 'active'
-            });
-            // if (typeof MetisMenu !== 'undefined') {
-            //     new MetisMenu('#menu', {
-            //         toggle: true,
-            //         activeClass: 'active'
-            //     });
-            // } else if ($.fn.metisMenu) {
-            //     $('#menu').metisMenu();
-            // }
+            // Đảm bảo MetisMenu chỉ được khởi tạo 1 lần (nếu scripts.js chưa khởi tạo)
+            if (!$('#menu').data('metisMenu')) {
+                $('#menu').metisMenu({
+                    toggle: true,
+                    activeClass: 'active'
+                });
+            }
 
-            // Xử lý sự kiện nhấn vào nút Hamburger (Đóng/Mở Sidebar)
-            $('.nav-btn').on('click', function() {
-                $('.page-container').toggleClass('sbar_collapsed');
-            });
+                const navBtn = document.querySelector('.nav-btn');
+                if (navBtn) {
+                    const cleanBtn = navBtn.cloneNode(true);
+                    navBtn.parentNode.replaceChild(cleanBtn, navBtn);
+                    cleanBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation(); 
+                        document.querySelector('.page-container').classList.toggle('sbar_collapsed');
+                    });
+                }
         });
     </script>
 </body>
