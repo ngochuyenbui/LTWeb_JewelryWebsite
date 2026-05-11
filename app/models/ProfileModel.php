@@ -40,7 +40,7 @@ class ProfileModel extends BaseModel {
         $this->db->query("SELECT pwd_hash FROM user WHERE userId = :userId");
         $this->db->bind(':userId', $userId);
         $row = $this->db->single();
-        return $row ? $row['pwd_hash'] : null;
+        return $row ? (is_object($row) ? $row->pwd_hash : $row['pwd_hash']) : null;
     }
 
     // Cập nhật Mật khẩu mới

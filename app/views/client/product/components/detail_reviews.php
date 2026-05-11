@@ -37,7 +37,7 @@
                 <h3 class="text-lg font-serif font-bold text-slate-900 mb-4">Viết đánh giá của bạn</h3>
                 
                 <?php if (isset($_SESSION['user_id']) && ($_SESSION['user_role'] ?? 'member') === 'member'): ?>
-                    <form action="<?= htmlspecialchars(($appBaseUrl ?? '') . '/Comments/add') ?>" method="POST" class="flex flex-col gap-4">
+                    <form action="<?= htmlspecialchars(($appBaseUrl ?? '') . '/client/Comments/add') ?>" method="POST" class="flex flex-col gap-4">
                         <input type="hidden" name="contentId" value="<?= htmlspecialchars(is_object($product ?? null) ? ($product->contentId ?? '') : ($product['contentId'] ?? '')) ?>">
                         <input type="hidden" name="productId" value="<?= htmlspecialchars(is_object($product ?? null) ? ($product->productId ?? '') : ($product['productId'] ?? '')) ?>">
                         

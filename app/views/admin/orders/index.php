@@ -8,16 +8,20 @@
                     <?php if (isset($_SESSION['success'])): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <strong>Thành công!</strong> <?= htmlspecialchars($_SESSION['success']) ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                         <?php unset($_SESSION['success']); ?>
                     <?php endif; ?>
                     
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Đang hiển thị: <?= count($data['orders'] ?? []) ?> / <?= $data['totalItems'] ?? 0 ?> đơn hàng</span>
+                    </div>
+
                     <!-- Form Lọc và Sắp xếp -->
                     <form method="GET" action="<?= URLROOT ?>/admin/Orders" class="mb-4 bg-light p-3 rounded border">
-                        <div class="form-row align-items-end">
+                        <div class="row align-items-end">
                             <div class="col-md-3">
-                                <label class="font-weight-bold">Trạng thái</label>
+                                <label class="fw-bold">Trạng thái</label>
                                 <select name="status" class="form-control" style="height: auto;">
                                     <option value="">-- Tất cả --</option>
                                     <option value="pending" <?= (($data['filters']['status'] ?? '') == 'pending') ? 'selected' : '' ?>>Chờ xác nhận</option>
@@ -28,7 +32,7 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label class="font-weight-bold">Phương thức thanh toán</label>
+                                <label class="fw-bold">Phương thức thanh toán</label>
                                 <select name="payment" class="form-control" style="height: auto;">
                                     <option value="">-- Tất cả --</option>
                                     <?php 
@@ -39,7 +43,7 @@
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <label class="font-weight-bold">Sắp xếp theo</label>
+                                <label class="fw-bold">Sắp xếp theo</label>
                                 <select name="sort_by" class="form-control" style="height: auto;">
                                     <option value="date_desc" <?= (($data['filters']['sort_by'] ?? '') == 'date_desc') ? 'selected' : '' ?>>Ngày đặt (Mới nhất)</option>
                                     <option value="date_asc" <?= (($data['filters']['sort_by'] ?? '') == 'date_asc') ? 'selected' : '' ?>>Ngày đặt (Cũ nhất)</option>
@@ -47,7 +51,7 @@
                                     <option value="total_asc" <?= (($data['filters']['sort_by'] ?? '') == 'total_asc') ? 'selected' : '' ?>>Tổng tiền (Thấp - Cao)</option>
                                 </select>
                             </div>
-                            <div class="col-md-2 text-right">
+                            <div class="col-md-2 text-end">
                                 <button type="submit" class="btn btn-secondary"><i class="ti-filter"></i> Lọc & Tìm kiếm</button>
                             </div>
                         </div>
@@ -77,8 +81,8 @@
                                         $o_status = is_object($order) ? $order->status : $order['status'];
 
                                         $statusBadges = [
-                                            'pending' => 'badge-warning', 'processing' => 'badge-info',
-                                            'shipping' => 'badge-primary', 'delivered' => 'badge-success', 'cancelled' => 'badge-danger'
+                                            'pending' => 'bg-warning text-dark', 'processing' => 'bg-info text-white',
+                                            'shipping' => 'bg-primary text-white', 'delivered' => 'bg-success text-white', 'cancelled' => 'bg-danger text-white'
                                         ];
                                         $statusLabels = [
                                             'pending' => 'Chờ xác nhận', 'processing' => 'Đang xử lý', 'shipping' => 'Đang giao',
@@ -89,9 +93,9 @@
                                         <td><strong>#<?= htmlspecialchars($o_id) ?></strong></td>
                                         <td><?= htmlspecialchars($o_user) ?></td>
                                         <td><?= date('d/m/Y', strtotime($o_date)) ?></td>
-                                        <td class="font-weight-bold text-danger"><?= number_format($o_total, 0, ',', '.') ?> đ</td>
+                                        <td class="fw-bold text-danger"><?= number_format($o_total, 0, ',', '.') ?> đ</td>
                                         <td><?= htmlspecialchars($o_payment) ?></td>
-                                        <td><span class="badge <?= $statusBadges[$o_status] ?? 'badge-secondary' ?>"><?= $statusLabels[$o_status] ?? 'Không rõ' ?></span></td>
+                                        <td><span class="badge badge-pill <?= $statusBadges[$o_status] ?? 'bg-secondary text-white' ?>" style="padding: 8px 12px; font-size: 13px;"><?= $statusLabels[$o_status] ?? 'Không rõ' ?></span></td>
                                         <td>
                                             <a href="<?= URLROOT ?>/admin/Orders/detail/<?= $o_id ?>" class="btn btn-info btn-sm text-white"><i class="ti-eye"></i> Xem</a>
                                         </td>
@@ -112,7 +116,7 @@
                     <nav aria-label="Page navigation" class="mt-4">
                         <ul class="pagination justify-content-center">
                             <li class="page-item <?= (($data['currentPage'] ?? 1) <= 1) ? 'disabled' : '' ?>">
-                                <a class="page-link" href="<?= $buildLink(max(1, ($data['currentPage'] ?? 1) - 1)) ?>">Trước</a>
+                                <a class="page-link" href="<?= $buildLink(max(1, ($data['currentPage'] ?? 1) - 1)) ?>"><</a>
                             </li>
                             <?php for ($i = 1; $i <= ($data['totalPages'] ?? 1); $i++): ?>
                                 <li class="page-item <?= (($data['currentPage'] ?? 1) == $i) ? 'active' : '' ?>">
@@ -120,7 +124,7 @@
                                 </li>
                             <?php endfor; ?>
                             <li class="page-item <?= (($data['currentPage'] ?? 1) >= ($data['totalPages'] ?? 1)) ? 'disabled' : '' ?>">
-                                <a class="page-link" href="<?= $buildLink(min(($data['totalPages'] ?? 1), ($data['currentPage'] ?? 1) + 1)) ?>">Sau</a>
+                                <a class="page-link" href="<?= $buildLink(min(($data['totalPages'] ?? 1), ($data['currentPage'] ?? 1) + 1)) ?>">></a>
                             </li>
                         </ul>
                     </nav>

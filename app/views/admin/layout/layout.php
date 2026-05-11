@@ -14,22 +14,31 @@ if (!isset($contentView) || !file_exists($contentView)) {
     <title><?= isset($title) ? htmlspecialchars($title) : 'Quản trị' ?> - Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <!-- Các file CSS của Srtdash template (Bạn cần tải thư mục Srtdash vào public/assets/admin) -->
-    <!-- Tạm thời dùng Bootstrap CDN để hiển thị UI nếu chưa có file local -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/themify-icons/0.1.2/css/themify-icons.css">
+    <!-- Srtdash CSS -->
+    <link rel="stylesheet" href="<?= URLROOT ?>/assets/admin/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/metismenu/dist/metisMenu.min.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/assets/admin/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/assets/admin/css/slicknav.min.css">
+    <!-- ion.rangeSlider css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
+    <!-- SweetAlert2 css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- amchart css -->
+    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+    <!-- others css -->
+    <link rel="stylesheet" href="<?= URLROOT ?>/assets/admin/css/typography.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/assets/admin/css/default-css.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/assets/admin/css/styles.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/assets/admin/css/responsive.css">
+    <!-- modernizr css -->
+    <script src="<?= URLROOT ?>/assets/admin/js/vendor/modernizr-2.8.3.min.js"></script>
     
     <style>
-        .page-container { display: flex; }
-        .sidebar-menu { width: 250px; background: #303641; min-height: 100vh; color: #fff; }
-        .main-content { flex: 1; background: #f3f8fb; }
-        .header-area { background: #fff; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .page-title-area { padding: 20px; background: #fff; border-bottom: 1px solid #ddd; }
-        .main-content-inner { padding: 20px; }
-        .sidebar-menu a { color: #a4a9b3; padding: 15px; display: block; border-bottom: 1px solid #3c4452; text-decoration: none; }
-        .sidebar-menu a:hover { color: #fff; background: #2b303a; }
-        .sidebar-menu .active { color: #fff; background: #4caf50; }
+        @media (max-width: 991px) {
+            .nav-btn { z-index: 9999 !important; position: relative; }
+        }
     </style>
 </head>
 
@@ -37,55 +46,11 @@ if (!isset($contentView) || !file_exists($contentView)) {
     <!-- page container area start -->
     <div class="page-container">
         
-        <!-- sidebar menu area start -->
-        <div class="sidebar-menu">
-            <div class="sidebar-header" style="padding: 20px; text-align: center; font-size: 24px; font-weight: bold;">
-                Admin Panel
-            </div>
-            <div class="main-menu">
-                <div class="menu-inner">
-                    <nav>
-                        <ul class="list-unstyled">
-                            <li><a href="<?= URLROOT ?>/AdminArticle"><i class="ti-receipt"></i> Quản lý Bài viết</a></li>
-                            <li><a href="<?= URLROOT ?>/AdminComment"><i class="ti-comments"></i> Quản lý Bình luận</a></li>
-                            <li><a href="<?= URLROOT ?>/AdminAbout"><i class="ti-layout-grid2"></i> Quản lý About</a></li>
-                            <li><a href="<?= URLROOT ?>/AdminFaq"><i class="ti-help-alt"></i> Quản lý FAQ</a></li>
-                            <li><a href="<?= URLROOT ?>/Home"><i class="ti-home"></i> Xem Website</a></li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </div>
-        <!-- sidebar menu area end -->
+        <?php require_once 'sidebar.php'; ?>
 
         <!-- main content area start -->
         <div class="main-content">
-            <!-- header area start -->
-            <div class="header-area">
-                <div class="row align-items-center">
-                    <div class="col-md-6 col-sm-8 clearfix">
-                        <div class="nav-btn pull-left" style="margin-top: 5px;">
-                            <span><i class="ti-menu"></i></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-sm-4 clearfix text-right">
-                        <span>Xin chào, <?= htmlspecialchars($_SESSION['username'] ?? 'Admin') ?></span>
-                    </div>
-                </div>
-            </div>
-            <!-- header area end -->
-
-            <!-- page title area start -->
-            <div class="page-title-area">
-                <div class="row align-items-center">
-                    <div class="col-sm-6">
-                        <div class="breadcrumbs-area clearfix">
-                            <h4 class="page-title pull-left"><?= isset($title) ? htmlspecialchars($title) : 'Dashboard' ?></h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- page title area end -->
+            <?php require_once 'header.php'; ?>
 
             <div class="main-content-inner">
                 <!-- Nội dung các trang View được chèn vào đây -->
@@ -99,6 +64,35 @@ if (!isset($contentView) || !file_exists($contentView)) {
 
     <!-- JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= URLROOT ?>/assets/admin/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/metismenu/dist/metisMenu.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
+    <script src="<?= URLROOT ?>/assets/admin/js/swiper-bundle.min.js"></script>  
+    <script src="<?= URLROOT ?>/assets/admin/js/maps.js"></script>
+    <script src="<?= URLROOT ?>/assets/admin/js/scripts.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Khởi tạo cấu hình cho MetisMenu giống với Srtdash gốc
+            $('#menu').metisMenu({
+                toggle: true,
+                activeClass: 'active'
+            });
+            // if (typeof MetisMenu !== 'undefined') {
+            //     new MetisMenu('#menu', {
+            //         toggle: true,
+            //         activeClass: 'active'
+            //     });
+            // } else if ($.fn.metisMenu) {
+            //     $('#menu').metisMenu();
+            // }
+
+            // Xử lý sự kiện nhấn vào nút Hamburger (Đóng/Mở Sidebar)
+            $('.nav-btn').on('click', function() {
+                $('.page-container').toggleClass('sbar_collapsed');
+            });
+        });
+    </script>
 </body>
 </html>

@@ -14,7 +14,7 @@
 
         <div id="error" class="text-red-500 text-sm text-center font-medium"><?= $data['error'] ?? ''?></div>
 
-        <form id="registerForm" class="mt-8 space-y-5" action="<?= URLROOT ?>/Auth/register" method="POST">
+        <form id="registerForm" class="mt-8 space-y-5" action="<?= URLROOT ?>/Register" method="POST">
             <div>
                 <label for="username" class="block text-sm font-medium text-slate-700">Tên đăng nhập</label>
                 <input type="text" name="username" id="username" autocomplete="username" value="<?= $data['username'] ?? '' ?>" required
@@ -52,7 +52,7 @@
 
             <p class="text-center text-sm text-slate-600">
                 Đã có tài khoản? 
-                <a href="<?= URLROOT ?>/Auth/login" class="font-bold text-amber-600 hover:text-amber-500 transition-colors">Đăng nhập ngay</a>
+                <a href="<?= URLROOT ?>/Login" class="font-bold text-amber-600 hover:text-amber-500 transition-colors">Đăng nhập ngay</a>
             </p>
         </form>
     </div>
@@ -85,7 +85,7 @@
 
         if (field === 'email') {
             const regex=/\S+@\S+\.\S+/;
-            if (!regex.test(value)) {
+            if (!regex.test(value.trim())) {
                 msgElement.innerText = "Email không hợp lệ!";
                 msgElement.className = "block mt-1 text-xs h-4 text-red-500";
                 validation.email = false;
@@ -97,7 +97,7 @@
             let formData = new FormData();
             formData.append(field, value);
             let endpoint = field === 'username' ? 'checkUsername' : 'checkEmail';
-            let response = await fetch(`<?= URLROOT ?>/Auth/${endpoint}`, {
+            let response = await fetch(`<?= URLROOT ?>/Register/${endpoint}`, {
                 method: 'POST',
                 body: formData
             });
@@ -194,6 +194,8 @@
                         document.getElementById('error').innerText = result.error;
                         btn.disabled = false;
                         btn.innerText = 'ĐĂNG KÝ NGAY';
+                    } else if (result.redirect) {
+                        window.location.href = result.redirect;
                     }
                 } catch(e) {
                     // Fallback

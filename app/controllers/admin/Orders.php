@@ -11,7 +11,7 @@ class Orders extends Controller {
     }
 
     public function index() {
-        $limit = 15;
+        $limit = 10;
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $offset = ($page - 1) * $limit;
 
@@ -36,9 +36,11 @@ class Orders extends Controller {
         }
 
         $this->view('admin/orders/index', [
+            'title' => 'Quản lý Đơn hàng',
             'orders' => $orders,
             'currentPage' => $page,
             'totalPages' => $totalPages,
+            'totalItems' => $totalItems,
             'filters' => [
                 'status' => $status,
                 'payment' => $payment,
@@ -70,6 +72,7 @@ class Orders extends Controller {
         $finalTotal = $totalPrice + $shippingFee;
 
         $this->view('admin/orders/detail', [
+            'title' => 'Chi tiết Đơn hàng',
             'order' => $order,
             'items' => $items,
             'totalPrice' => $totalPrice,

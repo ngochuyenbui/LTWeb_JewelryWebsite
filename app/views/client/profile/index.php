@@ -15,14 +15,14 @@
             </div>
         <?php endif; ?>
 
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 items-start">
             <!-- Sidebar / Tabs -->
             <div class="lg:col-span-1 mb-8 lg:mb-0">
                 <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden sticky top-24">               
                 <ul class="flex flex-col py-2 items-start">
-                    <li><button type="button" class="w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 hover:text-amber-600 font-medium transition-colors tab-btn" data-target="tab-profile">Thông tin tài khoản</button></li>
-                    <li><button type="button" class="w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 hover:text-amber-600 font-medium transition-colors tab-btn" data-target="tab-orders">Lịch sử đơn hàng</button></li>
-                    <li><button type="button" class="w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 hover:text-amber-600 font-medium transition-colors tab-btn" data-target="tab-password">Đổi mật khẩu</button></li>
+                    <li><button type="button" class="w-full text-left px-4 py-3 text-slate-700 hover:bg-slate-50 hover:text-amber-600 font-medium transition-colors tab-btn" data-target="tab-profile">Thông tin tài khoản</button></li>
+                    <li><button type="button" class="w-full text-left px-4 py-3 text-slate-700 hover:bg-slate-50 hover:text-amber-600 font-medium transition-colors tab-btn" data-target="tab-orders">Lịch sử đơn hàng</button></li>
+                    <li><button type="button" class="w-full text-left px-4 py-3 text-slate-700 hover:bg-slate-50 hover:text-amber-600 font-medium transition-colors tab-btn" data-target="tab-password">Đổi mật khẩu</button></li>
                     <li><a href="<?= URLROOT ?>/Login/logout" class="block px-6 py-3 !text-red-600 !hover:bg-red-50 font-medium transition-colors">Đăng xuất</a></li>
                 </ul>
                 </div>

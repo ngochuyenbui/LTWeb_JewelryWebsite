@@ -9,7 +9,7 @@ class CartModel extends BaseModel {
         $row = $this->db->single();
         
         if ($row) {
-            return $row['cartId'];
+            return is_object($row) ? $row->cartId : $row['cartId'];
         }
         
         // Tạo cart mới nếu chưa có
@@ -76,7 +76,7 @@ class CartModel extends BaseModel {
         $this->db->query("SELECT SUM(quantity) as total FROM cart_item WHERE cartId = :cartId");
         $this->db->bind(':cartId', $cartId);
         $row = $this->db->single();
-        return $row ? (int)$row['total'] : 0;
+        return $row ? (int)(is_object($row) ? $row->total : $row['total']) : 0;
     }
     // === ADMIN FUNCTIONS ===
     public function getAllCartsPaginated($limit, $offset) {
@@ -96,7 +96,7 @@ class CartModel extends BaseModel {
                           FROM cart c 
                           WHERE (SELECT COUNT(*) FROM cart_item WHERE cartId = c.cartId) > 0");
         $row = $this->db->single();
-        return $row['total'] ?? 0;
+        return $row ? (is_object($row) ? $row->total : $row['total']) : 0;
     }
 
     public function getItemsForCart($cartId) {

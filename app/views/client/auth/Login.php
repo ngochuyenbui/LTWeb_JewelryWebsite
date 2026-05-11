@@ -23,7 +23,7 @@
 
         <div id="error" class="text-red-500 text-sm text-center font-medium"></div>
 
-        <form id="loginForm" class="mt-8 space-y-6" action="<?= URLROOT ?>/Auth/login" method="POST">
+        <form id="loginForm" class="mt-8 space-y-6" action="<?= URLROOT ?>/Login" method="POST">
             <div class="space-y-4">
                 <div>
                     <label for="username" class="block text-sm font-medium text-slate-700">Tên đăng nhập</label>
@@ -59,13 +59,13 @@
 
             <p class="text-center text-sm text-slate-600 mt-4">
                 Chưa có tài khoản? 
-                <a href="<?= URLROOT ?>/Auth/register" class="font-bold text-amber-600 hover:text-amber-500 transition-colors">Đăng ký ngay</a>
+                <a href="<?= URLROOT ?>/Register" class="font-bold text-amber-600 hover:text-amber-500 transition-colors">Đăng ký ngay</a>
             </p>
         </form>
     </div>
 </section>
 
-<script>
+<!-- <script>
 document.getElementById('loginForm').addEventListener('submit', async function(e){
     e.preventDefault();
     const btn = document.getElementById('btn-login');
@@ -97,5 +97,38 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         btn.disabled = false;
         btn.innerText = originalText;
     }
+});
+</script> -->
+
+<script>
+$(function() {
+    $('#loginForm').submit(function(e) {
+        e.preventDefault();
+        const btn = $('#btn-login');
+        btn.prop('disabled', true);
+        const errorEl = $('#error');
+
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(result) {
+                if (result.error) {
+                    errorEl.text(result.error);
+                    btn.prop('disabled', false);
+                } else if (result.success) {
+                    window.location.href = result.redirect;
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                errorEl.text("Đã có lỗi xảy ra. Vui lòng thử lại sau!");
+                btn.prop('disabled', false);
+            }
+        });
+    });
 });
 </script>

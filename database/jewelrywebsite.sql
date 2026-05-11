@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 11, 2026 at 11:10 AM
+-- Generation Time: May 11, 2026 at 06:26 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -279,6 +279,44 @@ INSERT INTO `faq` (`faqId`, `question`, `answer`, `status`, `priority`, `creator
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `faq_question_submission`
+--
+
+DROP TABLE IF EXISTS `faq_question_submission`;
+CREATE TABLE `faq_question_submission` (
+  `submissionId` int(11) NOT NULL,
+  `fullname` varchar(120) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `phone` varchar(30) DEFAULT NULL,
+  `question` text NOT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'new',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `answered_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `job_application`
+--
+
+DROP TABLE IF EXISTS `job_application`;
+CREATE TABLE `job_application` (
+  `applicationId` int(11) NOT NULL,
+  `fullname` varchar(150) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `position` varchar(180) NOT NULL,
+  `location` varchar(120) DEFAULT NULL,
+  `cv_path` varchar(500) NOT NULL,
+  `cover_letter` text DEFAULT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'new',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `member`
 --
 
@@ -300,7 +338,7 @@ INSERT INTO `member` (`userId`, `phonenum`, `address`, `rewardPoint`) VALUES
 (8, '555-0103', '456 Oak Lane', 50),
 (9, '555-0104', '789 Pine Road', 300),
 (10, '555-0105', '101 Cedar Blvd', 120),
-(20, NULL, NULL, 0);
+(20, '0356187164', NULL, 444);
 
 -- --------------------------------------------------------
 
@@ -323,12 +361,18 @@ CREATE TABLE `order` (
 --
 
 INSERT INTO `order` (`orderId`, `memberId`, `shipping_addr`, `payment`, `status`, `created_at`) VALUES
-(1, 6, '742 Evergreen Terrace', 'CC', 'delivered', '2026-04-06 09:35:27'),
-(2, 7, '123 Maple Street', 'Paypal', 'pending', '2026-04-06 09:35:27'),
+(1, 6, '742 Evergreen Terrace', 'BANK', 'delivered', '2026-04-06 09:35:27'),
+(2, 7, '123 Maple Street', 'BANK', 'pending', '2026-04-06 09:35:27'),
 (3, 8, '456 Oak Lane', 'COD', 'shipping', '2026-04-06 09:35:27'),
-(4, 9, '789 Pine Road', 'CC', 'cancelled', '2026-04-06 09:35:27'),
-(5, 10, '101 Cedar Blvd', 'Paypal', 'pending', '2026-04-06 09:35:27'),
-(6, 20, 'loan - 0356187164 - tphcm', 'COD', 'pending', '2026-05-11 09:01:24');
+(4, 9, '789 Pine Road', 'COD', 'cancelled', '2026-04-06 09:35:27'),
+(5, 10, '101 Cedar Blvd', 'BANK', 'pending', '2026-04-06 09:35:27'),
+(8, 20, 'TPHCM', 'COD', 'processing', '2026-05-11 09:21:24'),
+(9, 20, 'TPHCM', 'COD', 'delivered', '2026-05-11 09:23:48'),
+(10, 20, 'TPHCM', 'BANK', 'pending', '2026-05-11 13:00:03'),
+(11, 20, '123', 'COD', 'pending', '2026-05-11 13:08:32'),
+(12, 20, '123456', 'COD', 'pending', '2026-05-11 13:18:18'),
+(13, 20, '456', 'COD', 'pending', '2026-05-11 13:18:54'),
+(14, 20, '789', 'COD', 'cancelled', '2026-05-11 13:26:22');
 
 -- --------------------------------------------------------
 
@@ -342,22 +386,32 @@ CREATE TABLE `order_item` (
   `orderId` int(11) NOT NULL,
   `purchase_price` decimal(15,2) NOT NULL DEFAULT 0.00,
   `quantity` int(11) NOT NULL DEFAULT 1,
-  `productId` int(11) NOT NULL
+  `productId` int(11) NOT NULL,
+  `size` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `order_item`
 --
 
-INSERT INTO `order_item` (`itemId`, `orderId`, `purchase_price`, `quantity`, `productId`) VALUES
-(1, 1, 12000.00, 1, 1),
-(2, 2, 1200.00, 2, 3),
-(3, 3, 3200.00, 1, 5),
-(4, 4, 8500.00, 1, 2),
-(5, 5, 450.00, 3, 4),
-(6, 6, 9290000.00, 1, 13),
-(7, 6, 6490000.00, 1, 12),
-(8, 6, 6490000.00, 1, 12);
+INSERT INTO `order_item` (`itemId`, `orderId`, `purchase_price`, `quantity`, `productId`, `size`) VALUES
+(1, 1, 12000.00, 1, 1, ''),
+(2, 2, 1200.00, 2, 3, ''),
+(3, 3, 3200.00, 1, 5, ''),
+(4, 4, 8500.00, 1, 2, ''),
+(5, 5, 450.00, 3, 4, ''),
+(9, 8, 9290000.00, 1, 13, 'ONESIZE'),
+(10, 8, 6490000.00, 1, 12, '58'),
+(11, 8, 6490000.00, 1, 12, '60'),
+(12, 9, 9290000.00, 1, 13, 'ONESIZE'),
+(13, 9, 6490000.00, 1, 12, '58'),
+(14, 9, 6490000.00, 1, 12, '60'),
+(15, 10, 6490000.00, 1, 12, '58'),
+(16, 10, 9290000.00, 2, 13, 'ONESIZE'),
+(17, 11, 9290000.00, 1, 13, 'ONESIZE'),
+(18, 12, 9290000.00, 1, 13, 'ONESIZE'),
+(19, 13, 9290000.00, 1, 13, 'ONESIZE'),
+(20, 14, 9290000.00, 1, 13, 'ONESIZE');
 
 -- --------------------------------------------------------
 
@@ -540,17 +594,17 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`userId`, `username`, `fullname`, `email`, `pwd_hash`, `avatar`, `role`, `created_at`, `last_login`) VALUES
-(1, 'alex_admin', 'Alex Johnson', 'alex@jewelry.com', '$2y$10$sADasAPEStI.BW8cKYSVM.gNWDKm5.chft58eq7TVJwILF.ix7STW', NULL, 'admin', '2026-04-06 09:34:05', NULL),
+(1, 'alex_admin', 'Alex Johnson', 'alex@jewelry.com', 'hash1', NULL, 'admin', '2026-04-06 09:34:05', NULL),
 (2, 'sarah_mgr', 'Sarah Williams', 'sarah@jewelry.com', 'hash2', NULL, 'admin', '2026-04-06 09:34:05', NULL),
 (3, 'mike_staff', 'Mike Brown', 'mike@jewelry.com', 'hash3', NULL, 'admin', '2026-04-06 09:34:05', NULL),
 (4, 'emily_editor', 'Emily Davis', 'emily@jewelry.com', 'hash4', NULL, 'admin', '2026-04-06 09:34:05', NULL),
 (5, 'john_boss', 'John Miller', 'john@jewelry.com', 'hash5', NULL, 'admin', '2026-04-06 09:34:05', NULL),
-(6, 'customer_01', 'Robert Wilson', 'robert@gmail.com', 'pass1', NULL, 'member', '2026-04-06 09:34:05', NULL),
+(6, 'customer_01', 'Robert Wilson', 'robert@gmail.com', '$2y$10$pMHFaW5AUvbdQI5Cg3I/KeDRD.g5z18ViPIVSXRobdDQU9PxNMv8m', NULL, 'member', '2026-04-06 09:34:05', NULL),
 (7, 'customer_02', 'Linda Garcia', 'linda@gmail.com', 'pass2', NULL, 'member', '2026-04-06 09:34:05', NULL),
 (8, 'customer_03', 'James Martinez', 'james@gmail.com', 'pass3', NULL, 'member', '2026-04-06 09:34:05', NULL),
 (9, 'customer_04', 'Barbara White', 'barbara@gmail.com', 'pass4', NULL, 'member', '2026-04-06 09:34:05', NULL),
 (10, 'customer_05', 'William Taylor', 'william@gmail.com', 'pass5', NULL, 'member', '2026-04-06 09:34:05', NULL),
-(20, 'loan', NULL, 'loannguyn00@gmail.com', '$2y$10$gcUT3KuBnRYD9zNcOv/Yz.UBS0VWX.MbEuEfFz4b1AkpVx4bmMfm6', NULL, 'member', '2026-05-10 08:22:08', NULL),
+(20, 'loan', 'loan', 'loannguyn00@gmail.com', '$2y$10$gcUT3KuBnRYD9zNcOv/Yz.UBS0VWX.MbEuEfFz4b1AkpVx4bmMfm6', '/assets/uploads/avatars/avatar_20_1778504452.png', 'member', '2026-05-10 08:22:08', NULL),
 (21, 'admin', NULL, 'nguynloan0@gmail.com', '$2y$10$woX5WYb.tQJ2GIDGy2WdPeelcMOthVTAhDoI3/pCqny71sHINtxCK', NULL, 'admin', '2026-05-10 08:51:05', NULL);
 
 --
@@ -626,6 +680,22 @@ ALTER TABLE `faq`
   ADD PRIMARY KEY (`faqId`),
   ADD KEY `creatorId` (`creatorId`),
   ADD KEY `contentId` (`contentId`);
+
+--
+-- Indexes for table `faq_question_submission`
+--
+ALTER TABLE `faq_question_submission`
+  ADD PRIMARY KEY (`submissionId`),
+  ADD KEY `status` (`status`),
+  ADD KEY `created_at` (`created_at`);
+
+--
+-- Indexes for table `job_application`
+--
+ALTER TABLE `job_application`
+  ADD PRIMARY KEY (`applicationId`),
+  ADD KEY `status` (`status`),
+  ADD KEY `created_at` (`created_at`);
 
 --
 -- Indexes for table `member`
@@ -709,7 +779,7 @@ ALTER TABLE `cart`
 -- AUTO_INCREMENT for table `cart_item`
 --
 ALTER TABLE `cart_item`
-  MODIFY `itemId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `itemId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `category`
@@ -742,16 +812,28 @@ ALTER TABLE `faq`
   MODIFY `faqId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `faq_question_submission`
+--
+ALTER TABLE `faq_question_submission`
+  MODIFY `submissionId` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `job_application`
+--
+ALTER TABLE `job_application`
+  MODIFY `applicationId` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `order`
 --
 ALTER TABLE `order`
-  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `order_item`
 --
 ALTER TABLE `order_item`
-  MODIFY `itemId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `itemId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `product`

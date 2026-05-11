@@ -8,14 +8,17 @@
                     <?php if (isset($_SESSION['success'])): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <strong>Thành công!</strong> <?= htmlspecialchars($_SESSION['success']) ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                         <?php unset($_SESSION['success']); ?>
                     <?php endif; ?>
 
-                    <a href="<?= URLROOT ?>/admin/Categories/create" class="btn btn-primary mb-3">
-                        <i class="ti-plus"></i> Thêm danh mục mới
-                    </a>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <a href="<?= URLROOT ?>/admin/Categories/create" class="btn btn-primary">
+                            <i class="ti-plus"></i> Thêm danh mục mới
+                        </a>
+                        <span class="text-muted">Đang hiển thị: <?= count($data['categories'] ?? []) ?> / <?= $data['totalItems'] ?? 0 ?> danh mục</span>
+                    </div>
                     
                     <div class="data-tables">
                         <table class="text-center table table-bordered table-hover">
@@ -42,14 +45,14 @@
                                     ?>
                                     <tr class="<?= $c_hidden ? 'table-secondary text-muted' : '' ?>">
                                         <td><img src="<?= htmlspecialchars($imgSrc) ?>" alt="img" class="rounded" style="width: 50px; height: 50px; object-fit: cover;"></td>
-                                        <td class="font-weight-bold"><?= htmlspecialchars($c_name) ?></td>
+                                        <td class="fw-bold"><?= htmlspecialchars($c_name) ?></td>
                                         <td><?= htmlspecialchars($c_type) ?></td>
                                         <td><?= htmlspecialchars($c_slug) ?></td>
                                         <td>
                                             <?php if ($c_hidden): ?>
-                                                <span class="badge badge-secondary">Đã ẩn</span>
+                                                <span class="badge badge-pill bg-secondary text-white" style="padding: 8px 12px; font-size: 13px;">Đã ẩn</span>
                                             <?php else: ?>
-                                                <span class="badge badge-success">Hiển thị</span>
+                                                <span class="badge badge-pill bg-success text-white" style="padding: 8px 12px; font-size: 13px;">Hiển thị</span>
                                             <?php endif; ?>
                                         </td>
                                         <td>
@@ -63,6 +66,41 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Phân trang -->
+                    <?php if (($data['totalPages'] ?? 0) > 1): ?>
+                    <div class="mt-4 d-flex justify-content-center">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <?php 
+                                    $currentPage = $data['currentPage'] ?? 1;
+                                    $totalPages = $data['totalPages'] ?? 1;
+                                    
+                                    // Build query string for pagination links
+                                    $query = $_GET;
+                                    unset($query['page'], $query['url']);
+                                    $queryString = http_build_query($query);
+                                    $baseUrl = URLROOT . '/admin/Categories?';
+                                ?>
+                                <li class="page-item <?= $currentPage <= 1 ? 'disabled' : '' ?>">
+                                    <a class="page-link" href="<?= $baseUrl . $queryString . '&page=' . ($currentPage - 1) ?>" aria-label="Previous">
+                                        <span aria-hidden="true"><</span>
+                                    </a>
+                                </li>
+                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                    <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
+                                        <a class="page-link" href="<?= $baseUrl . $queryString . '&page=' . $i ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+                                <li class="page-item <?= $currentPage >= $totalPages ? 'disabled' : '' ?>">
+                                    <a class="page-link" href="<?= $baseUrl . $queryString . '&page=' . ($currentPage + 1) ?>" aria-label="Next">
+                                        <span aria-hidden="true">></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

@@ -8,21 +8,21 @@
                     <?php if (isset($_SESSION['success'])): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <strong>Thành công!</strong> <?= htmlspecialchars($_SESSION['success']) ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                         <?php unset($_SESSION['success']); ?>
                     <?php endif; ?>
 
                     <!-- Bộ lọc và tìm kiếm -->
                     <form method="GET" action="<?= URLROOT ?>/admin/Products" class="mb-4 bg-light p-3 rounded border">
-                    <div class="form-group">
-                                <label class="font-weight-bold">Tìm kiếm</label>
-                                <input type="text" name="search" class="form-control" placeholder="Tên hoặc SKU..." value="<?= htmlspecialchars($data['filters']['search'] ?? '') ?>">
-                            </div>    
-                    <div class="form-row align-items-end">
+                        <div class="mb-3">
+                            <label class="fw-bold">Tìm kiếm</label>
+                            <input type="text" name="search" class="form-control" placeholder="Tên hoặc SKU..." value="<?= htmlspecialchars($data['filters']['search'] ?? '') ?>">
+                        </div>    
+                    <div class="row align-items-end">
                             
                             <div class="col-md-2 mb-3">
-                                <label class="font-weight-bold">Danh mục</label>
+                                <label class="fw-bold">Danh mục</label>
                                 <select name="category" class="form-control" style="height: auto;">
                                     <option value="">-- Tất cả --</option>
                                     <?php foreach($data['categories'] ?? [] as $c): ?>
@@ -31,7 +31,7 @@
                                 </select>
                             </div>
                             <div class="col-md-2 mb-3">
-                                <label class="font-weight-bold">Màu sắc</label>
+                                <label class="fw-bold">Màu sắc</label>
                                 <select name="color" class="form-control" style="height: auto;">
                                     <option value="">-- Tất cả --</option>
                                     <?php 
@@ -48,7 +48,7 @@
                                 </select>
                             </div>
                             <div class="col-md-2 mb-3">
-                                <label class="font-weight-bold">Kích cỡ</label>
+                                <label class="fw-bold">Kích cỡ</label>
                                 <select name="size" class="form-control" style="height: auto;">
                                     <option value="">-- Tất cả --</option>
                                     <?php 
@@ -69,7 +69,7 @@
                                 </select>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label class="font-weight-bold">Sắp xếp</label>
+                                <label class="fw-bold">Sắp xếp</label>
                                 <select name="sort" class="form-control" style="height: auto;">
                                     <option value="default" <?= (($data['filters']['sort'] ?? '') == 'default') ? 'selected' : '' ?>>Mới nhất</option>
                                     <option value="price_asc" <?= (($data['filters']['sort'] ?? '') == 'price_asc') ? 'selected' : '' ?>>Giá tăng dần</option>
@@ -77,16 +77,16 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-row align-items-center mt-2">
+                        <div class="row align-items-center mt-2">
                             <div class="col-md-6 mb-3">
-                                <label class="font-weight-bold">Khoảng giá</label>
+                                <label class="fw-bold">Khoảng giá</label>
                                 <input type="hidden" name="min_price" id="filter_min_price" value="<?= htmlspecialchars($data['filters']['min_price'] ?? '') ?>">
                                 <input type="hidden" name="max_price" id="filter_max_price" value="<?= htmlspecialchars($data['filters']['max_price'] ?? '') ?>">
                                 <input type="text" id="price_slider" value="" />
                             </div>
-                            <div class="col-md-6 mb-3 text-right">
+                            <div class="col-md-6 mb-3 text-end">
                                 <button type="submit" class="btn btn-secondary"><i class="ti-filter"></i> Lọc & Tìm kiếm</button>
-                                <a href="<?= URLROOT ?>/admin/Products" class="btn btn-light ml-2"><i class="ti-reload"></i> Xóa lọc</a>
+                                <a href="<?= URLROOT ?>/admin/Products" class="btn btn-light ms-2"><i class="ti-reload"></i> Xóa lọc</a>
                             </div>
                         </div>
                     </form>
@@ -96,7 +96,7 @@
                             <button type="button" class="btn btn-danger" id="btnMassDelete">
                                 <i class="ti-trash"></i> Xóa đã chọn
                             </button>
-                            <a href="<?= URLROOT ?>/admin/Products/create" class="btn btn-primary ml-2">
+                            <a href="<?= URLROOT ?>/admin/Products/create" class="btn btn-primary ms-2">
                                 <i class="ti-plus"></i> Thêm sản phẩm mới
                             </a>                            
                         </div>
@@ -166,7 +166,7 @@
                                 ?>
                                 <li class="page-item <?= $currentPage <= 1 ? 'disabled' : '' ?>">
                                     <a class="page-link" href="<?= $baseUrl . $queryString . '&page=' . ($currentPage - 1) ?>" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
+                                        <span aria-hidden="true"><</span>
                                     </a>
                                 </li>
                                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
@@ -176,7 +176,7 @@
                                 <?php endfor; ?>
                                 <li class="page-item <?= $currentPage >= $totalPages ? 'disabled' : '' ?>">
                                     <a class="page-link" href="<?= $baseUrl . $queryString . '&page=' . ($currentPage + 1) ?>" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
+                                        <span aria-hidden="true">></span>
                                     </a>
                                 </li>
                             </ul>
@@ -296,8 +296,13 @@ document.addEventListener("DOMContentLoaded", function() {
             
             let dbMin = <?= $data['priceRange']['min_price'] ?? 0 ?>;
             let dbMax = <?= $data['priceRange']['max_price'] ?? 50000000 ?>;
-            let currentMin = <?= !empty($data['filters']['min_price']) ? $data['filters']['min_price'] : 'dbMin' ?>;
-            let currentMax = <?= !empty($data['filters']['max_price']) ? $data['filters']['max_price'] : 'dbMax' ?>;
+            
+            if (dbMin >= dbMax) {
+                dbMax = dbMin + 10000; // Tránh lỗi hiển thị khi kho chỉ có duy nhất 1 mức giá
+            }
+
+            let currentMin = <?= (isset($data['filters']['min_price']) && $data['filters']['min_price'] !== '') ? (int)$data['filters']['min_price'] : 'dbMin' ?>;
+            let currentMax = <?= (isset($data['filters']['max_price']) && $data['filters']['max_price'] !== '') ? (int)$data['filters']['max_price'] : 'dbMax' ?>;
 
             $("#price_slider").ionRangeSlider({
                 type: "double",

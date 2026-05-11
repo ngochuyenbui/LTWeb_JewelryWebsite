@@ -26,7 +26,7 @@ $statusLabels = ['pending' => 'Chờ xác nhận', 'processing' => 'Đang xử l
                         <div class="col-md-6">
                             <h5 class="mb-3">Cập nhật trạng thái đơn hàng</h5>
                             <form action="<?= URLROOT ?>/admin/Orders/updateStatus/<?= $order['orderId'] ?>" method="POST">
-                                <div class="form-group">
+                                <div class="mb-3">
                                     <?php $isFinalStatus = in_array($order['status'], ['delivered', 'cancelled']); ?>
                                     <select name="status" class="form-control" style="height: auto;" <?= $isFinalStatus ? 'disabled' : '' ?>>
                                         <?php foreach ($statusOptions as $status): ?>

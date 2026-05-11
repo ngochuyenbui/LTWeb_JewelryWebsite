@@ -67,24 +67,69 @@
     <!-- Size -->
     <div class="mb-6">
         <h4 class="font-medium font-serif text-slate-900 mb-3">Kích Thước</h4>
-        <div class="flex flex-wrap gap-2">
-            <?php foreach ($data['sizes'] ?? [] as $sizeObj): ?>
-                <?php 
-                $sizeVal = is_object($sizeObj) ? ($sizeObj->size ?? '') : ($sizeObj['size'] ?? ''); 
-                if(empty($sizeVal)) continue;
-                $isChecked = isset($_GET['size']) && is_array($_GET['size']) && in_array($sizeVal, $_GET['size']);
-                ?>
-                <label class="cursor-pointer">
-                    <input type="checkbox" name="size[]" value="<?= htmlspecialchars($sizeVal) ?>" class="peer sr-only" <?= $isChecked ? 'checked' : '' ?>>
-                    <div class="px-3 py-1.5 border border-slate-300 text-sm text-slate-600 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 hover:border-amber-500 transition-colors">
-                        <?= htmlspecialchars($sizeVal) ?>
-                    </div>
-                </label>
-            <?php endforeach; ?>
-            <?php if (empty($data['sizes'])): ?>
-                <p class="text-sm text-slate-500 italic">Chưa có dữ liệu</p>
-            <?php endif; ?>
-        </div>
+        
+        <?php
+        $numericSizes = [];
+        $stringSizes = [];
+        foreach ($data['sizes'] ?? [] as $sizeObj) {
+            $sizeVal = is_object($sizeObj) ? ($sizeObj->size ?? '') : ($sizeObj['size'] ?? ''); 
+            if(empty($sizeVal)) continue;
+            
+            // Tách các size được lưu dạng chuỗi (VD: "50, 55, 58") thành mảng các size đơn lẻ
+            $parts = array_map('trim', explode(',', $sizeVal));
+            
+            foreach ($parts as $part) {
+                if (empty($part)) continue;
+                if (is_numeric($part)) {
+                    if (!in_array($part, $numericSizes)) $numericSizes[] = $part;
+                } else {
+                    if (!in_array($part, $stringSizes)) $stringSizes[] = $part;
+                }
+            }
+        }
+        
+        // Sắp xếp lại theo thứ tự để giao diện gọn gàng hơn
+        sort($numericSizes, SORT_NUMERIC);
+        sort($stringSizes);
+        ?>
+
+        <?php if (!empty($stringSizes)): ?>
+            <div class="mb-3">
+                <div class="text-xs text-slate-500 uppercase tracking-wider mb-2 font-semibold">Chữ cái</div>
+                <div class="flex flex-wrap gap-2">
+                    <?php foreach ($stringSizes as $sizeVal): ?>
+                        <?php $isChecked = isset($_GET['size']) && is_array($_GET['size']) && in_array($sizeVal, $_GET['size']); ?>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="size[]" value="<?= htmlspecialchars($sizeVal) ?>" class="peer sr-only" <?= $isChecked ? 'checked' : '' ?>>
+                            <div class="px-3 py-1.5 border border-slate-300 text-sm text-slate-600 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 hover:border-amber-500 transition-colors">
+                                <?= htmlspecialchars($sizeVal) ?>
+                            </div>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($numericSizes)): ?>
+            <div>
+                <div class="text-xs text-slate-500 uppercase tracking-wider mb-2 font-semibold">Số đo</div>
+                <div class="flex flex-wrap gap-2">
+                    <?php foreach ($numericSizes as $sizeVal): ?>
+                        <?php $isChecked = isset($_GET['size']) && is_array($_GET['size']) && in_array($sizeVal, $_GET['size']); ?>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="size[]" value="<?= htmlspecialchars($sizeVal) ?>" class="peer sr-only" <?= $isChecked ? 'checked' : '' ?>>
+                            <div class="px-3 py-1.5 border border-slate-300 text-sm text-slate-600 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 hover:border-amber-500 transition-colors">
+                                <?= htmlspecialchars($sizeVal) ?>
+                            </div>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <?php if (empty($data['sizes'])): ?>
+            <p class="text-sm text-slate-500 italic">Chưa có dữ liệu</p>
+        <?php endif; ?>
     </div>
 
     <!-- Color -->
@@ -97,34 +142,9 @@
                 if(empty($colorVal)) continue;
                 
                 $isChecked = isset($_GET['color']) && is_array($_GET['color']) && in_array($colorVal, $_GET['color']);
-                
-                $bgStyle = '';
-                $bgClass = '';
-                $cValLower = mb_strtolower($colorVal, 'UTF-8');
-                
-                if (strpos($cValLower, 'vàng hồng') !== false || strpos($cValLower, 'rose') !== false) {
-                    $bgClass = 'bg-rose-300';
-                } elseif (strpos($cValLower, 'vàng') !== false || strpos($cValLower, 'gold') !== false) {
-                    $bgClass = 'bg-yellow-400';
-                } elseif (strpos($cValLower, 'bạc') !== false || strpos($cValLower, 'silver') !== false || strpos($cValLower, 'trắng') !== false || strpos($cValLower, 'bạch kim') !== false) {
-                    $bgClass = 'bg-slate-200';
-                } elseif (strpos($cValLower, 'đen') !== false || strpos($cValLower, 'black') !== false) {
-                    $bgClass = 'bg-slate-900';
-                } elseif (strpos($cValLower, 'đỏ') !== false || strpos($cValLower, 'red') !== false) {
-                    $bgClass = 'bg-red-500';
-                } elseif (strpos($cValLower, 'xanh dương') !== false || strpos($cValLower, 'blue') !== false) {
-                    $bgClass = 'bg-blue-500';
-                } elseif (strpos($cValLower, 'xanh lá') !== false || strpos($cValLower, 'green') !== false) {
-                    $bgClass = 'bg-green-500';
-                } elseif (preg_match('/^#[0-9a-fA-F]{3,6}$/', $cValLower)) { // DB lưu dưới dạng mã Hex Color
-                    $bgStyle = "background-color: " . htmlspecialchars($colorVal) . ";";
-                } else {
-                    $bgClass = 'bg-slate-100 border-dashed'; // Mặc định nếu không nhận diện được màu
-                }
                 ?>
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" name="color[]" value="<?= htmlspecialchars($colorVal) ?>" class="w-4 h-4 text-amber-500 rounded border-slate-300 focus:ring-amber-500" <?= $isChecked ? 'checked' : '' ?>>
-                    <div class="w-5 h-5 rounded-full border border-slate-300 <?= $bgClass ?>" style="<?= $bgStyle ?>"></div>
                     <span class="text-slate-600 group-hover:text-amber-600 transition-colors text-sm"><?= htmlspecialchars(ucfirst($colorVal)) ?></span>
                 </label>
             <?php endforeach; ?>
@@ -148,6 +168,10 @@ $(document).ready(function() {
         var formData = form.serialize();
         if(sortVal) {
             formData += '&sort=' + sortVal;
+        }
+        var searchVal = $('#search-input').length ? $('#search-input').val() : '';
+        if(searchVal) {
+            formData += '&search=' + encodeURIComponent(searchVal);
         }
 
         var url = window.location.pathname + '?' + formData;
@@ -209,6 +233,15 @@ $(document).ready(function() {
     
     initPriceSlider(); // Gọi lần đầu khi vừa vào trang
 
+    // Bắt sự kiện người dùng gõ vào ô tìm kiếm mới
+    let searchTimer;
+    $(document).on('input', '#search-input', function() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+            $('#page-input').val(1);
+            $('#filter-form').submit();
+        }, 500); // Tự động tìm sau khi ngừng gõ phím 0.5s
+    });
 
     // Tự động submit form khi người dùng tích/bỏ tích bất kỳ Checkbox hay Radio nào
     $(document).on('change', '#filter-form input:not(#page-input)', function() {

@@ -78,7 +78,7 @@ class OrderModel extends BaseModel {
         $this->db->query("SELECT COUNT(*) as total FROM `order` WHERE memberId = :userId");
         $this->db->bind(':userId', $userId);
         $row = $this->db->single();
-        return $row['total'] ?? 0;
+        return $row ? (is_object($row) ? $row->total : $row['total']) : 0;
     }
 
     // Lấy danh sách Sản phẩm của 1 Đơn hàng
@@ -144,7 +144,7 @@ class OrderModel extends BaseModel {
         if (!empty($status)) $this->db->bind(':status', $status);
         if (!empty($payment)) $this->db->bind(':payment', $payment);
         $row = $this->db->single();
-        return $row['total'] ?? 0;
+        return $row ? (is_object($row) ? $row->total : $row['total']) : 0;
     }
 
     public function getOrderDetails($orderId) {

@@ -40,39 +40,50 @@ class Login extends Controller {
         }
         
         $user = $this->userModel->getUserByUsername($username);
-        if ($user && password_verify($password, $user['pwd_hash'])) {
-            if ($user['role'] === 'locked') {
-                $this->jsonResponse(['error' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.']);
-            }
-
-            $_SESSION['user_id'] = $user['userId'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['user_role'] = $user['role'];
-            $_SESSION['last_activity'] = time();
+        if ($user) {
+            if (is_object($user)) $user = (array)$user;
             
-            // Dong bo cart session -> db
-            if ($user['role'] !== ROLE_ADMIN) {
-                $cartModel = $this->model('CartModel');
-                if (!empty($_SESSION['cart'])) {
-                    foreach ($_SESSION['cart'] as $item) {
-                        $existingItem = $cartModel->getCartItem($user['userId'], $item['productId'], $item['size']);
-                        if ($existingItem) {
-                            $cartModel->updateItemQuantity($user['userId'], $item['productId'], $item['size'], $existingItem['quantity'] + $item['quantity']);
-                        } else {
-                            $cartModel->addItem($user['userId'], $item['productId'], $item['size'], $item['quantity']);
-                        }
-                    }
-                    unset($_SESSION['cart']);
+            if (password_verify($password, $user['pwd_hash'])) {
+                if ($user['role'] === 'locked') {
+                    $this->jsonResponse(['error' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.']);
                 }
-                $_SESSION['cart_total_items'] = $cartModel->getTotalItems($user['userId']);
-            }
 
-            $redirectUrl = ($user['role'] === ROLE_ADMIN) ? '/admin/Dashboard' : '/Home';
-            if ($user['role'] !== ROLE_ADMIN && !empty($_SESSION['redirect_after_login'])) {
-                $redirectUrl = $_SESSION['redirect_after_login'];
-                unset($_SESSION['redirect_after_login']);
+                $_SESSION['user_id'] = $user['userId'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['user_role'] = $user['role'];
+                $_SESSION['last_activity'] = time();
+                
+                // Dong bo cart session -> db
+                if ($user['role'] !== ROLE_ADMIN) {
+                    try {
+                        $cartModel = $this->model('CartModel');
+                        if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+                            foreach ($_SESSION['cart'] as $item) {
+                                if (!is_array($item) || !isset($item['productId'])) continue;
+                                
+                                $existingItem = $cartModel->getCartItem($user['userId'], $item['productId'], $item['size']);
+                                if ($existingItem) {
+                                    $existingQty = is_object($existingItem) ? $existingItem->quantity : $existingItem['quantity'];
+                                    $cartModel->updateItemQuantity($user['userId'], $item['productId'], $item['size'], $existingQty + $item['quantity']);
+                                } else {
+                                    $cartModel->addItem($user['userId'], $item['productId'], $item['size'], $item['quantity']);
+                                }
+                            }
+                            unset($_SESSION['cart']);
+                        }
+                        $_SESSION['cart_total_items'] = $cartModel->getTotalItems($user['userId']);
+                    } catch (Exception $e) {
+                        error_log("Lỗi đồng bộ giỏ hàng: " . $e->getMessage());
+                    }
+                }
+
+                $redirectUrl = ($user['role'] === ROLE_ADMIN) ? '/admin/Dashboard' : '/Home';
+                if ($user['role'] !== ROLE_ADMIN && !empty($_SESSION['redirect_after_login'])) {
+                    $redirectUrl = $_SESSION['redirect_after_login'];
+                    unset($_SESSION['redirect_after_login']);
+                }
+                $this->jsonResponse(['success' => true, 'redirect' => URLROOT . $redirectUrl]);
             }
-            $this->jsonResponse(['success' => true, 'redirect' => URLROOT . $redirectUrl]);
         }
         
         $this->jsonResponse(['error' => 'Sai tài khoản hoặc mật khẩu']);

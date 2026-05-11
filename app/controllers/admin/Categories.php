@@ -9,8 +9,7 @@ class Categories extends Controller {
     }
 
     public function index() {
-        // Phân trang bằng Database
-        $limit = 10;
+        $limit = 5;
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $offset = ($page - 1) * $limit;
 
@@ -20,6 +19,7 @@ class Categories extends Controller {
         $categories = $this->categoryModel->getCategoriesPaginated($limit, $offset);
 
         $this->view('admin/category/index', [
+            'title' => 'Quản lý Danh mục',
             'categories' => $categories,
             'currentPage' => $page,
             'totalPages' => $totalPages,
@@ -90,7 +90,7 @@ class Categories extends Controller {
                 }
             }
         }
-        $this->view('admin/category/create', ['error' => $error]);
+        $this->view('admin/category/create', ['title' => 'Thêm Danh mục', 'error' => $error]);
     }
 
     public function edit($id = null) {
@@ -132,7 +132,7 @@ class Categories extends Controller {
                 }
             }
         }
-        $this->view('admin/category/edit', ['category' => $category, 'error' => $error]);
+        $this->view('admin/category/edit', ['title' => 'Sửa Danh mục', 'category' => $category, 'error' => $error]);
     }
 
     public function toggleHide($id = null) {

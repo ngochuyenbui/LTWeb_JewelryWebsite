@@ -31,6 +31,7 @@ class Carts extends Controller {
         }
 
         $this->view('admin/carts/index', [
+            'title' => 'Quản lý Giỏ hàng',
             'carts' => $carts,
             'currentPage' => $page,
             'totalPages' => $totalPages

@@ -28,7 +28,7 @@ class UserAdminModel extends BaseModel {
             $this->db->bind(':search', "%$search%");
         }
         $row = $this->db->single();
-        return $row['total'] ?? 0;
+        return $row ? (is_object($row) ? $row->total : $row['total']) : 0;
     }
 
     public function getUserDetails($userId) {

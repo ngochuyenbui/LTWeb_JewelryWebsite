@@ -22,7 +22,7 @@
                 <?php endif; ?>
 
                 <form action="<?= URLROOT ?>/AdminArticle/store" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="title" class="col-form-label">Tiêu đề bài viết <span class="text-danger">*</span></label>
                         <input class="form-control <?= !empty($errors['title']) ? 'is-invalid' : '' ?>" 
                                type="text" id="title" name="title" 
@@ -32,7 +32,7 @@
                         <?php endif; ?>
                     </div>
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="cateId" class="col-form-label">Danh mục <span class="text-danger">*</span></label>
                         <select class="custom-select <?= !empty($errors['cateId']) ? 'is-invalid' : '' ?>" name="cateId" required>
                             <option value="">-- Chọn danh mục --</option>
@@ -48,7 +48,7 @@
                         <?php endif; ?>
                     </div>
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="thumbnail" class="col-form-label">Ảnh đại diện (Thumbnail)</label>
                         <input class="form-control <?= !empty($errors['thumbnail']) ? 'is-invalid' : '' ?>" 
                                type="file" id="thumbnail" name="thumbnail" accept="image/*">
@@ -58,7 +58,7 @@
                         <?php endif; ?>
                     </div>
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="content" class="col-form-label">Nội dung bài viết <span class="text-danger">*</span></label>
                         <textarea class="form-control <?= !empty($errors['content']) ? 'is-invalid' : '' ?>" 
                                   id="content" name="content" rows="10"><?= htmlspecialchars($old['content'] ?? '') ?></textarea>

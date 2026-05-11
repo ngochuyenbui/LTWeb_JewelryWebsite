@@ -35,12 +35,12 @@ class ProductModel extends BaseModel{
         
         // Kích thước (Size)
         if (!empty($filters['size']) && is_array($filters['size'])) {
-            $sizes = [];
+            $sizeConditions = [];
             foreach ($filters['size'] as $index => $size) {
-                $sizes[] = ":size_$index";
-                $params[":size_$index"] = $size;
+                $sizeConditions[] = "FIND_IN_SET(:size_$index, REPLACE(size, ' ', '')) > 0";
+                $params[":size_$index"] = trim($size);
             }
-            $sql .= " AND size IN (" . implode(',', $sizes) . ")";
+            $sql .= " AND (" . implode(' OR ', $sizeConditions) . ")";
         }
         
         // Màu sắc (Color)
@@ -106,12 +106,12 @@ class ProductModel extends BaseModel{
         }
         
         if (!empty($filters['size']) && is_array($filters['size'])) {
-            $sizes = [];
+            $sizeConditions = [];
             foreach ($filters['size'] as $index => $size) {
-                $sizes[] = ":size_$index";
-                $params[":size_$index"] = $size;
+                $sizeConditions[] = "FIND_IN_SET(:size_$index, REPLACE(size, ' ', '')) > 0";
+                $params[":size_$index"] = trim($size);
             }
-            $sql .= " AND size IN (" . implode(',', $sizes) . ")";
+            $sql .= " AND (" . implode(' OR ', $sizeConditions) . ")";
         }
         
         if (!empty($filters['color']) && is_array($filters['color'])) {
@@ -128,7 +128,7 @@ class ProductModel extends BaseModel{
             $this->db->bind($key, $val);
         }
         $row = $this->db->single();
-        return $row ? (int)$row['total'] : 0;
+        return $row ? (int)(is_object($row) ? $row->total : $row['total']) : 0;
     }
 
     public function getCategories(){
@@ -149,7 +149,13 @@ class ProductModel extends BaseModel{
     public function getPriceRange() {
         $this->db->query("SELECT MIN(price) as min_price, MAX(price) as max_price FROM product WHERE is_deleted = 0");
         $result = $this->db->single();
-        return $result ?: ['min_price' => 0, 'max_price' => 50000000];
+        if ($result) {
+            return [
+                'min_price' => is_object($result) ? $result->min_price : $result['min_price'],
+                'max_price' => is_object($result) ? $result->max_price : $result['max_price']
+            ];
+        }
+        return ['min_price' => 0, 'max_price' => 50000000];
     }
 
     public function getProductsOfCategory($cateId){

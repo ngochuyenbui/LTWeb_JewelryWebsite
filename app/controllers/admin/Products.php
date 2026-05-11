@@ -20,7 +20,7 @@ class Products extends Controller {
         ];
 
         // Phân trang
-        $limit = 10;
+        $limit = 6;
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $offset = ($page - 1) * $limit;
 
@@ -33,6 +33,7 @@ class Products extends Controller {
         $sizes = $this->productModel->getSizes();
         $priceRange = $this->productModel->getPriceRange();
         $this->view('admin/product/index', [
+            'title' => 'Quản lý Sản phẩm',
             'products' => $products,
             'categories' => $categories,
             'colors' => $colors,
@@ -159,7 +160,7 @@ class Products extends Controller {
         }
         
         $categories = $this->productModel->getCategories();
-        $this->view('admin/product/create', ['categories' => $categories, 'error' => $error]);
+        $this->view('admin/product/create', ['title' => 'Thêm Sản phẩm', 'categories' => $categories, 'error' => $error]);
     }
 
     public function edit($id) {
@@ -265,7 +266,7 @@ class Products extends Controller {
         }
         $categories = $this->productModel->getCategories();
         $images = $this->productModel->getProductImages($id); // Lấy danh sách ảnh hiển thị ra View
-        $this->view('admin/product/edit', ['product' => $product, 'categories' => $categories, 'images' => $images, 'error' => $error]);
+        $this->view('admin/product/edit', ['title' => 'Sửa Sản phẩm', 'product' => $product, 'categories' => $categories, 'images' => $images, 'error' => $error]);
     }
 
     public function outOfStock($id = null) {

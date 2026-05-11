@@ -57,7 +57,7 @@ class Register extends Controller {
         $_SESSION['otp_exp'] = time() + 300;
 
         if(Mail::sendOTP($data['email'], $otp)) {
-            $this->jsonResponse(['redirectUrl' => URLROOT . '/Register/verify_email']);
+            $this->jsonResponse(['redirect' => URLROOT . '/Register/verify_email']);
         } else {
             $this->jsonResponse(['error' => 'Đăng ký thất bại. Vui lòng thử lại sau.']);
         }

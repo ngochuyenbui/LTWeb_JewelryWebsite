@@ -119,13 +119,26 @@ class Cart extends Controller {
             $items = $_SESSION['cart'] ?? [];
         }
 
+        $hasUnavailableItems = false;
+
         if (!empty($items)) {
             foreach ($items as $key => $item) {
                 $product = $this->productModel->getProductById($item['productId']);
                 if ($product) {
                     if (is_array($product)) $product = (object)$product;
-                    $itemTotal = $product->price * $item['quantity'];
-                    $totalPrice += $itemTotal;
+                    
+                    $isDeleted = isset($product->is_deleted) ? (bool)$product->is_deleted : false;
+                    $stock = (int)$product->stock_quantity;
+                    
+                    $isAvailable = !$isDeleted && $stock > 0;
+                    
+                    if ($isAvailable) {
+                        $itemTotal = $product->price * $item['quantity'];
+                        $totalPrice += $itemTotal;
+                    } else {
+                        $itemTotal = 0;
+                        $hasUnavailableItems = true;
+                    }
                     
                     $cartItems[] = [
                         'key' => $key,
@@ -136,7 +149,26 @@ class Cart extends Controller {
                         'quantity' => $item['quantity'],
                         'size' => $item['size'],
                         'itemTotal' => $itemTotal,
-                        'stock' => $product->stock_quantity
+                        'stock' => $stock,
+                        'isDeleted' => $isDeleted,
+                        'isAvailable' => $isAvailable,
+                        'stockWarning' => $stock > 0 && $stock < $item['quantity']
+                    ];
+                } else {
+                    $hasUnavailableItems = true;
+                    $cartItems[] = [
+                        'key' => $key,
+                        'productId' => $item['productId'],
+                        'name' => 'Sản phẩm không còn tồn tại',
+                        'image' => 'https://placehold.co/100x100?text=N/A',
+                        'price' => 0,
+                        'quantity' => $item['quantity'],
+                        'size' => $item['size'],
+                        'itemTotal' => 0,
+                        'stock' => 0,
+                        'isDeleted' => true,
+                        'isAvailable' => false,
+                        'stockWarning' => false
                     ];
                 }
             }
@@ -147,10 +179,12 @@ class Cart extends Controller {
         $finalTotal = $totalPrice + $shippingFee;
 
         $this->view('client/cart/index', [
+            'title' => 'Giỏ hàng',
             'cartItems' => $cartItems,
             'totalPrice' => $totalPrice,
             'shippingFee' => $shippingFee,
-            'finalTotal' => $finalTotal
+            'finalTotal' => $finalTotal,
+            'hasUnavailableItems' => $hasUnavailableItems
         ]);
     }
 
@@ -348,6 +382,7 @@ class Cart extends Controller {
         $finalTotal = $totalPrice + $shippingFee;
 
         $this->view('client/cart/checkout', [
+            'title' => 'Thanh toán',
             'cartItems' => $cartItems,
             'totalPrice' => $totalPrice,
             'shippingFee' => $shippingFee,

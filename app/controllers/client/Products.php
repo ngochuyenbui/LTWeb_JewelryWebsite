@@ -14,6 +14,7 @@ class Products extends Controller {
         $sizes = $this->productModel->getSizes();
         $colors = $this->productModel->getColors();
         $filters = [
+            'search' => isset($_GET['search']) ? trim($_GET['search']) : null,
             'category' => $_GET['category'] ?? null,
             'min_price' => $_GET['min_price'] ?? null,
             'max_price' => $_GET['max_price'] ?? null,
@@ -23,7 +24,7 @@ class Products extends Controller {
         ];
 
         // Pagination logic
-        $limit = 15; // 3 cột * 3 hàng
+        $limit = 6; // 3 cột * 3 hàng
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $offset = ($page - 1) * $limit;
 
@@ -34,6 +35,7 @@ class Products extends Controller {
         $priceRange = $this->productModel->getPriceRange();
 
         $data = [
+            'title' => 'Sản phẩm',
             'categories' => $categories,
             'sizes' => $sizes,
             'colors' => $colors,
@@ -68,6 +70,7 @@ class Products extends Controller {
         $comments = $this->commentModel->getCommentsByContentId($contentId);
 
         $this->view('client/product/ProductDetail', [
+            'title' => 'Sản phẩm',
             'product' => $product,
             'images' => $images,
             'relatedProducts' => $relatedProducts,

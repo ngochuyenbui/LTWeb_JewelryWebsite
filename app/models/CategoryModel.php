@@ -38,13 +38,13 @@ class CategoryModel extends BaseModel {
         $this->db->query("SELECT COUNT(*) as total FROM product WHERE cateId = :cateId AND is_deleted = 0");
         $this->db->bind(':cateId', $cateId);
         $row = $this->db->single();
-        if ($row) $total += (int)$row['total'];
+        if ($row) $total += (int)(is_object($row) ? $row->total : $row['total']);
 
         try {
             $this->db->query("SELECT COUNT(*) as total FROM article WHERE cateId = :cateId");
             $this->db->bind(':cateId', $cateId);
             $row2 = $this->db->single();
-            if ($row2) $total += (int)$row2['total'];
+            if ($row2) $total += (int)(is_object($row2) ? $row2->total : $row2['total']);
         } catch (PDOException $e) {}
 
         return $total;
@@ -60,7 +60,7 @@ class CategoryModel extends BaseModel {
     public function getTotalCategories() {
         $this->db->query("SELECT COUNT(*) as total FROM category");
         $row = $this->db->single();
-        return $row['total'] ?? 0;
+        return $row ? (int)(is_object($row) ? $row->total : $row['total']) : 0;
     }
 
     public function getCategoriesPaginated($limit, $offset) {
