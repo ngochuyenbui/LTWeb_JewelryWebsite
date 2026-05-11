@@ -1,181 +1,211 @@
-<h2>Đăng ký tài khoản</h2>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-<p id="error"><?= $data['error'] ?? ''?></p>
+<section class="min-h-[90vh] flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl border border-slate-100">
+        <div>
+            <h2 class="text-center text-3xl font-extrabold text-slate-900">
+                Tạo tài khoản mới
+            </h2>
+            <p class="mt-2 text-center text-sm text-slate-600">
+                Gia nhập thế giới trang sức cao cấp Aurelia
+            </p>
+        </div>
 
-<form id="registerForm" action="<?= URLROOT ?>/Register" method="POST">
-    <div>
-        <label for="username">Tên đăng nhập:</label><br>
-        <input type="text" name="username" id="username" autocomplete="username" value="<?= $data['username'] ?? '' ?>" required>
-        <small id="username_msg" style="display: block; height: 15px; font-size: 12px;"></small>
+        <div id="error" class="text-red-500 text-sm text-center font-medium"><?= $data['error'] ?? ''?></div>
+
+        <form id="registerForm" class="mt-8 space-y-5" action="<?= URLROOT ?>/Auth/register" method="POST">
+            <div>
+                <label for="username" class="block text-sm font-medium text-slate-700">Tên đăng nhập</label>
+                <input type="text" name="username" id="username" autocomplete="username" value="<?= $data['username'] ?? '' ?>" required
+                       class="mt-1 block w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm transition-all">
+                <small id="username_msg" class="block mt-1 text-xs h-4"></small>
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-slate-700">Email</label>
+                <input type="email" name="email" id="email" autocomplete="email" value="<?= $data['email'] ?? '' ?>" required
+                       class="mt-1 block w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm transition-all">
+                <small id="email_msg" class="block mt-1 text-xs h-4"></small>
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-slate-700">Mật khẩu</label>
+                <input type="password" name="password" id="password" autocomplete="new-password" required
+                       class="mt-1 block w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm transition-all">
+                <small id="password_msg" class="block mt-1 text-xs h-4"></small>
+            </div>
+
+            <div>
+                <label for="confirm_password" class="block text-sm font-medium text-slate-700">Xác nhận mật khẩu</label>
+                <input type="password" name="confirm_password" id="confirm_password" required
+                       class="mt-1 block w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm transition-all">
+                <small id="confirm_msg" class="block mt-1 text-xs h-4"></small>
+            </div>
+
+            <div class="pt-2">
+                <button type="submit" id="btn-register" 
+                        class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-all shadow-lg uppercase tracking-wider">
+                    Đăng ký ngay
+                </button>
+            </div>
+
+            <p class="text-center text-sm text-slate-600">
+                Đã có tài khoản? 
+                <a href="<?= URLROOT ?>/Auth/login" class="font-bold text-amber-600 hover:text-amber-500 transition-colors">Đăng nhập ngay</a>
+            </p>
+        </form>
     </div>
-
-    <div>
-        <label for="email">Email:</label><br>
-        <input type="email" name="email" id="email" autocomplete="email" value="<?= $data['email'] ?? '' ?>" required>
-        <small id="email_msg" style="display: block; height: 15px; font-size: 12px;"></small>
-    </div>
-
-    <div>
-        <label for="password">Mật khẩu:</label><br>
-        <input type="password" name="password" id="password" autocomplete="new-password" required>
-        <small id="password_msg" style="display: block; height: 15px; font-size: 12px;"></small>
-
-    </div>
-
-    <div>
-        <label for="confirm_password">Xác nhận mật khẩu:</label><br>
-        <input type="password" name="confirm_password" id="confirm_password" required>
-        <small id="confirm_msg" style="display: block; height: 15px; font-size: 12px;"></small>
-    </div>
-
-    <br>
-    <button type="submit" id="btn-register">Đăng ký</button>
-    <p>Đã có tài khoản? <a href="<?= URLROOT ?>/Login">Đăng nhập ngay</a></p>
-</form>
+</section>
 
 <script>
-    $(function() {
-        let validation = {
-            username: false,
-            email: false,
-            password: false,
-            confirm: false
-        };
+    let validation = {
+        username: false,
+        email: false,
+        password: false,
+        confirm: false
+    };
 
-        async function checkValue(field, value, msgElementId) {
-            const msgElement = $(`#${msgElementId}`);
+    async function checkValue(field, value, msgElementId) {
+        const msgElement = document.getElementById(msgElementId);
+        if (!value) {
+            msgElement.innerText = "";
+            return;
+        }
 
-            // Client-side regex validation
-            if (field === 'username') {
-                const regex = /^[a-zA-Z0-9_]{3,50}$/;
-                if (!regex.test(value)) {
-                    msgElement.text("Username 3-50 ký tự, không chứa khoảng trắng hoặc ký tự đặc biệt!").css("color", "red");
-                    validation.username = false;
-                    return;
-                }
-            }
-
-            if (field === 'email') {
-                const regex = /\S+@\S+\.\S+/;
-                if (!regex.test(value)) {
-                    msgElement.text("Email không hợp lệ!").css("color", "red");
-                    validation.email = false;
-                    return;
-                }
-            }
-
-            // Server-side check for existence
-            const endpoint = field === 'username' ? 'checkUsername' : 'checkEmail';
-            try {
-                const data = await $.ajax({
-                    url: `<?= URLROOT ?>/Register/${endpoint}`,
-                    type: 'POST',
-                    data: {
-                        [field]: value
-                    },
-                    dataType: 'json'
-                });
-
-                if (data.exists) {
-                    msgElement.text(`${field === 'username' ? 'Tên đăng nhập' : 'Email'} đã tồn tại!`).css('color', 'red');
-                    validation[field] = false;
-                } else {
-                    msgElement.text("");
-                    validation[field] = true;
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                msgElement.text("Lỗi khi kiểm tra. Vui lòng thử lại.").css('color', 'red');
+        if (field === 'username') {
+            const regex = /^[a-zA-Z0-9_]{3,50}$/;
+            if (!regex.test(value)) {
+                msgElement.innerText = "3-50 ký tự, không chứa ký tự đặc biệt!";
+                msgElement.className = "block mt-1 text-xs h-4 text-red-500";
+                validation.username = false;
+                return;
             }
         }
 
-        let usernameTimer;
-        let emailTimer;
-        const delay = 500;
-
-        $("#username").on('input', function() {
-            clearTimeout(usernameTimer);
-            const value = this.value;
-            usernameTimer = setTimeout(() => {
-                checkValue('username', value, 'username_msg');
-            }, delay);
-        });
-
-        $("#email").on('input', function() {
-            clearTimeout(emailTimer);
-            const value = this.value;
-            emailTimer = setTimeout(() => {
-                checkValue('email', value, 'email_msg');
-            }, delay);
-        });
-
-        $("#password").on('input', function() {
-            if (this.value.length < 6) {
-                $("#confirm_password").prop('disabled', true);
-                $("#password_msg").text("Mật khẩu phải có ít nhất 6 ký tự!").css('color', 'red');
-                validation.password = false;
-            } else {
-                $("#confirm_password").prop('disabled', false);
-                $("#password_msg").text("");
-                validation.password = true;
-            }
-            // Re-validate confirm password field
-            $("#confirm_password").trigger('input');
-        });
-
-        $("#confirm_password").on('input', function() {
-            const pass = $("#password").val();
-            const msg = $("#confirm_msg");
-            if (this.value !== pass) {
-                msg.text("Mật khẩu xác nhận không khớp!").css('color', 'red');
-                validation.confirm = false;
-            } else {
-                msg.text("");
-                validation.confirm = true;
-            }
-        });
-
-        $("#registerForm").submit(async function(e) {
-            e.preventDefault();
-            const btn = $("#btn-register").prop('disabled', true);
-
-            // Manually trigger all validations and wait for them to complete
-            await checkValue('username', $('#username').val(), 'username_msg');
-            await checkValue('email', $('#email').val(), 'email_msg');
-            $('#password').trigger('input');
-
-            const isReady = Object.values(validation).every(val => val === true);
-
-            if (!isReady) {
-                $("#error").text("Vui lòng kiểm tra lại thông tin đăng ký!");
-                btn.prop('disabled', false);
+        if (field === 'email') {
+            const regex=/\S+@\S+\.\S+/;
+            if (!regex.test(value)) {
+                msgElement.innerText = "Email không hợp lệ!";
+                msgElement.className = "block mt-1 text-xs h-4 text-red-500";
+                validation.email = false;
                 return;
-            } else {
-                $("#error").text("");
             }
+        }
 
-            let formData = new FormData(this);
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(data, status, xhr) {
-                    const redirectUrl = xhr.getResponseHeader('Location') || (data && data.redirectUrl);
-                    if (redirectUrl) {
-                        window.location.href = redirectUrl;
-                    } else if (data && data.error) {
-                        $('#error').text(data.error);
-                        btn.prop('disabled', false);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                    $('#error').text("Đăng ký thất bại. Vui lòng thử lại sau.");
-                    btn.prop('disabled', false);
-                }
+        try {
+            let formData = new FormData();
+            formData.append(field, value);
+            let endpoint = field === 'username' ? 'checkUsername' : 'checkEmail';
+            let response = await fetch(`<?= URLROOT ?>/Auth/${endpoint}`, {
+                method: 'POST',
+                body: formData
             });
-        });
+
+            let data = await response.json();
+            if (data.exists) {
+                msgElement.innerText = `${field === 'username' ? 'Tên đăng nhập' : 'Email'} đã tồn tại!`;
+                msgElement.className = "block mt-1 text-xs h-4 text-red-500";
+                validation[field] = false;
+            } else {
+                msgElement.innerText = "Hợp lệ";
+                msgElement.className = "block mt-1 text-xs h-4 text-green-500";
+                validation[field] = true;
+            }            
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    let timer;
+    let delay = 500;
+
+    document.getElementById('username').addEventListener('input', function() {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            checkValue('username', this.value, 'username_msg');
+        }, delay);
+    });
+
+    document.getElementById('email').addEventListener('input', function() {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            checkValue('email', this.value, 'email_msg');
+        }, delay);
+    });
+
+    document.getElementById('password').addEventListener('input', function(){
+        const msg = document.getElementById('password_msg');
+        if (this.value.length < 6) {
+            document.getElementById('confirm_password').disabled = true;
+            msg.innerText = "Ít nhất 6 ký tự!";
+            msg.className = "block mt-1 text-xs h-4 text-red-500";
+            validation.password = false;
+        } else {
+            document.getElementById('confirm_password').disabled = false;
+            msg.innerText = "Mật khẩu mạnh";
+            msg.className = "block mt-1 text-xs h-4 text-green-500";
+            validation.password = true;
+        }
+    });
+
+    document.getElementById('confirm_password').addEventListener('input', function() {
+        const pass = document.getElementById('password').value;
+        const msg = document.getElementById('confirm_msg');
+        
+        if (this.value !== pass) {
+            msg.innerText = "Mật khẩu không khớp!";
+            msg.className = "block mt-1 text-xs h-4 text-red-500";
+            validation.confirm = false;
+        } else {
+            msg.innerText = "Hợp lệ";
+            msg.className = "block mt-1 text-xs h-4 text-green-500";
+            validation.confirm = true;
+        }
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-register');
+        btn.disabled = true;
+        
+        const isReady = Object.values(validation).every(val => val === true);
+        if (!isReady) {
+            document.getElementById('error').innerText = "Vui lòng kiểm tra lại thông tin!";
+            btn.disabled = false;
+            return;
+        }
+
+        btn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+        
+        let formData = new FormData(this);
+        try {
+            let response = await fetch(this.action, {
+                method: 'POST',
+                body: formData
+            });
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                // If not redirected, check for error JSON
+                try {
+                    let result = await response.json();
+                    if (result.error) {
+                        document.getElementById('error').innerText = result.error;
+                        btn.disabled = false;
+                        btn.innerText = 'ĐĂNG KÝ NGAY';
+                    }
+                } catch(e) {
+                    // Fallback
+                    btn.disabled = false;
+                    btn.innerText = 'ĐĂNG KÝ NGAY';
+                }
+            }
+        } catch (error) {
+            console.log('Error:', error);
+            document.getElementById('error').innerText= "Đăng ký thất bại. Vui lòng thử lại sau.";
+            btn.disabled = false;
+            btn.innerText = 'ĐĂNG KÝ NGAY';
+        }
     });
 </script>
