@@ -1,0 +1,4 @@
+request
+beautifulsoup4
+pandas
+#chạy `pip install -r requirements.txt` để tải các thư viên

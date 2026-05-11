@@ -4,7 +4,7 @@ if (!isset($contentView) || !file_exists($contentView)) {
 }
 
 $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
-$publicBaseUrl = rtrim(dirname($scriptName), '/');
+$publicBaseUrl = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
 $publicBaseUrl = $publicBaseUrl === '' ? '/' : $publicBaseUrl;
 
 $appBaseUrl = preg_replace('#/public$#', '', $publicBaseUrl);
