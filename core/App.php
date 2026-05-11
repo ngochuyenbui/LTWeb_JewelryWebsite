@@ -15,6 +15,13 @@ class App {
             unset($url[0]);
             $url = array_values($url);
         }
+        // Kiểm tra nếu URL đang truy cập vào thư mục client
+        elseif (isset($url[0]) && strtolower($url[0]) === 'client') {
+            $controllerDir .= 'client/';
+            $this->controller = 'Products'; // Controller mặc định của khu vực client
+            unset($url[0]);
+            $url = array_values($url);
+        }
 
         // Kiểm tra Controller tồn tại
         if (isset($url[0]) && file_exists($controllerDir . ucfirst($url[0]) . ".php")) {
