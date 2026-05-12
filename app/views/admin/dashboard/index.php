@@ -5,7 +5,7 @@
                 <div class="card-body">
                     <h4 class="header-title">Tổng quan (Dashboard)</h4>
                     <p>Chào mừng Admin quay trở lại!</p>
-
+                    
                     <!-- Thống kê nhanh -->
                     <div class="row mt-4">
                         <div class="col-md-4 mb-3">
@@ -77,11 +77,11 @@
                                             </thead>
                                             <tbody>
                                                 <?php foreach ($data['recentOrders'] ?? [] as $order): ?>
-                                                    <?php
+                                                    <?php 
                                                     $o_id = is_object($order) ? $order->orderId : $order['orderId'];
                                                     $o_user = is_object($order) ? $order->fullname : $order['fullname'];
                                                     $o_status = is_object($order) ? $order->status : $order['status'];
-
+                                                    
                                                     $statusBadges = [
                                                         'pending' => 'bg-warning text-dark', 'processing' => 'bg-info text-white',
                                                         'shipping' => 'bg-primary text-white', 'delivered' => 'bg-success text-white', 'cancelled' => 'bg-danger text-white'
@@ -107,7 +107,7 @@
                                 </div>
                             </div>
                         </div>
-
+                        
                         <!-- Sản phẩm mới thêm -->
                         <div class="col-xl-6 col-lg-12 mb-4">
                             <div class="card border-light shadow-sm h-100">
@@ -128,7 +128,7 @@
                                             </thead>
                                             <tbody>
                                                 <?php foreach ($data['recentProducts'] ?? [] as $product): ?>
-                                                    <?php
+                                                    <?php 
                                                     $p_id = is_object($product) ? ($product->productId ?? '') : ($product['productId'] ?? '');
                                                     $p_sku = is_object($product) ? ($product->sku ?? '') : ($product['sku'] ?? '');
                                                     $p_name = is_object($product) ? ($product->name ?? '') : ($product['name'] ?? '');

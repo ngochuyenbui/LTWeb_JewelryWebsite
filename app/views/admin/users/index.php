@@ -4,7 +4,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="header-title text-primary">Quản lý Khách hàng</h4>
-
+                    
                     <?php if (isset($_SESSION['success'])): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <?= $_SESSION['success'] ?>
@@ -20,7 +20,7 @@
                         </div>
                         <?php unset($_SESSION['error']); ?>
                     <?php endif; ?>
-
+                    
                     <!-- Search Form -->
                     <form method="GET" action="<?= URLROOT ?>/admin/Users" class="mb-4">
                         <div class="input-group" style="max-width: 500px;">
@@ -65,7 +65,7 @@
                                         </td>
                                         <td>
                                             <button type="button" class="btn btn-info btn-sm text-white btn-view-detail" data-id="<?= $u_id ?>" data-bs-toggle="modal" data-bs-target="#userModal" title="Xem chi tiết"><i class="ti-eye"></i></button>
-
+                                            
                                             <form action="<?= URLROOT ?>/admin/Users/resetPassword/<?= $u_id ?>" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn đặt lại mật khẩu của người dùng này về mặc định không?');">
                                                 <button type="submit" class="btn btn-warning btn-sm text-white" title="Reset Mật khẩu"><i class="ti-key"></i></button>
                                             </form>
@@ -92,8 +92,8 @@
                     </div>
 
                     <!-- Phân trang -->
-                    <?php
-                    if (($data['totalPages'] ?? 0) > 1):
+                    <?php 
+                    if (($data['totalPages'] ?? 0) > 1): 
                         $searchParam = urlencode($data['search'] ?? '');
                     ?>
                     <nav aria-label="Page navigation" class="mt-4">
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function() {
             const userId = this.getAttribute('data-id');
             modalContent.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div></div>';
-
+            
             fetch('<?= URLROOT ?>/admin/Users/detail/' + userId)
                 .then(response => response.text())
                 .then(html => { modalContent.innerHTML = html; })

@@ -18,7 +18,7 @@
                                 <input type="text" class="form-control" id="sku" name="sku" required>
                             </div>
                         </div>
-
+                        
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <label for="cateId" class="fw-bold">Danh mục <span class="text-danger">(*)</span></label>
@@ -70,7 +70,7 @@
                                 </div>
                                 <input type="text" class="form-control" id="size_custom" name="size_custom" placeholder="Khác (VD: 55, 56,...)">
                             </div>
-
+                            
                         </div>
                         <div class="mb-3">
                                 <label for="material" class="fw-bold">Chất liệu</label>
@@ -80,7 +80,7 @@
                                 <label for="size_dim" class="fw-bold">Kích cỡ chi tiết</label>
                                 <input type="text" class="form-control" id="size_dim" name="size_dim" >
                             </div>
-                        <div class="mb-3">
+                        <div class="mb-3">                           
                                 <label for="usage_info" class="fw-bold">Cách bảo quản</label>
                                 <input type="text" class="form-control" id="usage_info" name="usage_info">
                         </div>
@@ -98,7 +98,7 @@
                             </div>
                         </div>
 
-
+                        
 
                         <button class="btn btn-success" type="submit"><i class="ti-save"></i> Lưu sản phẩm</button>
                         <a href="<?= URLROOT ?>/admin/Products" class="btn btn-secondary"><i class="ti-back-left"></i> Quay lại</a>
@@ -153,7 +153,7 @@
         if (!files || files.length === 0) return;
 
         let currentCount = dataTransfer.files.length;
-
+        
         for (let i = 0; i < files.length; i++) {
             if (currentCount >= 5) {
                 if (typeof Swal !== 'undefined') {
@@ -166,10 +166,10 @@
             dataTransfer.items.add(files[i]);
             currentCount++;
         }
-
+        
         document.getElementById('real-images-input').files = dataTransfer.files;
-        document.getElementById('images').value = '';
-
+        document.getElementById('images').value = ''; 
+        
         renderPreviews();
     }
 
@@ -189,15 +189,15 @@
         const container = document.getElementById('new-image-preview-container');
         if (!container) return;
         container.innerHTML = '';
-
+        
         for (let i = 0; i < dataTransfer.files.length; i++) {
             const file = dataTransfer.files[i];
-
+            
             let div = document.createElement('div');
             div.className = 'position-relative border rounded p-1 bg-white';
             div.style.width = '100px';
             div.style.height = '100px';
-
+            
             let isChecked = i === 0 ? 'checked' : '';
 
             div.innerHTML = `

@@ -4,7 +4,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="header-title text-primary">Quản lý Đơn hàng</h4>
-
+                    
                     <?php if (isset($_SESSION['success'])): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <strong>Thành công!</strong> <?= htmlspecialchars($_SESSION['success']) ?>
@@ -12,7 +12,7 @@
                         </div>
                         <?php unset($_SESSION['success']); ?>
                     <?php endif; ?>
-
+                    
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="text-muted">Đang hiển thị: <?= count($data['orders'] ?? []) ?> / <?= $data['totalItems'] ?? 0 ?> đơn hàng</span>
                     </div>
@@ -35,8 +35,8 @@
                                 <label class="fw-bold">Phương thức thanh toán</label>
                                 <select name="payment" class="form-control" style="height: auto;">
                                     <option value="">-- Tất cả --</option>
-                                    <?php
-                                    $paymentMethods = ['COD', 'BANK'];
+                                    <?php 
+                                    $paymentMethods = ['COD', 'BANK']; 
                                     foreach ($paymentMethods as $pm): ?>
                                         <option value="<?= $pm ?>" <?= (($data['filters']['payment'] ?? '') == $pm) ? 'selected' : '' ?>><?= $pm ?></option>
                                     <?php endforeach; ?>
@@ -106,8 +106,8 @@
                     </div>
 
                     <!-- Phân trang -->
-                    <?php
-                    if (($data['totalPages'] ?? 0) > 1):
+                    <?php 
+                    if (($data['totalPages'] ?? 0) > 1): 
                         $f_status = urlencode($data['filters']['status'] ?? '');
                         $f_payment = urlencode($data['filters']['payment'] ?? '');
                         $f_sort = urlencode($data['filters']['sort_by'] ?? '');

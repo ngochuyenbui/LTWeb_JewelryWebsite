@@ -16,18 +16,18 @@
         <?php
         $minLimit = isset($data['priceRange']['min_price']) ? (int)$data['priceRange']['min_price'] : 0;
         $maxLimit = isset($data['priceRange']['max_price']) ? (int)$data['priceRange']['max_price'] : 50000000;
-
+        
         if ($maxLimit <= $minLimit) {
-            $maxLimit = $minLimit + 500000;
+            $maxLimit = $minLimit + 500000; 
         }
-
+        
         $minPrice = isset($_GET['min_price']) && $_GET['min_price'] !== '' ? (int)$_GET['min_price'] : $minLimit;
         $maxPrice = isset($_GET['max_price']) && $_GET['max_price'] !== '' ? (int)$_GET['max_price'] : $maxLimit;
 
         $minPrice = max($minLimit, min($minPrice, $maxLimit));
         $maxPrice = max($minLimit, min($maxPrice, $maxLimit));
 
-        $step = ($maxLimit - $minLimit > 10000000) ? 500000 : 100000;
+        $step = ($maxLimit - $minLimit > 10000000) ? 500000 : 100000; 
         ?>
         <div class="px-2 pt-2 pb-2">
             <!-- Khung vẽ jQuery UI Slider -->
@@ -39,45 +39,45 @@
             <!-- Input ẩn dùng để submit lên URL -->
             <input type="hidden" name="min_price" id="min-price-input" value="<?= $minPrice ?>">
             <input type="hidden" name="max_price" id="max-price-input" value="<?= $maxPrice ?>">
-
+            
             <!-- Lưu trữ dữ liệu cấu hình ban đầu để JS đọc -->
-            <div id="price-slider-data"
-                 data-min="<?= $minLimit ?>"
-                 data-max="<?= $maxLimit ?>"
-                 data-step="<?= $step ?>"
-                 data-current-min="<?= $minPrice ?>"
-                 data-current-max="<?= $maxPrice ?>"
+            <div id="price-slider-data" 
+                 data-min="<?= $minLimit ?>" 
+                 data-max="<?= $maxLimit ?>" 
+                 data-step="<?= $step ?>" 
+                 data-current-min="<?= $minPrice ?>" 
+                 data-current-max="<?= $maxPrice ?>" 
                  class="hidden"></div>
         </div>
     </div>
 
     <style>
-    .ui-slider-horizontal .ui-slider-handle {
-        border-radius: 50%;
-        background: #fff !important;
+    .ui-slider-horizontal .ui-slider-handle { 
+        border-radius: 50%; 
+        background: #fff !important; 
         cursor: pointer;
     }
-    .ui-widget-content {
-        border: none !important;
-        background: #e2e8f0 !important;
-        height: 0.375rem !important;
+    .ui-widget-content { 
+        border: none !important; 
+        background: #e2e8f0 !important; 
+        height: 0.375rem !important; 
     }
     </style>
 
     <!-- Size -->
     <div class="mb-6">
         <h4 class="font-medium font-serif text-slate-900 mb-3">Kích Thước</h4>
-
+        
         <?php
         $numericSizes = [];
         $stringSizes = [];
         foreach ($data['sizes'] ?? [] as $sizeObj) {
-            $sizeVal = is_object($sizeObj) ? ($sizeObj->size ?? '') : ($sizeObj['size'] ?? '');
+            $sizeVal = is_object($sizeObj) ? ($sizeObj->size ?? '') : ($sizeObj['size'] ?? ''); 
             if(empty($sizeVal)) continue;
-
+            
             // Tách các size được lưu dạng chuỗi (VD: "50, 55, 58") thành mảng các size đơn lẻ
             $parts = array_map('trim', explode(',', $sizeVal));
-
+            
             foreach ($parts as $part) {
                 if (empty($part)) continue;
                 if (is_numeric($part)) {
@@ -87,7 +87,7 @@
                 }
             }
         }
-
+        
         // Sắp xếp lại theo thứ tự để giao diện gọn gàng hơn
         sort($numericSizes, SORT_NUMERIC);
         sort($stringSizes);
@@ -137,10 +137,10 @@
         <h4 class="font-medium font-serif text-slate-900 mb-3">Màu Sắc</h4>
         <div class="space-y-3">
             <?php foreach ($data['colors'] ?? [] as $colorObj): ?>
-                <?php
-                $colorVal = is_object($colorObj) ? ($colorObj->color ?? '') : ($colorObj['color'] ?? '');
+                <?php 
+                $colorVal = is_object($colorObj) ? ($colorObj->color ?? '') : ($colorObj['color'] ?? ''); 
                 if(empty($colorVal)) continue;
-
+                
                 $isChecked = isset($_GET['color']) && is_array($_GET['color']) && in_array($colorVal, $_GET['color']);
                 ?>
                 <label class="flex items-center gap-3 cursor-pointer group">
@@ -160,9 +160,9 @@
 $(document).ready(function() {
     // Filter
     $(document).on('submit', '#filter-form', function(e) {
-        e.preventDefault();
+        e.preventDefault(); 
         var form = $(this);
-
+        
         // Lấy thêm giá trị sort từ select box gộp chung vào form
         var sortVal = $('#sort-select').val();
         var formData = form.serialize();
@@ -176,7 +176,7 @@ $(document).ready(function() {
 
         var url = window.location.pathname + '?' + formData;
         window.history.pushState({path: url}, '', url);
-
+        
         $('#products-container').css('opacity', '0.5');
 
         $.ajax({
@@ -185,7 +185,7 @@ $(document).ready(function() {
             success: function(response) {
                 var newContent = $(response).find('#products-container').html();
                 $('#products-container').html(newContent).css('opacity', '1');
-
+                
                 // Cập nhật lại tiêu đề danh mục sau khi AJAX chạy xong
                 var newTitle = $(response).find('#category-title-display').html();
                 $('#category-title-display').html(newTitle);
@@ -221,7 +221,7 @@ $(document).ready(function() {
             },
             change: function(event, ui) {
                 // Chỉ tự động gọi AJAX chạy lọc khi người dùng ĐÃ THẢ CHUỘT
-                if (event.originalEvent) {
+                if (event.originalEvent) { 
                     $("#min-price-input").val(ui.values[0]);
                     $("#max-price-input").val(ui.values[1]);
                     $('#page-input').val(1);
@@ -230,7 +230,7 @@ $(document).ready(function() {
             }
         });
     }
-
+    
     initPriceSlider(); // Gọi lần đầu khi vừa vào trang
 
     // Bắt sự kiện người dùng gõ vào ô tìm kiếm mới
@@ -269,7 +269,7 @@ $(document).ready(function() {
         var categoryId = $(this).data('category');
         var form = $('#filter-form');
         var currentCategory = form.find('input[name="category"]').val();
-
+        
         $('#page-input').val(1); // Reset lại trang về 1
         // Xử lý bật/tắt (Toggle) category
         if (currentCategory == categoryId) {
@@ -294,9 +294,9 @@ $(document).ready(function() {
         e.preventDefault();
         var form = $('#filter-form');
         form.find('input[name="category"]').remove();
-        $('#page-input').val(1);
+        $('#page-input').val(1); 
         $('.category-border').removeClass('border-amber-500 shadow-md').addClass('border-transparent group-hover:border-amber-300'); // Xóa viền màu ở Carousel
-        form.submit();
+        form.submit(); 
     });
 
     // Clear filter
@@ -304,7 +304,7 @@ $(document).ready(function() {
         e.preventDefault();
         var url = $(this).attr('href');
         if (!url || url === '?') url = window.location.pathname;
-
+        
         window.history.pushState({path: url}, '', url);
         $('#products-container').css('opacity', '0.5');
 
@@ -313,11 +313,11 @@ $(document).ready(function() {
             type: 'GET',
             success: function(response) {
                 var newContent = $(response).find('#products-container').html();
-                $('#products-container').html(newContent).css('opacity', '1');
+                $('#products-container').html(newContent).css('opacity', '1');                           
                 var newForm = $(response).find('#filter-form').html();
-                $('#filter-form').html(newForm);
+                $('#filter-form').html(newForm);                
                 var newTitle = $(response).find('#category-title-display').html();
-                $('#category-title-display').html(newTitle);
+                $('#category-title-display').html(newTitle);              
                 initPriceSlider();
             }
         });

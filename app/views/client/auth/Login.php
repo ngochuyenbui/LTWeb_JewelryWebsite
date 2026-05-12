@@ -27,14 +27,14 @@
             <div class="space-y-4">
                 <div>
                     <label for="username" class="block text-sm font-medium text-slate-700">Tên đăng nhập</label>
-                    <input type="text" name="username" id="username" autocomplete="username" required
+                    <input type="text" name="username" id="username" autocomplete="username" required 
                            class="mt-1 block w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm transition-all"
                            placeholder="Nhập tài khoản của bạn">
                 </div>
 
                 <div>
                     <label for="password" class="block text-sm font-medium text-slate-700">Mật khẩu</label>
-                    <input type="password" name="password" id="password" autocomplete="current-password" required
+                    <input type="password" name="password" id="password" autocomplete="current-password" required 
                            class="mt-1 block w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm transition-all"
                            placeholder="••••••••">
                 </div>
@@ -51,14 +51,14 @@
             </div>
 
             <div>
-                <button type="submit" id="btn-login"
+                <button type="submit" id="btn-login" 
                         class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-all shadow-lg uppercase tracking-wider">
                     Đăng nhập
                 </button>
             </div>
 
             <p class="text-center text-sm text-slate-600 mt-4">
-                Chưa có tài khoản?
+                Chưa có tài khoản? 
                 <a href="<?= URLROOT ?>/Register" class="font-bold text-amber-600 hover:text-amber-500 transition-colors">Đăng ký ngay</a>
             </p>
         </form>
@@ -70,20 +70,20 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     e.preventDefault();
     const btn = document.getElementById('btn-login');
     const errorDiv = document.getElementById('error');
-
+    
     // Hiệu ứng Loading
     btn.disabled = true;
     const originalText = btn.innerText;
     btn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
-
+    
     try {
         let response = await fetch(this.action, {
             method: 'POST',
             body: new FormData(this)
         });
-
+        
         let result = await response.json();
-
+        
         if (result.error) {
             errorDiv.innerText = result.error;
             btn.disabled = false;

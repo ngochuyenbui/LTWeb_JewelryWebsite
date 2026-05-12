@@ -42,7 +42,7 @@ $customSizeStr = implode(', ', $customSizes);
                                 <input type="text" class="form-control" id="sku" name="sku" value="<?= htmlspecialchars($p_sku) ?>" required>
                             </div>
                         </div>
-
+                        
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <label for="cateId" class="fw-bold">Danh mục <span class="text-danger">(*)</span></label>
@@ -91,7 +91,7 @@ $customSizeStr = implode(', ', $customSizes);
                                 </div>
                                 <input type="text" class="form-control" id="size_custom" name="size_custom" value="<?= htmlspecialchars($customSizeStr) ?>" placeholder="Khác (VD: 55, 56)">
                             </div>
-
+                            
                         </div>
                         <div class="mb-3">
                                 <label for="material" class="fw-bold">Chất liệu</label>
@@ -101,7 +101,7 @@ $customSizeStr = implode(', ', $customSizes);
                                 <label for="size_dim" class="fw-bold">Kích cỡ chi tiết</label>
                                 <input type="text" class="form-control" id="size_dim" name="size_dim" value="<?= htmlspecialchars($p_size_dim) ?>" placeholder="VD: Dây dài 40cm, mặt dây 1cm...">
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3">                          
                                 <label for="usage_info" class="fw-bold">Cách bảo quản</label>
                                 <input type="text" class="form-control" id="usage_info" name="usage_info" value="<?= htmlspecialchars($p_usage) ?>" placeholder="VD: Tránh tiếp xúc hóa chất...">
                         </div>
@@ -146,12 +146,12 @@ $customSizeStr = implode(', ', $customSizes);
                             <label class="fw-bold">Thêm ảnh mới (Tổng cộng tối đa 5 ảnh)</label>
                             <input type="file" class="form-control mb-2" id="images" multiple accept="image/*" onchange="handleFileSelect(event)">
                             <small class="text-muted d-block mb-3">Đã chọn tổng cộng <span id="image-count"><?= count($allImages) ?></span>/5 ảnh. <span class="text-danger">(*) Chọn vào nút tròn để làm ảnh chính.</span></small>
-
+                            
                             <input type="file" id="real-images-input" name="images[]" multiple class="d-none">
                             <div id="new-image-preview-container" class="d-flex flex-wrap" style="gap: 10px;"></div>
                         </div>
 
-
+                        
 
                         <button class="btn btn-primary" type="submit"><i class="ti-save"></i> Cập nhật sản phẩm</button>
                         <a href="<?= URLROOT ?>/admin/Products" class="btn btn-secondary"><i class="ti-back-left"></i> Quay lại</a>
@@ -221,7 +221,7 @@ $customSizeStr = implode(', ', $customSizes);
                 if (proposedCount > 5) {
                     if (typeof Swal !== 'undefined') Swal.fire('Thông báo', 'Tổng số ảnh không được vượt quá 5!', 'warning');
                     else alert('Tổng số ảnh không được vượt quá 5!');
-
+                    
                     this.checked = true;
                     return;
                 }
@@ -237,7 +237,7 @@ $customSizeStr = implode(', ', $customSizes);
         if (!files || files.length === 0) return;
 
         let currentCount = totalExisting - deletedUrls.length + dataTransfer.files.length;
-
+        
         for (let i = 0; i < files.length; i++) {
             if (currentCount >= 5) {
                 if (typeof Swal !== 'undefined') {
@@ -250,10 +250,10 @@ $customSizeStr = implode(', ', $customSizes);
             dataTransfer.items.add(files[i]);
             currentCount++;
         }
-
+        
         document.getElementById('real-images-input').files = dataTransfer.files;
-        document.getElementById('images').value = '';
-
+        document.getElementById('images').value = ''; 
+        
         renderPreviews();
     }
 
@@ -273,17 +273,17 @@ $customSizeStr = implode(', ', $customSizes);
         const container = document.getElementById('new-image-preview-container');
         if (!container) return;
         container.innerHTML = '';
-
+        
         let hasExistingPrimary = document.querySelector('input[name="primary_image"]:checked') !== null;
 
         for (let i = 0; i < dataTransfer.files.length; i++) {
             const file = dataTransfer.files[i];
-
+            
             let div = document.createElement('div');
             div.className = 'position-relative border rounded p-1 bg-white';
             div.style.width = '100px';
             div.style.height = '100px';
-
+            
             let isChecked = (!hasExistingPrimary && i === 0) ? 'checked' : '';
 
             div.innerHTML = `

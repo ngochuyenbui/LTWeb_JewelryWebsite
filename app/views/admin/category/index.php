@@ -19,7 +19,7 @@
                         </a>
                         <span class="text-muted">Đang hiển thị: <?= count($data['categories'] ?? []) ?> / <?= $data['totalItems'] ?? 0 ?> danh mục</span>
                     </div>
-
+                    
                     <div class="data-tables">
                         <table class="text-center table table-bordered table-hover">
                             <thead class="bg-light text-capitalize">
@@ -34,7 +34,7 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($data['categories'] ?? [] as $cate): ?>
-                                    <?php
+                                    <?php 
                                     $c_id = is_object($cate) ? ($cate->cateId ?? '') : ($cate['cateId'] ?? '');
                                     $c_name = is_object($cate) ? ($cate->name ?? '') : ($cate['name'] ?? '');
                                     $c_image = is_object($cate) ? ($cate->image_url ?? '') : ($cate['image_url'] ?? '');
@@ -72,10 +72,10 @@
                     <div class="mt-4 d-flex justify-content-center">
                         <nav aria-label="Page navigation">
                             <ul class="pagination">
-                                <?php
+                                <?php 
                                     $currentPage = $data['currentPage'] ?? 1;
                                     $totalPages = $data['totalPages'] ?? 1;
-
+                                    
                                     // Build query string for pagination links
                                     $query = $_GET;
                                     unset($query['page'], $query['url']);
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function() {
             let id = this.getAttribute('data-id');
             let isHidden = this.getAttribute('data-hide');
             let actionText = isHidden == '1' ? "ẨN" : "HIỆN";
-
+            
             Swal.fire({
                 title: 'Xác nhận',
                 text: "Bạn có muốn " + actionText + " danh mục này không?",

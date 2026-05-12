@@ -5,7 +5,7 @@ $disableCheckout = false;
 <div class="bg-slate-50 py-12 min-h-screen">
     <div class="container mx-auto px-4 max-w-6xl">
         <h1 class="text-3xl font-serif font-bold text-slate-900 mb-8">Giỏ hàng của bạn</h1>
-
+        
         <?php if (isset($_SESSION['error'])): ?>
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 relative" role="alert">
                 <strong class="font-bold">Lỗi!</strong>
@@ -27,7 +27,7 @@ $disableCheckout = false;
                     <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
                     <ul class="divide-y divide-slate-200">
                         <?php foreach ($data['cartItems'] as $item): ?>
-                            <?php
+                            <?php 
                                 $isAvailable = $item['isAvailable'] ?? true;
                                 $stockWarning = $item['stockWarning'] ?? false;
                                 $isDeleted = $item['isDeleted'] ?? false;
@@ -42,7 +42,7 @@ $disableCheckout = false;
                                 <div class="flex-1 text-left sm:text-left min-w-0">
                                     <a href="<?= URLROOT ?>/client/Products/detail/<?= $item['productId'] ?>" class="font-medium text-slate-900 hover:text-amber-600 transition-colors block mb-1 line-clamp-2" title="<?= htmlspecialchars($item['name']) ?>"><?= htmlspecialchars($item['name']) ?></a>
                                     <div class="text-sm text-slate-500 mb-2">Size: <?= htmlspecialchars($item['size']) ?></div>
-
+                                    
                                     <?php if ($isDeleted): ?>
                                         <div class="font-bold text-red-500 text-sm mt-1">Sản phẩm đã ngừng kinh doanh hoặc bị xóa</div>
                                     <?php elseif ($item['stock'] == 0): ?>
@@ -92,7 +92,7 @@ $disableCheckout = false;
                             <span class="text-slate-900 font-bold">Tổng tiền</span>
                             <span class="text-2xl font-bold text-amber-600"><?= number_format($data['finalTotal'], 0, ',', '.') ?> đ</span>
                         </div>
-
+                        
                         <?php if ($disableCheckout): ?>
                             <div class="mb-4 text-red-500 text-sm text-center font-medium bg-red-50 p-3 rounded border border-red-100">
                                 Vui lòng xóa các sản phẩm không khả dụng hoặc giảm số lượng để tiếp tục thanh toán.

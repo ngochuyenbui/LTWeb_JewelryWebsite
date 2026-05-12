@@ -94,13 +94,6 @@ $cartItems = (int)($_SESSION['cart_total_items'] ?? 0);
 		</nav>
 
 		<div class="flex items-center gap-3">
-			<button type="button" class="hidden md:flex h-10 w-10 items-center justify-center rounded-md hover:bg-slate-100 transition-colors" aria-label="Tìm kiếm">
-				<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-					<circle cx="11" cy="11" r="8"></circle>
-					<path d="m21 21-4.3-4.3"></path>
-				</svg>
-			</button>
-
 			<div class="relative">
 				<?php if (isset($_SESSION['user_id'])): ?>
 					<button type="button" class="h-10 w-10 flex items-center justify-center rounded-md hover:bg-slate-100 transition-colors" aria-label="Tài khoản" data-user-menu-btn>

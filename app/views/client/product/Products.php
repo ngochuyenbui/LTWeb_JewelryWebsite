@@ -1,5 +1,5 @@
 <div class="bg-slate-50 py-16 pt-24">
-    <div class="flex flex-col gap-10 container mx-auto p-4">
+    <div class="flex flex-col gap-10 container mx-auto p-4">     
         <!-- Tiêu đề trang -->
         <div class=" mb-8 flex flex-col items-center">
             <p>BỘ SƯU TẬP</p>
@@ -24,7 +24,7 @@
             </div>
             <div class="lg:col-span-4">
                 <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
-
+                    
                     <div class="flex items-center gap-4">
                             <button type="button" id="mobile-filter-btn" class="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 shadow-sm text-sm text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -32,7 +32,7 @@
                                 </svg>
                                 Bộ lọc
                             </button>
-
+                            
                         <div id="category-title-display" class="hidden lg:block text-sm">
                             <?php
                             $selectedCategoryName = '';
@@ -47,7 +47,7 @@
                                 }
                             }
                             ?>
-
+                            
                             <?php if ($selectedCategoryName): ?>
                                 <span class="text-slate-700">Danh mục: <span class="font-bold text-slate-900"><?= htmlspecialchars($selectedCategoryName) ?></span></span>
                                 <a href="#" id="show-all-categories-btn" class="ml-2 text-amber-600 hover:text-amber-700 hover:underline border-l border-slate-300 pl-2">Hiển thị tất cả</a>
@@ -63,7 +63,7 @@
                         <option value="price_desc" <?= ($_GET['sort'] ?? '') === 'price_desc' ? 'selected' : '' ?>>Giá: Giảm dần</option>
                     </select>
                 </div>
-
+                
 
                 <!-- Gói vùng lưới và phân trang để cập nhật AJAX chung -->
                 <div id="products-container" class="transition-opacity duration-300">
@@ -94,15 +94,15 @@
                 const filterBtn = document.getElementById('mobile-filter-btn');
                 const closeBtn = document.getElementById('close-sidebar-btn');
                 const sidebarWrapper = document.getElementById('sidebar-wrapper');
-
+                
                 function toggleSidebar() {
                     sidebarWrapper.classList.toggle('hidden');
                 }
-
+                
                 if (filterBtn) filterBtn.addEventListener('click', toggleSidebar);
                 if (closeBtn) closeBtn.addEventListener('click', toggleSidebar);
             });
         </script>
-
+        
     </div>
 </div>

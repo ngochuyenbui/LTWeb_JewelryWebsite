@@ -20,14 +20,14 @@
         <form id="verifyForm" action="<?= URLROOT ?>/Register/verify_email" method="POST" class="mt-8 space-y-6">
             <div>
                 <label for="otp" class="block text-sm font-medium text-slate-700 text-center">Nhập mã OTP</label>
-                <input type="text" name="otp" id="otp" maxlength="6" autocomplete="one-time-code" required
+                <input type="text" name="otp" id="otp" maxlength="6" autocomplete="one-time-code" required 
                        class="mt-2 block w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 text-center text-2xl tracking-[0.5em] font-bold transition-all"
                        placeholder="••••••">
                 <small id="otp_msg" class="block mt-2 text-xs h-4 text-center"></small>
             </div>
-
+            
             <div>
-                <button type="submit" id="btn-verify"
+                <button type="submit" id="btn-verify" 
                         class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-all shadow-lg uppercase tracking-wider">
                     Xác nhận
                 </button>
@@ -37,7 +37,7 @@
         <div class="mt-6 border-t border-slate-200 pt-6">
             <p class="text-center text-sm text-slate-600 mb-4">Không nhận được mã?</p>
             <form id="resendForm" action="<?= URLROOT ?>/Register/resendOTP" method="POST">
-                <button type="submit" id="btn-resend"
+                <button type="submit" id="btn-resend" 
                         class="w-full flex justify-center py-2 px-4 border border-slate-300 rounded-xl shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all">
                     Gửi lại mã OTP
                 </button>
@@ -64,7 +64,7 @@ $(function() {
         otpTimer = setTimeout(() => {
             const regex = /^\d{6}$/;
             const msgEl = $('#otp_msg');
-
+            
             if (!regex.test(value)) {
                 msgEl.text("Mã OTP không hợp lệ!").removeClass("text-green-500").addClass("text-red-500");
                 $('#btn-verify').prop('disabled', true);
@@ -119,7 +119,7 @@ $(function() {
         const btn = $('#btn-resend');
         const msgEl = $('#resend_msg');
         const errorEl = $('#error');
-
+        
         btn.prop('disabled', true);
         let sec = 60;
         const intervalTimer = setInterval(() => {

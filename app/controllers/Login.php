@@ -31,18 +31,18 @@ class Login extends Controller {
             $this->view('client/auth/Login');
             return;
         }
-
+            
         $username = trim($_POST['username'] ?? '');
         $password = trim($_POST['password'] ?? '');
-
+        
         if (empty($username) || empty($password)) {
             $this->jsonResponse(['error' => 'Vui lòng điền đầy đủ thông tin']);
         }
-
+        
         $user = $this->userModel->getUserByUsername($username);
         if ($user) {
             if (is_object($user)) $user = (array)$user;
-
+            
             if (password_verify($password, $user['pwd_hash'])) {
                 if ($user['role'] === 'locked') {
                     $this->jsonResponse(['error' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.']);
@@ -52,7 +52,7 @@ class Login extends Controller {
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['user_role'] = $user['role'];
                 $_SESSION['last_activity'] = time();
-
+                
                 // Dong bo cart session -> db
                 if ($user['role'] !== ROLE_ADMIN) {
                     try {
@@ -60,7 +60,7 @@ class Login extends Controller {
                         if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                             foreach ($_SESSION['cart'] as $item) {
                                 if (!is_array($item) || !isset($item['productId'])) continue;
-
+                                
                                 $existingItem = $cartModel->getCartItem($user['userId'], $item['productId'], $item['size']);
                                 if ($existingItem) {
                                     $existingQty = is_object($existingItem) ? $existingItem->quantity : $existingItem['quantity'];
@@ -85,7 +85,7 @@ class Login extends Controller {
                 $this->jsonResponse(['success' => true, 'redirect' => URLROOT . $redirectUrl]);
             }
         }
-
+        
         $this->jsonResponse(['error' => 'Sai tài khoản hoặc mật khẩu']);
     }
 

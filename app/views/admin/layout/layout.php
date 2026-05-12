@@ -13,7 +13,7 @@ if (!isset($contentView) || !file_exists($contentView)) {
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title><?= isset($title) ? htmlspecialchars($title) : 'Quản trị' ?> - Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    
     <!-- Srtdash CSS -->
     <link rel="stylesheet" href="<?= URLROOT ?>/assets/admin/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -34,7 +34,7 @@ if (!isset($contentView) || !file_exists($contentView)) {
     <link rel="stylesheet" href="<?= URLROOT ?>/assets/admin/css/responsive.css">
     <!-- modernizr css -->
     <script src="<?= URLROOT ?>/assets/admin/js/vendor/modernizr-2.8.3.min.js"></script>
-
+    
     <style>
         @media (max-width: 991px) {
             .nav-btn { z-index: 9999 !important; position: relative; }
@@ -45,7 +45,7 @@ if (!isset($contentView) || !file_exists($contentView)) {
 <body>
     <!-- page container area start -->
     <div class="page-container">
-
+        
         <?php require_once 'sidebar.php'; ?>
 
         <!-- main content area start -->
@@ -68,7 +68,7 @@ if (!isset($contentView) || !file_exists($contentView)) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/metismenu/dist/metisMenu.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
-    <script src="<?= URLROOT ?>/assets/admin/js/swiper-bundle.min.js"></script>
+    <script src="<?= URLROOT ?>/assets/admin/js/swiper-bundle.min.js"></script>  
     <script src="<?= URLROOT ?>/assets/admin/js/maps.js"></script>
     <script src="<?= URLROOT ?>/assets/admin/js/scripts.js"></script>
 
@@ -88,7 +88,7 @@ if (!isset($contentView) || !file_exists($contentView)) {
                     navBtn.parentNode.replaceChild(cleanBtn, navBtn);
                     cleanBtn.addEventListener('click', function(e) {
                         e.preventDefault();
-                        e.stopPropagation();
+                        e.stopPropagation(); 
                         document.querySelector('.page-container').classList.toggle('sbar_collapsed');
                     });
                 }

@@ -18,9 +18,9 @@
                         <div class="mb-3">
                             <label class="fw-bold">Tìm kiếm</label>
                             <input type="text" name="search" class="form-control" placeholder="Tên hoặc SKU..." value="<?= htmlspecialchars($data['filters']['search'] ?? '') ?>">
-                        </div>
+                        </div>    
                     <div class="row align-items-end">
-
+                            
                             <div class="col-md-2 mb-3">
                                 <label class="fw-bold">Danh mục</label>
                                 <select name="category" class="form-control" style="height: auto;">
@@ -34,7 +34,7 @@
                                 <label class="fw-bold">Màu sắc</label>
                                 <select name="color" class="form-control" style="height: auto;">
                                     <option value="">-- Tất cả --</option>
-                                    <?php
+                                    <?php 
                                     $allColors = [];
                                     foreach($data['colors'] ?? [] as $c) {
                                         $colorVal = is_object($c) ? $c->color : $c['color'];
@@ -51,7 +51,7 @@
                                 <label class="fw-bold">Kích cỡ</label>
                                 <select name="size" class="form-control" style="height: auto;">
                                     <option value="">-- Tất cả --</option>
-                                    <?php
+                                    <?php 
                                     $allSizes = [];
                                     foreach($data['sizes'] ?? [] as $s) {
                                         $sizeVal = is_object($s) ? $s->size : $s['size'];
@@ -98,7 +98,7 @@
                             </button>
                             <a href="<?= URLROOT ?>/admin/Products/create" class="btn btn-primary ms-2">
                                 <i class="ti-plus"></i> Thêm sản phẩm mới
-                            </a>
+                            </a>                            
                         </div>
                         <span class="text-muted">Đang hiển thị: <?= count($data['products'] ?? []) ?> / <?= $data['totalItems'] ?? 0 ?> sản phẩm</span>
                     </div>
@@ -121,7 +121,7 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($data['products'] ?? [] as $product): ?>
-                                    <?php
+                                    <?php 
                                     $p_id = is_object($product) ? ($product->productId ?? '') : ($product['productId'] ?? '');
                                     $p_sku = is_object($product) ? ($product->sku ?? '') : ($product['sku'] ?? '');
                                     $p_name = is_object($product) ? ($product->name ?? '') : ($product['name'] ?? '');
@@ -154,10 +154,10 @@
                     <div class="mt-4 d-flex justify-content-center">
                         <nav aria-label="Page navigation">
                             <ul class="pagination">
-                                <?php
+                                <?php 
                                     $currentPage = $data['currentPage'] ?? 1;
                                     $totalPages = $data['totalPages'] ?? 1;
-
+                                    
                                     // Build query string for pagination links
                                     $query = $_GET;
                                     unset($query['page'], $query['url']);
@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 Swal.fire('Thông báo', 'Vui lòng chọn ít nhất một sản phẩm để xóa.', 'warning');
                 return;
             }
-
+            
             Swal.fire({
                 title: 'Xác nhận xóa',
                 text: 'Bạn có chắc chắn muốn xóa ' + checked.length + ' sản phẩm đã chọn không?',
@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }).then((result) => {
                 if (result.isConfirmed) {
                     let ids = Array.from(checked).map(cb => cb.value).join(',');
-
+                    
                     $.ajax({
                         url: document.getElementById('massDeleteForm').action,
                         type: 'POST',
@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", function() {
         e.preventDefault();
         let form = $(this);
         let confirmMsg = form.attr('data-confirm');
-
+        
         Swal.fire({
             title: 'Xác nhận',
             text: confirmMsg,
@@ -293,10 +293,10 @@ document.addEventListener("DOMContentLoaded", function() {
     let checkJq = setInterval(function() {
         if (window.jQuery && $.fn.ionRangeSlider) {
             clearInterval(checkJq);
-
+            
             let dbMin = <?= $data['priceRange']['min_price'] ?? 0 ?>;
             let dbMax = <?= $data['priceRange']['max_price'] ?? 50000000 ?>;
-
+            
             if (dbMin >= dbMax) {
                 dbMax = dbMin + 10000; // Tránh lỗi hiển thị khi kho chỉ có duy nhất 1 mức giá
             }
