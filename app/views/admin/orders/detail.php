@@ -71,7 +71,7 @@ $statusLabels = ['pending' => 'Chờ xác nhận', 'processing' => 'Đang xử l
                         <table class="table table-bordered">
                             <thead class="thead-light">
                                 <tr>
-                                
+
                                     <th>Sản phẩm</th>
                                     <th class="text-center">Size</th>
                                     <th class="text-right">Đơn giá</th>
@@ -80,7 +80,7 @@ $statusLabels = ['pending' => 'Chờ xác nhận', 'processing' => 'Đang xử l
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($items as $item): 
+                                <?php foreach ($items as $item):
                                     $i_name = is_object($item) ? $item->name : $item['name'];
                                     $i_img = is_object($item) ? $item->image_url : $item['image_url'];
                                     $i_size = is_object($item) ? $item->size : $item['size'];
@@ -119,7 +119,7 @@ $statusLabels = ['pending' => 'Chờ xác nhận', 'processing' => 'Đang xử l
                     </div>
 
 
-                    
+
 
                 </div>
             </div>

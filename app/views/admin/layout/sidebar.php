@@ -11,6 +11,8 @@ $isAdminArticle = strpos($uri, '/AdminArticle') !== false;
 $isAdminComment = strpos($uri, '/AdminComment') !== false;
 $isAdminAbout = strpos($uri, '/AdminAbout') !== false;
 $isAdminFaq = strpos($uri, '/AdminFaq') !== false;
+$isAdminSiteContent = strpos($uri, '/AdminSiteContent') !== false;
+$isAdminContact = strpos($uri, '/AdminContact') !== false;
 ?>
 <div class="sidebar-menu">
     <div class="sidebar-header">
@@ -47,6 +49,16 @@ $isAdminFaq = strpos($uri, '/AdminFaq') !== false;
                     </li>
                     <li class="<?= $isUsers ? 'active' : '' ?>">
                         <a href="<?= URLROOT ?>/admin/Users"><i class="ti-id-badge"></i> <span>Quản lý Khách hàng</span></a>
+                    </li>
+                    <li class="<?= $isAdminSiteContent ? 'active' : '' ?>">
+                        <a href="javascript:void(0)" aria-expanded="<?= $isAdminSiteContent ? 'true' : 'false' ?>"><i class="ti-layout"></i><span>Nội dung trang</span></a>
+                        <ul class="mm-collapse <?= $isAdminSiteContent ? 'mm-show' : '' ?>">
+                            <li class="<?= ($isAdminSiteContent && strpos($uri, '/media') === false) ? 'active' : '' ?>"><a href="<?= URLROOT ?>/AdminSiteContent">Quản lý nội dung</a></li>
+                            <li class="<?= (strpos($uri, '/AdminSiteContent/media') !== false) ? 'active' : '' ?>"><a href="<?= URLROOT ?>/AdminSiteContent/media">Hình ảnh trang</a></li>
+                        </ul>
+                    </li>
+                    <li class="<?= $isAdminContact ? 'active' : '' ?>">
+                        <a href="<?= URLROOT ?>/AdminContact"><i class="ti-email"></i> <span>Liên hệ khách hàng</span></a>
                     </li>
                     <li class="<?= $isAdminArticle ? 'active' : '' ?>">
                         <a href="<?= URLROOT ?>/AdminArticle"><i class="ti-write"></i> <span>Quản lý Bài viết</span></a>

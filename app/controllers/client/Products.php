@@ -44,28 +44,28 @@ class Products extends Controller {
             'totalPages' => $totalPages,
             'priceRange' => $priceRange
         ];
-        $this->view('client/product/Products', $data);     
+        $this->view('client/product/Products', $data);
     }
-    
+
     public function detail($id = null) {
         if (!$id) {
             header('Location: ' . URLROOT . '/client/Products');
             exit;
         }
-        
+
         $product = $this->productModel->getProductById($id);
         if (!$product) {
             die('Không tìm thấy sản phẩm này.');
         }
-        
+
         // Lấy danh sách ảnh từ bảng product_image
         $images = $this->productModel->getProductImages($id);
-        
+
         // Lấy sản phẩm liên quan (cùng danh mục)
         $cateId = is_object($product) ? ($product->cateId ?? 0) : ($product['cateId'] ?? 0);
         $contentId = is_object($product) ? ($product->contentId ?? 0) : ($product['contentId'] ?? 0);
         $relatedProducts = $this->productModel->getRelatedProducts($cateId, $id);
-        
+
         // Lấy danh sách bình luận
         $comments = $this->commentModel->getCommentsByContentId($contentId);
 

@@ -7,11 +7,11 @@ class CartModel extends BaseModel {
         $this->db->query("SELECT cartId FROM cart WHERE memberId = :memberId");
         $this->db->bind(':memberId', $memberId);
         $row = $this->db->single();
-        
+
         if ($row) {
             return is_object($row) ? $row->cartId : $row['cartId'];
         }
-        
+
         // Tạo cart mới nếu chưa có
         $this->db->query("INSERT INTO cart (memberId) VALUES (:memberId)");
         $this->db->bind(':memberId', $memberId);
@@ -80,9 +80,9 @@ class CartModel extends BaseModel {
     }
     // === ADMIN FUNCTIONS ===
     public function getAllCartsPaginated($limit, $offset) {
-        $this->db->query("SELECT c.cartId, c.memberId, c.updated_at, u.username, u.fullname 
-                          FROM cart c 
-                          JOIN user u ON c.memberId = u.userId 
+        $this->db->query("SELECT c.cartId, c.memberId, c.updated_at, u.username, u.fullname
+                          FROM cart c
+                          JOIN user u ON c.memberId = u.userId
                           WHERE (SELECT COUNT(*) FROM cart_item WHERE cartId = c.cartId) > 0
                           ORDER BY c.updated_at DESC
                           LIMIT :limit OFFSET :offset");
@@ -92,18 +92,18 @@ class CartModel extends BaseModel {
     }
 
     public function getTotalActiveCarts() {
-        $this->db->query("SELECT COUNT(*) as total 
-                          FROM cart c 
+        $this->db->query("SELECT COUNT(*) as total
+                          FROM cart c
                           WHERE (SELECT COUNT(*) FROM cart_item WHERE cartId = c.cartId) > 0");
         $row = $this->db->single();
         return $row ? (is_object($row) ? $row->total : $row['total']) : 0;
     }
 
     public function getItemsForCart($cartId) {
-        $this->db->query("SELECT ci.*, p.name, p.price, 
-                                 (SELECT image_url FROM product_image WHERE product_image.productId = p.productId AND is_primary = 1 LIMIT 1) as image_url 
-                          FROM cart_item ci 
-                          JOIN product p ON ci.productId = p.productId 
+        $this->db->query("SELECT ci.*, p.name, p.price,
+                                 (SELECT image_url FROM product_image WHERE product_image.productId = p.productId AND is_primary = 1 LIMIT 1) as image_url
+                          FROM cart_item ci
+                          JOIN product p ON ci.productId = p.productId
                           WHERE ci.cartId = :cartId");
         $this->db->bind(':cartId', $cartId);
         return $this->db->resultSet();

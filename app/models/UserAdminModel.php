@@ -8,7 +8,7 @@ class UserAdminModel extends BaseModel {
             $sql .= " AND (username LIKE :search OR email LIKE :search OR fullname LIKE :search) ";
         }
         $sql .= " ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
-        
+
         $this->db->query($sql);
         if (!empty($search)) {
             $this->db->bind(':search', "%$search%");
@@ -32,9 +32,9 @@ class UserAdminModel extends BaseModel {
     }
 
     public function getUserDetails($userId) {
-        $this->db->query("SELECT u.*, m.phonenum, m.address, m.rewardPoint 
-                          FROM user u 
-                          LEFT JOIN member m ON u.userId = m.userId 
+        $this->db->query("SELECT u.*, m.phonenum, m.address, m.rewardPoint
+                          FROM user u
+                          LEFT JOIN member m ON u.userId = m.userId
                           WHERE u.userId = :userId AND u.role IN ('member', 'locked')");
         $this->db->bind(':userId', $userId);
         return $this->db->single();

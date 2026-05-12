@@ -3,7 +3,7 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="header-title">Thêm Bài viết mới</h4>
-                
+
                 <?php if(isset($_GET['error'])): ?>
                     <div class="alert alert-danger">
                         <?= $_GET['error'] === 'db' ? 'Lỗi cơ sở dữ liệu, vui lòng thử lại!' : 'Có lỗi xảy ra, vui lòng kiểm tra lại!' ?>
@@ -24,8 +24,8 @@
                 <form action="<?= URLROOT ?>/AdminArticle/store" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                     <div class="mb-3">
                         <label for="title" class="col-form-label">Tiêu đề bài viết <span class="text-danger">*</span></label>
-                        <input class="form-control <?= !empty($errors['title']) ? 'is-invalid' : '' ?>" 
-                               type="text" id="title" name="title" 
+                        <input class="form-control <?= !empty($errors['title']) ? 'is-invalid' : '' ?>"
+                               type="text" id="title" name="title"
                                value="<?= htmlspecialchars($old['title'] ?? '') ?>" required>
                         <?php if (!empty($errors['title'])): ?>
                             <div class="invalid-feedback"><?= htmlspecialchars($errors['title']) ?></div>
@@ -37,7 +37,7 @@
                         <select class="custom-select <?= !empty($errors['cateId']) ? 'is-invalid' : '' ?>" name="cateId" required>
                             <option value="">-- Chọn danh mục --</option>
                             <?php foreach($categories as $cate): ?>
-                                <option value="<?= $cate->cateId ?>" 
+                                <option value="<?= $cate->cateId ?>"
                                     <?= (isset($old['cateId']) && $old['cateId'] == $cate->cateId) ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($cate->name) ?>
                                 </option>
@@ -50,7 +50,7 @@
 
                     <div class="mb-3">
                         <label for="thumbnail" class="col-form-label">Ảnh đại diện (Thumbnail)</label>
-                        <input class="form-control <?= !empty($errors['thumbnail']) ? 'is-invalid' : '' ?>" 
+                        <input class="form-control <?= !empty($errors['thumbnail']) ? 'is-invalid' : '' ?>"
                                type="file" id="thumbnail" name="thumbnail" accept="image/*">
                         <small class="form-text text-muted">Hỗ trợ các định dạng: JPG, PNG, GIF, WEBP. Tối đa 5MB.</small>
                         <?php if (!empty($errors['thumbnail'])): ?>
@@ -60,7 +60,7 @@
 
                     <div class="mb-3">
                         <label for="content" class="col-form-label">Nội dung bài viết <span class="text-danger">*</span></label>
-                        <textarea class="form-control <?= !empty($errors['content']) ? 'is-invalid' : '' ?>" 
+                        <textarea class="form-control <?= !empty($errors['content']) ? 'is-invalid' : '' ?>"
                                   id="content" name="content" rows="10"><?= htmlspecialchars($old['content'] ?? '') ?></textarea>
                         <?php if (!empty($errors['content'])): ?>
                             <div class="invalid-feedback d-block"><?= htmlspecialchars($errors['content']) ?></div>

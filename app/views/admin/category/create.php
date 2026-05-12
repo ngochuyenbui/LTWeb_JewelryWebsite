@@ -61,7 +61,7 @@ document.getElementById('name').addEventListener('input', function() {
         .replace(/[^a-z0-9\-]+/g, '-')
         .replace(/\-+/g, '-')
         .replace(/^\-+|\-+$/g, '');
-    
+
     document.getElementById('slug').value = slug;
 });
 </script>

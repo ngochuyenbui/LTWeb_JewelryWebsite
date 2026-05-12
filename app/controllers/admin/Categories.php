@@ -4,7 +4,7 @@ class Categories extends Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->requireAdmin(); 
+        $this->requireAdmin();
         $this->categoryModel = $this->model('CategoryModel');
     }
 
@@ -24,7 +24,7 @@ class Categories extends Controller {
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'totalItems' => $totalItems
-        ]);     
+        ]);
     }
 
     private function toSlug($str) {
@@ -66,17 +66,17 @@ class Categories extends Controller {
             $slug = trim($_POST['slug'] ?? '');
             if (empty($slug)) $slug = $this->toSlug($name);
             $imageUrl = '';
-            
+
             if (!empty($_FILES['image']['name'])) {
                 $imageUrl = $this->uploadImage($_FILES['image']);
             }
-            
+
             if (empty($name)) {
                 $error = 'Tên danh mục không được để trống.';
             } else {
                 try {
                     $this->categoryModel->addCategory([
-                        'name' => $name, 
+                        'name' => $name,
                         'image_url' => $imageUrl,
                         'type' => $type,
                         'slug' => $slug,
@@ -106,7 +106,7 @@ class Categories extends Controller {
             if (empty($slug)) $slug = $this->toSlug($name);
             $isHidden = isset($_POST['is_hidden']) ? 1 : 0;
             $imageUrl = is_object($category) ? ($category->image_url ?? '') : ($category['image_url'] ?? '');
-            
+
             if (!empty($_FILES['image']['name'])) {
                 $newImage = $this->uploadImage($_FILES['image']);
                 if ($newImage) $imageUrl = $newImage;
@@ -117,8 +117,8 @@ class Categories extends Controller {
             } else {
                 try {
                     $this->categoryModel->updateCategory([
-                        'cateId' => $id, 
-                        'name' => $name, 
+                        'cateId' => $id,
+                        'name' => $name,
                         'image_url' => $imageUrl,
                         'type' => $type,
                         'slug' => $slug,
@@ -139,7 +139,7 @@ class Categories extends Controller {
         header('Content-Type: application/json');
         if ($id && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $isHidden = (int)$_POST['is_hidden'];
-            
+
             // Nếu muốn ẨN, kiểm tra xem có sản phẩm nào không
             if ($isHidden === 1) {
                 $activeItems = $this->categoryModel->countActiveItemsByCategory($id);
@@ -148,7 +148,7 @@ class Categories extends Controller {
                     exit;
                 }
             }
-            
+
             $this->categoryModel->toggleHidden($id, $isHidden);
             echo json_encode(['success' => true, 'message' => 'Cập nhật trạng thái thành công.']);
             exit;

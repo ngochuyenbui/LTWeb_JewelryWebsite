@@ -3,7 +3,7 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="header-title">Quản lý Bình luận</h4>
-                
+
                 <?php if(isset($_GET['success'])): ?>
                     <div class="alert alert-success">Thao tác thành công!</div>
                 <?php endif; ?>
@@ -68,7 +68,7 @@
                                                         <option value="hidden" <?= $cmt->status == 'hidden' ? 'selected' : '' ?>>Ẩn</option>
                                                     </select>
                                                 </form>
-                                                
+
                                                 <a href="<?= URLROOT ?>/AdminComment/delete/<?= $cmt->commentId ?>" class="text-danger ml-2" onclick="return confirm('Bạn có chắc muốn xóa bình luận này?')"><i class="ti-trash"></i></a>
                                             </td>
                                         </tr>

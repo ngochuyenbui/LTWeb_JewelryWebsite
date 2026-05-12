@@ -1,15 +1,15 @@
 <?php
 require_once 'BaseModel.php';
 class ProductModel extends BaseModel{
-    
+
     public function getProducts($filters = [], $limit = null, $offset = null){
-        $sql = "SELECT product.*, 
+        $sql = "SELECT product.*,
                        (SELECT image_url FROM product_image WHERE product_image.productId = product.productId AND is_primary = 1 LIMIT 1) as image_url,
                        (SELECT COALESCE(AVG(rating), 0) FROM comment WHERE comment.contentId = product.contentId) as rating,
                        (SELECT COUNT(*) FROM comment WHERE comment.contentId = product.contentId) as review_count
                 FROM product WHERE is_deleted = 0";
         $params = [];
-        
+
         // Search
         if (!empty($filters['search'])) {
             $sql .= " AND (product.name LIKE :search OR product.sku LIKE :search)";
@@ -21,18 +21,18 @@ class ProductModel extends BaseModel{
             $sql .= " AND cateId = :category";
             $params[':category'] = $filters['category'];
         }
-        
+
         // Price Range Slider
         if (isset($filters['min_price']) && $filters['min_price'] !== '') {
             $sql .= " AND price >= :min_price";
             $params[':min_price'] = $filters['min_price'];
         }
-        
+
         if (isset($filters['max_price']) && $filters['max_price'] !== '') {
             $sql .= " AND price <= :max_price";
             $params[':max_price'] = $filters['max_price'];
         }
-        
+
         // Kích thước (Size)
         if (!empty($filters['size']) && is_array($filters['size'])) {
             $sizeConditions = [];
@@ -42,7 +42,7 @@ class ProductModel extends BaseModel{
             }
             $sql .= " AND (" . implode(' OR ', $sizeConditions) . ")";
         }
-        
+
         // Màu sắc (Color)
         if (!empty($filters['color']) && is_array($filters['color'])) {
             $colors = [];
@@ -70,10 +70,10 @@ class ProductModel extends BaseModel{
             $sql .= " LIMIT :limit OFFSET :offset";
         }
 
-        $this->db->query($sql);       
+        $this->db->query($sql);
         foreach ($params as $key => $val) {
             $this->db->bind($key, $val);
-        }      
+        }
         if ($limit !== null && $offset !== null) {
             $this->db->bind(':limit', (int)$limit, PDO::PARAM_INT);
             $this->db->bind(':offset', (int)$offset, PDO::PARAM_INT);
@@ -84,7 +84,7 @@ class ProductModel extends BaseModel{
     public function getTotalProducts($filters = []){
         $sql = "SELECT COUNT(*) as total FROM product WHERE is_deleted = 0";
         $params = [];
-        
+
         if (!empty($filters['search'])) {
             $sql .= " AND (name LIKE :search OR sku LIKE :search)";
             $params[':search'] = '%' . $filters['search'] . '%';
@@ -94,17 +94,17 @@ class ProductModel extends BaseModel{
             $sql .= " AND cateId = :category";
             $params[':category'] = $filters['category'];
         }
-        
+
         if (isset($filters['min_price']) && $filters['min_price'] !== '') {
             $sql .= " AND price >= :min_price";
             $params[':min_price'] = $filters['min_price'];
         }
-        
+
         if (isset($filters['max_price']) && $filters['max_price'] !== '') {
             $sql .= " AND price <= :max_price";
             $params[':max_price'] = $filters['max_price'];
         }
-        
+
         if (!empty($filters['size']) && is_array($filters['size'])) {
             $sizeConditions = [];
             foreach ($filters['size'] as $index => $size) {
@@ -113,7 +113,7 @@ class ProductModel extends BaseModel{
             }
             $sql .= " AND (" . implode(' OR ', $sizeConditions) . ")";
         }
-        
+
         if (!empty($filters['color']) && is_array($filters['color'])) {
             $colors = [];
             foreach ($filters['color'] as $index => $color) {
@@ -159,7 +159,7 @@ class ProductModel extends BaseModel{
     }
 
     public function getProductsOfCategory($cateId){
-        $this->db->query("SELECT P.*, 
+        $this->db->query("SELECT P.*,
                                  (SELECT image_url FROM product_image WHERE product_image.productId = P.productId AND is_primary = 1 LIMIT 1) as image_url,
                                  (SELECT COALESCE(AVG(rating), 0) FROM comment WHERE comment.contentId = P.contentId) as rating,
                                  (SELECT COUNT(*) FROM comment WHERE comment.contentId = P.contentId) as review_count
@@ -175,7 +175,7 @@ class ProductModel extends BaseModel{
     }
 
     public function getProductById($productId){
-        $this->db->query("SELECT product.*, 
+        $this->db->query("SELECT product.*,
                                  (SELECT image_url FROM product_image WHERE product_image.productId = product.productId AND is_primary = 1 LIMIT 1) as image_url,
                                  (SELECT COALESCE(AVG(rating), 0) FROM comment WHERE comment.contentId = product.contentId) as rating,
                                  (SELECT COUNT(*) FROM comment WHERE comment.contentId= product.contentId) as review_count
@@ -185,7 +185,7 @@ class ProductModel extends BaseModel{
     }
 
     public function getRelatedProducts($cateId, $currentProductId, $limit = 8) {
-        $this->db->query("SELECT product.*, 
+        $this->db->query("SELECT product.*,
                                  (SELECT image_url FROM product_image WHERE product_image.productId = product.productId AND is_primary = 1 LIMIT 1) as image_url,
                                  (SELECT COALESCE(AVG(rating), 0) FROM comment WHERE comment.contentId= product.contentId) as rating,
                                  (SELECT COUNT(*) FROM comment WHERE comment.contentId= product.contentId) as review_count
@@ -196,10 +196,77 @@ class ProductModel extends BaseModel{
         return $this->db->resultSet();
     }
 
+    public function getFeaturedProducts($limit = 4)
+    {
+        $this->db->query("
+            SELECT
+                p.productId,
+                p.name,
+                p.sku,
+                p.color,
+                p.material,
+                p.description,
+                p.price,
+                p.stock_quantity,
+                p.created_at,
+                c.name AS category_name,
+                c.slug AS category_slug,
+                COALESCE(
+                    MAX(CASE WHEN pi.is_primary = 1 THEN pi.image_url END),
+                    MIN(pi.image_url)
+                ) AS image_url
+            FROM product p
+            LEFT JOIN category c ON c.cateId = p.cateId
+            LEFT JOIN product_image pi ON pi.productId = p.productId
+            WHERE p.is_deleted = 0
+              AND (c.type = 'product' OR c.type IS NULL)
+              AND (c.is_hidden = 0 OR c.is_hidden IS NULL)
+            GROUP BY
+                p.productId,
+                p.name,
+                p.sku,
+                p.color,
+                p.material,
+                p.description,
+                p.price,
+                p.stock_quantity,
+                p.created_at,
+                c.name,
+                c.slug
+            ORDER BY
+                CASE WHEN p.stock_quantity > 0 THEN 0 ELSE 1 END,
+                p.created_at DESC,
+                p.productId DESC
+            LIMIT :limit
+        ");
+        $this->db->bind(':limit', (int)$limit, PDO::PARAM_INT);
+        return $this->db->resultSet();
+    }
+
+    public function getHomeCategories($limit = 4)
+    {
+        $this->db->query("
+            SELECT
+                c.cateId,
+                c.name,
+                c.slug,
+                COUNT(p.productId) AS product_count
+            FROM category c
+            LEFT JOIN product p ON p.cateId = c.cateId AND p.is_deleted = 0
+            WHERE c.type = 'product'
+              AND c.is_hidden = 0
+            GROUP BY c.cateId, c.name, c.slug
+            ORDER BY product_count DESC, c.cateId ASC
+            LIMIT :limit
+        ");
+        $this->db->bind(':limit', (int)$limit, PDO::PARAM_INT);
+        return $this->db->resultSet();
+    }
+
     public function addProduct($data) {
-        $this->db->query("INSERT INTO product (sku, name, color, size, size_dim, material, usage_info, description, price, stock_quantity, cateId) 
+        $this->db->query("INSERT INTO product (sku, name, color, size, size_dim, material, usage_info, description, price, stock_quantity, cateId)
                           VALUES (:sku, :name, :color, :size, :size_dim, :material, :usage_info, :description, :price, :stock_quantity, :cateId)");
-        
+
         $this->db->bind(':sku', $data['sku']);
         $this->db->bind(':name', $data['name']);
         $this->db->bind(':color', $data['color']);
@@ -213,14 +280,14 @@ class ProductModel extends BaseModel{
         $this->db->bind(':cateId', $data['cateId']);
 
         if ($this->db->execute()) {
-            return $this->db->lastInsertId(); 
+            return $this->db->lastInsertId();
         }
         return false;
     }
 
     public function updateProduct($data) {
         $this->db->query("UPDATE product SET sku = :sku, name = :name, color = :color, size = :size, size_dim = :size_dim, material = :material, usage_info = :usage_info, description = :description, price = :price, stock_quantity = :stock_quantity, cateId = :cateId WHERE productId = :productId");
-        
+
         $this->db->bind(':productId', $data['productId']);
         $this->db->bind(':sku', $data['sku']);
         $this->db->bind(':name', $data['name']);
@@ -289,14 +356,14 @@ class ProductModel extends BaseModel{
 
     public function deleteMultipleProducts($ids) {
         if (empty($ids)) return false;
-        
+
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
         $this->db->query("UPDATE product SET is_deleted = 1 WHERE productId IN ($placeholders)");
-        
+
         foreach ($ids as $index => $id) {
             $this->db->bind($index + 1, $id);
         }
-        
+
         return $this->db->execute();
     }
 

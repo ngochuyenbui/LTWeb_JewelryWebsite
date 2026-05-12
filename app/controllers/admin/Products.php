@@ -27,7 +27,7 @@ class Products extends Controller {
         $totalItems = $this->productModel->getTotalProducts($filters);
         $totalPages = ceil($totalItems / $limit);
 
-        $products = $this->productModel->getProducts($filters, $limit, $offset); 
+        $products = $this->productModel->getProducts($filters, $limit, $offset);
         $categories = $this->productModel->getCategories();
         $colors = $this->productModel->getColors();
         $sizes = $this->productModel->getSizes();
@@ -43,7 +43,7 @@ class Products extends Controller {
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'totalItems' => $totalItems
-        ]);     
+        ]);
     }
 
     private function toSlug($str) {
@@ -74,7 +74,7 @@ class Products extends Controller {
                     $name = basename($files['name'][$i]);
                     $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
                     $allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                    
+
                     if (in_array($ext, $allowedExts)) {
                         $newName = uniqid() . '_' . time() . '.' . $ext;
                         $destPath = $uploadDir . $newName;
@@ -129,21 +129,21 @@ class Products extends Controller {
                 'usage_info' => trim($_POST['usage_info'] ?? ''),
                 'description' => trim($_POST['description'] ?? '')
             ];
-            
+
             try {
                 if ($productId = $this->productModel->addProduct($data)) {
                     $primaryImageRaw = $_POST['primary_image'] ?? '';
                     // Nếu có file upload lên
                     if (!empty($_FILES['images']['name'][0])) {
                         $uploadedUrls = $this->uploadImages($_FILES['images'], 5);
-                        
+
                         $hasPrimary = false;
                         foreach ($uploadedUrls as $origName => $url) {
                             $isPrimary = ($primaryImageRaw === 'new:' . $origName) ? 1 : 0;
                             if ($isPrimary) $hasPrimary = true;
                             $this->productModel->addProductImage($productId, $url, $isPrimary);
                         }
-                        
+
                         // Dự phòng: Nếu quên chọn, tự động lấy ảnh đầu tiên làm ảnh chính
                         if (!$hasPrimary && !empty($uploadedUrls)) {
                             $firstUrl = reset($uploadedUrls);
@@ -158,7 +158,7 @@ class Products extends Controller {
                 $error = 'Lỗi truy vấn: ' . $e->getMessage();
             }
         }
-        
+
         $categories = $this->productModel->getCategories();
         $this->view('admin/product/create', ['title' => 'Thêm Sản phẩm', 'categories' => $categories, 'error' => $error]);
     }
@@ -209,7 +209,7 @@ class Products extends Controller {
             // Xử lý Xóa ảnh
             $deleteUrls = $_POST['delete_images'] ?? [];
             $primaryImageRaw = $_POST['primary_image'] ?? '';
-            
+
             $existingImages = $this->productModel->getProductImages($id);
             $totalExisting = count($existingImages);
 
@@ -232,7 +232,7 @@ class Products extends Controller {
             if (!empty($_FILES['images']['name'][0])) {
                 $maxAllowed = max(0, 5 - $totalExisting);
                 $uploadedUrls = $this->uploadImages($_FILES['images'], $maxAllowed);
-                
+
                 foreach ($uploadedUrls as $origName => $url) {
                     $isPrimary = ($primaryImageRaw === 'new:' . $origName) ? 1 : 0;
                     if ($isPrimary) $hasPrimary = true;
@@ -300,7 +300,7 @@ class Products extends Controller {
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['ids'])) {
             $ids = explode(',', $_POST['ids']);
             $ids = array_map('intval', $ids);
-            
+
             try {
                 $this->productModel->deleteMultipleProducts($ids);
                 echo json_encode(['success' => true, 'message' => 'Đã chuyển ' . count($ids) . ' sản phẩm vào Thùng rác thành công.']);

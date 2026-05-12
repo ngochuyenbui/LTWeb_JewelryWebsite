@@ -63,7 +63,7 @@ class Orders extends Controller {
         if (is_object($order)) $order = (array)$order;
 
         $items = $this->orderModel->getOrderItems($orderId);
-        
+
         $totalPrice = 0;
         foreach ($items as $item) {
             $totalPrice += (is_object($item) ? $item->purchase_price : $item['purchase_price']) * (is_object($item) ? $item->quantity : $item['quantity']);
@@ -92,7 +92,7 @@ class Orders extends Controller {
 
         if ($order && $newStatus) {
             if (is_object($order)) $order = (array)$order;
-            
+
             // Ngăn chặn cập nhật nếu trạng thái hiện tại đã là delivered hoặc cancelled
             if (in_array($order['status'], ['delivered', 'cancelled'])) {
                 $_SESSION['error'] = 'Đơn hàng đã chốt trạng thái, không thể thay đổi!';
