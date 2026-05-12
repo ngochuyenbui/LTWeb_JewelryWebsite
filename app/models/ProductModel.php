@@ -128,7 +128,7 @@ class ProductModel extends BaseModel{
             $this->db->bind($key, $val);
         }
         $row = $this->db->single();
-        return $row ? (int)$row['total'] : 0;
+        return $row ? (int)($row->total ?? 0) : 0;
     }
 
     public function getCategories(){
@@ -186,6 +186,73 @@ class ProductModel extends BaseModel{
                           FROM product WHERE cateId = :cateId AND productId != :currentProductId AND is_deleted = 0 ORDER BY productId DESC LIMIT :limit");
         $this->db->bind(':cateId', $cateId);
         $this->db->bind(':currentProductId', $currentProductId);
+        $this->db->bind(':limit', (int)$limit, PDO::PARAM_INT);
+        return $this->db->resultSet();
+    }
+
+    public function getFeaturedProducts($limit = 4)
+    {
+        $this->db->query("
+            SELECT
+                p.productId,
+                p.name,
+                p.sku,
+                p.color,
+                p.material,
+                p.description,
+                p.price,
+                p.stock_quantity,
+                p.created_at,
+                c.name AS category_name,
+                c.slug AS category_slug,
+                COALESCE(
+                    MAX(CASE WHEN pi.is_primary = 1 THEN pi.image_url END),
+                    MIN(pi.image_url)
+                ) AS image_url
+            FROM product p
+            LEFT JOIN category c ON c.cateId = p.cateId
+            LEFT JOIN product_image pi ON pi.productId = p.productId
+            WHERE p.is_deleted = 0
+              AND (c.type = 'product' OR c.type IS NULL)
+              AND (c.is_hidden = 0 OR c.is_hidden IS NULL)
+            GROUP BY
+                p.productId,
+                p.name,
+                p.sku,
+                p.color,
+                p.material,
+                p.description,
+                p.price,
+                p.stock_quantity,
+                p.created_at,
+                c.name,
+                c.slug
+            ORDER BY
+                CASE WHEN p.stock_quantity > 0 THEN 0 ELSE 1 END,
+                p.created_at DESC,
+                p.productId DESC
+            LIMIT :limit
+        ");
+        $this->db->bind(':limit', (int)$limit, PDO::PARAM_INT);
+        return $this->db->resultSet();
+    }
+
+    public function getHomeCategories($limit = 4)
+    {
+        $this->db->query("
+            SELECT
+                c.cateId,
+                c.name,
+                c.slug,
+                COUNT(p.productId) AS product_count
+            FROM category c
+            LEFT JOIN product p ON p.cateId = c.cateId AND p.is_deleted = 0
+            WHERE c.type = 'product'
+              AND c.is_hidden = 0
+            GROUP BY c.cateId, c.name, c.slug
+            ORDER BY product_count DESC, c.cateId ASC
+            LIMIT :limit
+        ");
         $this->db->bind(':limit', (int)$limit, PDO::PARAM_INT);
         return $this->db->resultSet();
     }

@@ -19,6 +19,7 @@ if (!isset($contentView) || !file_exists($contentView)) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/themify-icons/0.1.2/css/themify-icons.css">
+    <link rel="stylesheet" href="<?= htmlspecialchars(URLROOT . '/assets/admin/css/srtdash-local.css', ENT_QUOTES, 'UTF-8') ?>">
     
     <style>
         .page-container { display: flex; }
@@ -46,6 +47,9 @@ if (!isset($contentView) || !file_exists($contentView)) {
                 <div class="menu-inner">
                     <nav>
                         <ul class="list-unstyled">
+                            <li><a href="<?= URLROOT ?>/AdminSiteContent"><i class="ti-layout"></i> Noi dung trang</a></li>
+                            <li><a href="<?= URLROOT ?>/AdminSiteContent/media"><i class="ti-image"></i> Hinh anh trang</a></li>
+                            <li><a href="<?= URLROOT ?>/AdminContact"><i class="ti-email"></i> Lien he khach hang</a></li>
                             <li><a href="<?= URLROOT ?>/AdminArticle"><i class="ti-receipt"></i> Quản lý Bài viết</a></li>
                             <li><a href="<?= URLROOT ?>/AdminComment"><i class="ti-comments"></i> Quản lý Bình luận</a></li>
                             <li><a href="<?= URLROOT ?>/AdminAbout"><i class="ti-layout-grid2"></i> Quản lý About</a></li>
@@ -100,5 +104,6 @@ if (!isset($contentView) || !file_exists($contentView)) {
     <!-- JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= htmlspecialchars(URLROOT . '/assets/admin/js/srtdash-local.js', ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 </html>

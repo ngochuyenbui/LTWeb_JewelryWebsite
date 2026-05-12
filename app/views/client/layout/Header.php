@@ -1,4 +1,10 @@
 <?php
+$content = $content ?? [];
+$images = $images ?? [];
+$siteBrand = (string)($content['site_brand_name'] ?? 'AURELIA');
+$siteTagline = (string)($content['site_tagline'] ?? 'Fine Jewelry');
+$sitePhone = (string)($content['site_phone'] ?? '1900 xxxx');
+
 $navLinks = [
 	['href' => '/', 'label' => 'Trang chủ'],
 	['href' => '/about', 'label' => 'Giới thiệu'],
@@ -18,6 +24,12 @@ $toUrl = static function (string $path) use ($appBaseUrl): string {
 	}
 	return ($appBaseUrl === '' ? '' : $appBaseUrl) . $path;
 };
+
+$logoPath = isset($images['logo_main']) ? str_replace('\\', '/', trim((string)($images['logo_main']->filepath ?? ''))) : '';
+$logoUrl = '';
+if ($logoPath !== '') {
+	$logoUrl = preg_match('#^https?://#i', $logoPath) ? $logoPath : $toUrl('/' . ltrim($logoPath, '/'));
+}
 
 $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $normalizedPath = $requestPath;
@@ -54,7 +66,7 @@ $cartItems = (int)($_SESSION['cart_total_items'] ?? 0);
 				<svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 					<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.89.35 1.76.68 2.59a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.49-1.25a2 2 0 0 1 2.11-.45c.83.33 1.7.56 2.59.68A2 2 0 0 1 22 16.92z"></path>
 				</svg>
-				Hotline: 1900 xxxx
+				Hotline: <?= htmlspecialchars($sitePhone, ENT_QUOTES, 'UTF-8') ?>
 			</span>
 			<span class="hidden sm:block">Miễn phí vận chuyển đơn hàng từ 5.000.000đ</span>
 		</div>
@@ -62,8 +74,11 @@ $cartItems = (int)($_SESSION['cart_total_items'] ?? 0);
 
 	<div class="container mx-auto px-4 flex items-center justify-between h-16 md:h-20">
 		<a href="<?= htmlspecialchars($toUrl('/'), ENT_QUOTES, 'UTF-8') ?>" class="flex items-center gap-2">
-			<span class="text-2xl md:text-3xl font-bold tracking-wide gold-text">AURELIA</span>
-			<span class="hidden md:block text-[10px] uppercase tracking-[0.3em] text-slate-500">Fine Jewelry</span>
+			<?php if ($logoUrl !== ''): ?>
+				<img src="<?= htmlspecialchars($logoUrl, ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($siteBrand, ENT_QUOTES, 'UTF-8') ?>" class="h-10 w-10 rounded-full object-cover">
+			<?php endif; ?>
+			<span class="text-2xl md:text-3xl font-bold tracking-wide gold-text"><?= htmlspecialchars($siteBrand, ENT_QUOTES, 'UTF-8') ?></span>
+			<span class="hidden md:block text-[10px] uppercase tracking-[0.3em] text-slate-500"><?= htmlspecialchars($siteTagline, ENT_QUOTES, 'UTF-8') ?></span>
 		</a>
 
 		<nav class="hidden lg:flex items-center gap-8">
