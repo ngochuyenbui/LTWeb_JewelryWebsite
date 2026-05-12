@@ -44,8 +44,17 @@
                                             </td>
                                             <td class="text-left">
                                                 <strong>Nội dung:</strong> <?= htmlspecialchars($cmt->content) ?><br>
-                                                <small class="text-muted">
-                                                    Bài viết: <a href="<?= URLROOT ?>/Article/detail/<?= $cmt->contentId ?>" target="_blank"><?= htmlspecialchars($cmt->article_title ?? 'N/A') ?></a>
+                                                 <small class="text-muted">
+                                                    Bài viết: 
+                                                    <?php if (!empty($cmt->article_title) && !empty($cmt->article_id)): ?>
+                                                        <a href="<?= URLROOT ?>/News/detail/<?= $cmt->article_id ?>" target="_blank" class="text-primary font-weight-bold">
+                                                            <?= htmlspecialchars($cmt->article_title) ?>
+                                                        </a>
+                                                    <?php elseif (!empty($cmt->product_name)): ?>
+                                                        <span><?= htmlspecialchars($cmt->product_name) ?> (Sản phẩm)</span>
+                                                    <?php else: ?>
+                                                        <span class="text-muted">N/A</span>
+                                                    <?php endif; ?>
                                                 </small>
                                             </td>
                                             <td><?= $cmt->rating ?> <i class="fa fa-star text-warning"></i></td>

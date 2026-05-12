@@ -37,7 +37,7 @@ class CommentModel extends BaseModel {
 
     // Dành cho ADMIN: Lấy tất cả bình luận
     public function getAllComments($limit = 10, $offset = 0, $searchKeyword = '') {
-        $sql = "SELECT c.*, m.fullname as member_name, a.title as article_title, p.name as product_name
+        $sql = "SELECT c.*, m.fullname as member_name, a.title as article_title, a.articleId as article_id, p.name as product_name
                 FROM comment c
                 LEFT JOIN user m ON c.memberId = m.userId
                 LEFT JOIN article a ON c.contentId = a.contentId

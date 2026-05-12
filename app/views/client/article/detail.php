@@ -330,10 +330,132 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ===== Back to News & Back to Top ===== */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-back-news {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            color: #1e1b1a;
+            border: 1.5px solid rgba(218, 165, 32, 0.35);
+            padding: 0.55rem 1.3rem;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .btn-back-news:hover {
+            background: linear-gradient(135deg, #d9b461 0%, #b5852d 100%);
+            color: white;
+            border-color: transparent;
+            transform: translateX(-3px);
+        }
+
+        .btn-back-news svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            transition: stroke 0.3s ease;
+        }
+
+        /* Scroll to Top Button */
+        #scrollTopBtn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #d9b461 0%, #b5852d 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(185, 133, 45, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        #scrollTopBtn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(185, 133, 45, 0.5);
+        }
+
+        #scrollTopBtn svg {
+            width: 22px;
+            height: 22px;
+            stroke: white;
+            stroke-width: 2.5;
+            fill: none;
+        }
+
+        /* Login required notice */
+        .login-required-notice {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(218, 165, 32, 0.2);
+        }
+
+        .login-required-notice p {
+            color: #f5e6b8;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-login-comment {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #d9b461 0%, #b5852d 100%);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login-comment:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(185, 133, 45, 0.4);
+        }
     </style>
 </head>
 <body>
+<!-- Scroll to Top Button -->
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Lên đầu trang">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+</button>
+
 <div class="detail-container">
+    <!-- Action Bar -->
+    <div class="action-bar">
+        <a href="<?= URLROOT ?>/News" class="btn-back-news">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Quay lại Tin tức
+        </a>
+    </div>
+
     <div class="article-header">
         <span class="category-badge"><?= htmlspecialchars($article->category_name) ?></span>
         <h1><?= htmlspecialchars($article->title) ?></h1>
@@ -431,42 +553,50 @@
             <span class="comments-count"><?= count($comments) ?> bình luận</span>
         </div>
 
-        <form action="<?= URLROOT ?>/News/postComment" method="POST" class="comment-form">
-            <input type="hidden" name="articleId" value="<?= $article->articleId ?>">
-            <input type="hidden" name="contentId" value="<?= $article->contentId ?>">
-            
-            <div class="form-row">
-                <?php if (!isset($_SESSION['user_id'])): ?>
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <form action="<?= URLROOT ?>/News/postComment" method="POST" class="comment-form">
+                <input type="hidden" name="articleId" value="<?= $article->articleId ?>">
+                <input type="hidden" name="contentId" value="<?= $article->contentId ?>">
+                
+                <div class="form-row">
                     <div style="position: relative;">
                         <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: #b5852d; stroke-width: 1.5; fill: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
                         </svg>
-                        <input type="text" name="guest_name" required placeholder="Tên của bạn" style="padding-left: 2.5rem;">
+                        <input type="text" value="<?= htmlspecialchars($_SESSION['user_name'] ?? 'Thành viên') ?>" disabled style="padding-left: 2.5rem; background: #f0ead6; color: #7a6a3e; cursor: not-allowed;">
                     </div>
-                <?php endif; ?>
-                <select name="rating">
-                    <option value="5">★★★★★ Tuyệt vời</option>
-                    <option value="4">★★★★☆ Rất tốt</option>
-                    <option value="3">★★★☆☆ Bình thường</option>
-                </select>
+                    <select name="rating">
+                        <option value="5">★★★★★ Tuyệt vời</option>
+                        <option value="4">★★★★☆ Rất tốt</option>
+                        <option value="3">★★★☆☆ Bình thường</option>
+                    </select>
+                </div>
+                
+                <div style="position: relative; margin-bottom: 1rem;">
+                    <svg style="position: absolute; left: 12px; top: 14px; width: 16px; height: 16px; stroke: #b5852d; stroke-width: 1.5; fill: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <textarea name="content" rows="4" required placeholder="Viết bình luận của bạn..." style="padding-left: 2.5rem;"></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <svg class="submit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                    Gửi bình luận
+                </button>
+            </form>
+        <?php else: ?>
+            <div class="login-required-notice">
+                <p>Bạn cần đăng nhập để có thể bình luận bài viết này.</p>
+                <a href="<?= URLROOT ?>/Login" class="btn-login-comment">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width:16px;height:16px;stroke:white;stroke-width:2;fill:none;"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                    Đăng nhập để bình luận
+                </a>
             </div>
-            
-            <div style="position: relative; margin-bottom: 1rem;">
-                <svg style="position: absolute; left: 12px; top: 14px; width: 16px; height: 16px; stroke: #b5852d; stroke-width: 1.5; fill: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
-                <textarea name="content" rows="4" required placeholder="Viết bình luận của bạn..." style="padding-left: 2.5rem;"></textarea>
-            </div>
-            
-            <button type="submit" class="submit-btn">
-                <svg class="submit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
-                Gửi bình luận
-            </button>
-        </form>
+        <?php endif; ?>
 
         <div class="comments-list">
             <?php foreach ($comments as $comment): ?>
@@ -486,5 +616,17 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Scroll to top button visibility
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', function () {
+        if (window.scrollY > 300) {
+            scrollTopBtn.style.display = 'flex';
+        } else {
+            scrollTopBtn.style.display = 'none';
+        }
+    });
+</script>
 </body>
 </html>

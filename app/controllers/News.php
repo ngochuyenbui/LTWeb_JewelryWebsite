@@ -116,21 +116,19 @@ class News extends Controller {
     // Xử lý gửi bình luận
     public function postComment() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Chỉ cho phép người đã đăng nhập comment
+            if (!isset($_SESSION['user_id'])) {
+                $articleId = (int)($_POST['articleId'] ?? 0);
+                header("Location: " . URLROOT . "/Login");
+                exit();
+            }
+
             $articleId = (int)$_POST['articleId'];
             $contentId = (int)$_POST['contentId'];
             $rating = (int)$_POST['rating'];
             $content = trim($_POST['content']);
 
-            $guest_name = null;
-            $guest_email = null;
-            $memberId = null;
-
-            if (isset($_SESSION['user_id'])) {
-                $memberId = $_SESSION['user_id'];
-            } else {
-                $guest_name = trim($_POST['guest_name'] ?? '');
-                $guest_email = trim($_POST['guest_email'] ?? '');
-            }
+            $memberId = $_SESSION['user_id'];
 
             if (strlen($content) < 5) {
                 header("Location: " . URLROOT . "/News/detail/" . $articleId . "?error=length");
@@ -140,11 +138,11 @@ class News extends Controller {
             $data = [
                 'contentId' => $contentId,
                 'memberId' => $memberId,
-                'guest_name' => $guest_name,
-                'guest_email' => $guest_email,
+                'guest_name' => null,
+                'guest_email' => null,
                 'content' => $content,
                 'rating' => $rating,
-                'status' => 'approved' // Hiện ngay sau khi gửi
+                'status' => 'approved'
             ];
 
             if ($this->commentModel->addComment($data)) {
