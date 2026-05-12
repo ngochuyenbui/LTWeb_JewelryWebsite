@@ -553,7 +553,12 @@
             <span class="comments-count"><?= count($comments) ?> bình luận</span>
         </div>
 
-        <?php if (isset($_SESSION['user_id'])): ?>
+        <?php 
+            $isLoggedIn = isset($_SESSION['user_id']);
+            $displayName = $_SESSION['username'] ?? 'Thành viên';
+            $isAdmin = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+        ?>
+        <?php if ($isLoggedIn): ?>
             <form action="<?= URLROOT ?>/News/postComment" method="POST" class="comment-form">
                 <input type="hidden" name="articleId" value="<?= $article->articleId ?>">
                 <input type="hidden" name="contentId" value="<?= $article->contentId ?>">
@@ -564,7 +569,7 @@
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
                         </svg>
-                        <input type="text" value="<?= htmlspecialchars($_SESSION['user_name'] ?? 'Thành viên') ?>" disabled style="padding-left: 2.5rem; background: #f0ead6; color: #7a6a3e; cursor: not-allowed;">
+                        <input type="text" value="<?= htmlspecialchars($displayName) ?><?= $isAdmin ? ' (Quản trị viên)' : '' ?>" disabled style="padding-left: 2.5rem; background: #f0ead6; color: #7a6a3e; cursor: not-allowed; font-weight: bold;">
                     </div>
                     <select name="rating">
                         <option value="5">★★★★★ Tuyệt vời</option>

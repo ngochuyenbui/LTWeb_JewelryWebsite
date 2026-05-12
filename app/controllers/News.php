@@ -116,9 +116,8 @@ class News extends Controller {
     // Xử lý gửi bình luận
     public function postComment() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Chỉ cho phép người đã đăng nhập comment
+            // Kiểm tra đăng nhập
             if (!isset($_SESSION['user_id'])) {
-                $articleId = (int)($_POST['articleId'] ?? 0);
                 header("Location: " . URLROOT . "/Login");
                 exit();
             }
@@ -129,7 +128,14 @@ class News extends Controller {
             $content = trim($_POST['content']);
 
             $memberId = $_SESSION['user_id'];
-
+            $isAdmin = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+            
+            // Fix lỗi Foreign Key: Nếu là Admin, ta đặt memberId = null 
+            // vì ID của Admin không tồn tại trong bảng 'member'
+            if ($isAdmin) {
+                $memberId = null;
+            }
+            
             if (strlen($content) < 5) {
                 header("Location: " . URLROOT . "/News/detail/" . $articleId . "?error=length");
                 exit();
@@ -138,7 +144,7 @@ class News extends Controller {
             $data = [
                 'contentId' => $contentId,
                 'memberId' => $memberId,
-                'guest_name' => null,
+                'guest_name' => $isAdmin ? ($_SESSION['username'] . ' (Admin)') : null,
                 'guest_email' => null,
                 'content' => $content,
                 'rating' => $rating,
