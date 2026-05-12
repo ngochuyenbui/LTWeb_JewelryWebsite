@@ -102,7 +102,7 @@ $cartItems = (int)($_SESSION['cart_total_items'] ?? 0);
 			</button>
 
 			<div class="relative">
-				<?php if (isset($_SESSION['user_id']) && ($_SESSION['role'] ?? 'member') === 'member'): ?>
+				<?php if (isset($_SESSION['user_id'])): ?>
 					<button type="button" class="h-10 w-10 flex items-center justify-center rounded-md hover:bg-slate-100 transition-colors" aria-label="Tài khoản" data-user-menu-btn>
 						<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 							<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
@@ -113,7 +113,11 @@ $cartItems = (int)($_SESSION['cart_total_items'] ?? 0);
 						<div class="px-4 py-2 border-b border-slate-100 mb-1">
 							<p class="text-sm font-medium text-slate-900 truncate">Xin chào, <?= htmlspecialchars($_SESSION['username'] ?? 'Bạn') ?></p>
 						</div>
-						<a href="<?= htmlspecialchars($toUrl('/client/Profile'), ENT_QUOTES, 'UTF-8') ?>" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-600 transition-colors">Thông tin tài khoản</a>
+						<?php if (($_SESSION['user_role'] ?? $_SESSION['role'] ?? 'member') === 'admin'): ?>
+							<a href="<?= htmlspecialchars($toUrl('/admin/Dashboard'), ENT_QUOTES, 'UTF-8') ?>" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-600 transition-colors">Trang quản lý</a>
+						<?php else: ?>
+							<a href="<?= htmlspecialchars($toUrl('/client/Profile'), ENT_QUOTES, 'UTF-8') ?>" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-600 transition-colors">Thông tin tài khoản</a>
+						<?php endif; ?>
 						<a href="<?= htmlspecialchars($toUrl('/Login/logout'), ENT_QUOTES, 'UTF-8') ?>" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">Đăng xuất</a>
 					</div>
 				<?php else: ?>

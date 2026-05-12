@@ -4,11 +4,11 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="header-title text-primary">Quản lý Khách hàng</h4>
-                    
+
                     <?php if (isset($_SESSION['success'])): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <?= $_SESSION['success'] ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                         <?php unset($_SESSION['success']); ?>
                     <?php endif; ?>
@@ -16,11 +16,11 @@
                     <?php if (isset($_SESSION['error'])): ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <?= htmlspecialchars($_SESSION['error']) ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                         <?php unset($_SESSION['error']); ?>
                     <?php endif; ?>
-                    
+
                     <!-- Search Form -->
                     <form method="GET" action="<?= URLROOT ?>/admin/Users" class="mb-4">
                         <div class="input-group" style="max-width: 500px;">
@@ -58,14 +58,14 @@
                                         <td><?= htmlspecialchars($u_email) ?></td>
                                         <td>
                                             <?php if ($is_locked): ?>
-                                                <span class="badge badge-danger">Bị khóa</span>
+                                                <span class="badge badge-pill bg-danger text-white" style="padding: 8px 12px; font-size: 13px;">Bị khóa</span>
                                             <?php else: ?>
-                                                <span class="badge badge-success">Hoạt động</span>
+                                                <span class="badge badge-pill bg-success text-white" style="padding: 8px 12px; font-size: 13px;">Hoạt động</span>
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-info btn-sm text-white btn-view-detail" data-id="<?= $u_id ?>" data-toggle="modal" data-target="#userModal" title="Xem chi tiết"><i class="ti-eye"></i></button>
-                                            
+                                            <button type="button" class="btn btn-info btn-sm text-white btn-view-detail" data-id="<?= $u_id ?>" data-bs-toggle="modal" data-bs-target="#userModal" title="Xem chi tiết"><i class="ti-eye"></i></button>
+
                                             <form action="<?= URLROOT ?>/admin/Users/resetPassword/<?= $u_id ?>" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn đặt lại mật khẩu của người dùng này về mặc định không?');">
                                                 <button type="submit" class="btn btn-warning btn-sm text-white" title="Reset Mật khẩu"><i class="ti-key"></i></button>
                                             </form>
@@ -92,14 +92,14 @@
                     </div>
 
                     <!-- Phân trang -->
-                    <?php 
-                    if (($data['totalPages'] ?? 0) > 1): 
+                    <?php
+                    if (($data['totalPages'] ?? 0) > 1):
                         $searchParam = urlencode($data['search'] ?? '');
                     ?>
                     <nav aria-label="Page navigation" class="mt-4">
                         <ul class="pagination justify-content-center">
                             <li class="page-item <?= (($data['currentPage'] ?? 1) <= 1) ? 'disabled' : '' ?>">
-                                <a class="page-link" href="?search=<?= $searchParam ?>&page=<?= max(1, ($data['currentPage'] ?? 1) - 1) ?>">Trước</a>
+                                <a class="page-link" href="?search=<?= $searchParam ?>&page=<?= max(1, ($data['currentPage'] ?? 1) - 1) ?>"><</a>
                             </li>
                             <?php for ($i = 1; $i <= ($data['totalPages'] ?? 1); $i++): ?>
                                 <li class="page-item <?= (($data['currentPage'] ?? 1) == $i) ? 'active' : '' ?>">
@@ -107,7 +107,7 @@
                                 </li>
                             <?php endfor; ?>
                             <li class="page-item <?= (($data['currentPage'] ?? 1) >= ($data['totalPages'] ?? 1)) ? 'disabled' : '' ?>">
-                                <a class="page-link" href="?search=<?= $searchParam ?>&page=<?= min(($data['totalPages'] ?? 1), ($data['currentPage'] ?? 1) + 1) ?>">Sau</a>
+                                <a class="page-link" href="?search=<?= $searchParam ?>&page=<?= min(($data['totalPages'] ?? 1), ($data['currentPage'] ?? 1) + 1) ?>">></a>
                             </li>
                         </ul>
                     </nav>
@@ -119,17 +119,18 @@
 </div>
 
 <!-- Modal Xem Chi Tiết bằng AJAX -->
-<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Thông tin chi tiết</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="user-detail-content">
                 <div class="text-center"><div class="spinner-border text-primary" role="status"></div></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
         </div>
     </div>
@@ -144,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function() {
             const userId = this.getAttribute('data-id');
             modalContent.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div></div>';
-            
+
             fetch('<?= URLROOT ?>/admin/Users/detail/' + userId)
                 .then(response => response.text())
                 .then(html => { modalContent.innerHTML = html; })

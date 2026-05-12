@@ -26,7 +26,7 @@ $statusLabels = ['pending' => 'Chờ xác nhận', 'processing' => 'Đang xử l
                         <div class="col-md-6">
                             <h5 class="mb-3">Cập nhật trạng thái đơn hàng</h5>
                             <form action="<?= URLROOT ?>/admin/Orders/updateStatus/<?= $order['orderId'] ?>" method="POST">
-                                <div class="form-group">
+                                <div class="mb-3">
                                     <?php $isFinalStatus = in_array($order['status'], ['delivered', 'cancelled']); ?>
                                     <select name="status" class="form-control" style="height: auto;" <?= $isFinalStatus ? 'disabled' : '' ?>>
                                         <?php foreach ($statusOptions as $status): ?>
@@ -71,7 +71,7 @@ $statusLabels = ['pending' => 'Chờ xác nhận', 'processing' => 'Đang xử l
                         <table class="table table-bordered">
                             <thead class="thead-light">
                                 <tr>
-                                
+
                                     <th>Sản phẩm</th>
                                     <th class="text-center">Size</th>
                                     <th class="text-right">Đơn giá</th>
@@ -80,7 +80,7 @@ $statusLabels = ['pending' => 'Chờ xác nhận', 'processing' => 'Đang xử l
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($items as $item): 
+                                <?php foreach ($items as $item):
                                     $i_name = is_object($item) ? $item->name : $item['name'];
                                     $i_img = is_object($item) ? $item->image_url : $item['image_url'];
                                     $i_size = is_object($item) ? $item->size : $item['size'];
@@ -119,7 +119,7 @@ $statusLabels = ['pending' => 'Chờ xác nhận', 'processing' => 'Đang xử l
                     </div>
 
 
-                    
+
 
                 </div>
             </div>

@@ -31,15 +31,15 @@ $statusLabel = static function ($value) use ($section) {
 };
 $statusClass = static function ($value) {
     if (in_array($value, ['active', 'open', 'offered'], true)) {
-        return 'badge-success';
+        return 'bg-success text-white';
     }
     if (in_array($value, ['new', 'reviewed', 'interview'], true)) {
-        return 'badge-warning';
+        return 'bg-warning text-dark';
     }
     if (in_array($value, ['closed', 'inactive', 'rejected'], true)) {
-        return 'badge-danger';
+        return 'bg-danger text-white';
     }
-    return 'badge-secondary';
+    return 'bg-secondary text-white';
 };
 $shortText = static function ($value) {
     $value = (string)$value;
@@ -125,8 +125,8 @@ $assetUrl = static function ($path): string {
                 <?php endif; ?>
 
                 <form class="about-admin-filter mb-4" method="get" action="<?= URLROOT ?>/AdminAbout/index/<?= $e($sectionKey) ?>">
-                    <div class="form-row align-items-end">
-                        <div class="form-group col-md-6 mb-2">
+                    <div class="row align-items-end">
+                        <div class="mb-3 col-md-6 mb-2">
                             <label for="about-search" class="small text-muted mb-1">Tìm kiếm</label>
                             <input
                                 type="text"
@@ -138,7 +138,7 @@ $assetUrl = static function ($path): string {
                             >
                         </div>
                         <?php if (!empty($section['fields']['status']['options'] ?? [])): ?>
-                            <div class="form-group col-md-3 mb-2">
+                            <div class="mb-3 col-md-3 mb-2">
                                 <label for="about-status" class="small text-muted mb-1">Trạng thái</label>
                                 <select id="about-status" name="status" class="form-control">
                                     <option value="">Tất cả</option>
@@ -150,7 +150,7 @@ $assetUrl = static function ($path): string {
                                 </select>
                             </div>
                         <?php endif; ?>
-                        <div class="form-group col-md-3 mb-2">
+                        <div class="mb-3 col-md-3 mb-2">
                             <button type="submit" class="btn btn-primary">
                                 <i class="ti-search"></i> Lọc
                             </button>
@@ -206,7 +206,7 @@ $assetUrl = static function ($path): string {
                                                     <?php elseif (($column['type'] ?? '') === 'datetime'): ?>
                                                         <?= $e($formatDate($value)) ?>
                                                     <?php elseif (($column['type'] ?? '') === 'status'): ?>
-                                                        <span class="badge <?= $e($statusClass($value)) ?>"><?= $e($statusLabel($value)) ?></span>
+                                                        <span class="badge badge-pill <?= $e($statusClass($value)) ?>" style="padding: 8px 12px; font-size: 13px;"><?= $e($statusLabel($value)) ?></span>
                                                     <?php else: ?>
                                                         <?= nl2br($e($shortText($value))) ?>
                                                     <?php endif; ?>

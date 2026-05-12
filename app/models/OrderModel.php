@@ -20,7 +20,7 @@ class OrderModel extends BaseModel {
         $this->db->bind(':memberId', $memberId);
         $this->db->bind(':shipping_addr', $shippingAddr);
         $this->db->bind(':payment', $payment);
-        
+
         $this->db->execute();
         return $this->db->lastInsertId(); // Trả về orderId vừa tạo
     }
@@ -48,7 +48,7 @@ class OrderModel extends BaseModel {
         $this->db->query("INSERT INTO member (userId, phonenum) VALUES (:userId, :phone) ON DUPLICATE KEY UPDATE phonenum = :phone");
         $this->db->bind(':userId', $userId);
         $this->db->bind(':phone', $phone);
-        
+
         return $this->db->execute();
     }
 
@@ -78,14 +78,14 @@ class OrderModel extends BaseModel {
         $this->db->query("SELECT COUNT(*) as total FROM `order` WHERE memberId = :userId");
         $this->db->bind(':userId', $userId);
         $row = $this->db->single();
-        return $row['total'] ?? 0;
+        return $row ? (is_object($row) ? $row->total : $row['total']) : 0;
     }
 
     // Lấy danh sách Sản phẩm của 1 Đơn hàng
     public function getOrderItems($orderId) {
-        $this->db->query("SELECT oi.*, p.name, 
-                                 (SELECT image_url FROM product_image WHERE product_image.productId = p.productId AND is_primary = 1 LIMIT 1) as image_url 
-                          FROM order_item oi 
+        $this->db->query("SELECT oi.*, p.name,
+                                 (SELECT image_url FROM product_image WHERE product_image.productId = p.productId AND is_primary = 1 LIMIT 1) as image_url
+                          FROM order_item oi
                           JOIN product p ON oi.productId = p.productId WHERE oi.orderId = :orderId");
         $this->db->bind(':orderId', $orderId);
         return $this->db->resultSet();
@@ -106,7 +106,7 @@ class OrderModel extends BaseModel {
                 FROM `order` o
                 JOIN user u ON o.memberId = u.userId
                 WHERE 1=1 ";
-        
+
         if (!empty($status)) {
             $sql .= " AND o.status = :status ";
         }
@@ -127,7 +127,7 @@ class OrderModel extends BaseModel {
         $sql .= " LIMIT :limit OFFSET :offset";
 
         $this->db->query($sql);
-        
+
         if (!empty($status)) $this->db->bind(':status', $status);
         if (!empty($payment)) $this->db->bind(':payment', $payment);
         $this->db->bind(':limit', $limit, PDO::PARAM_INT);
@@ -139,16 +139,16 @@ class OrderModel extends BaseModel {
         $sql = "SELECT COUNT(*) as total FROM `order` WHERE 1=1 ";
         if (!empty($status)) $sql .= " AND status = :status ";
         if (!empty($payment)) $sql .= " AND payment = :payment ";
-        
+
         $this->db->query($sql);
         if (!empty($status)) $this->db->bind(':status', $status);
         if (!empty($payment)) $this->db->bind(':payment', $payment);
         $row = $this->db->single();
-        return $row['total'] ?? 0;
+        return $row ? (is_object($row) ? $row->total : $row['total']) : 0;
     }
 
     public function getOrderDetails($orderId) {
-        $this->db->query("SELECT o.*, u.fullname, u.username, u.email, m.phonenum as phone 
+        $this->db->query("SELECT o.*, u.fullname, u.username, u.email, m.phonenum as phone
                           FROM `order` o
                           JOIN user u ON o.memberId = u.userId
                           LEFT JOIN member m ON u.userId = m.userId
@@ -165,7 +165,7 @@ class OrderModel extends BaseModel {
     }
 
     public function addRewardPoints($userId, $points) {
-        $this->db->query("INSERT INTO member (userId, rewardPoint) VALUES (:userId, :points) 
+        $this->db->query("INSERT INTO member (userId, rewardPoint) VALUES (:userId, :points)
                           ON DUPLICATE KEY UPDATE rewardPoint = rewardPoint + :points");
         $this->db->bind(':userId', $userId);
         $this->db->bind(':points', $points, PDO::PARAM_INT);

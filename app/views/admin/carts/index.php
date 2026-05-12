@@ -12,23 +12,23 @@
                             <?php foreach ($data['carts'] as $cart): ?>
                                 <div class="card">
                                     <div class="card-header">
-                                        <a class="card-link" data-toggle="collapse" href="#collapse-<?= $cart->cartId ?>">
+                                        <a class="card-link" data-bs-toggle="collapse" href="#collapse-<?= $cart->cartId ?>">
                                             <div class="d-flex justify-content-between w-100">
                                                 <span>
-                                                    <i class="ti-user mr-2"></i>
+                                                    <i class="ti-user me-2"></i>
                                                     <strong><?= htmlspecialchars($cart->fullname) ?></strong> (<?= htmlspecialchars($cart->username) ?>)
                                                 </span>
                                                 <span>
-                                                    <i class="ti-shopping-cart-full mr-2"></i>
+                                                    <i class="ti-shopping-cart-full me-2"></i>
                                                     Tổng giá trị: <strong class="text-danger"><?= number_format($cart->totalValue, 0, ',', '.') ?> đ</strong>
                                                     <span class="mx-2">|</span>
-                                                    <i class="ti-time mr-2"></i>
+                                                    <i class="ti-time me-2"></i>
                                                     Cập nhật: <?= date('d/m/Y H:i', strtotime($cart->updated_at)) ?>
                                                 </span>
                                             </div>
                                         </a>
                                     </div>
-                                    <div id="collapse-<?= $cart->cartId ?>" class="collapse" data-parent="#accordion1">
+                                    <div id="collapse-<?= $cart->cartId ?>" class="collapse" data-bs-parent="#accordion1">
                                         <div class="card-body">
                                             <table class="table table-sm">
                                                 <tbody>
@@ -41,7 +41,7 @@
                                                             <div><?= htmlspecialchars($item->name) ?></div>
                                                             <small class="text-muted">Size: <?= htmlspecialchars($item->size) ?></small>
                                                         </td>
-                                                        <td class="text-right">
+                                                        <td class="text-end">
                                                             <?= number_format($item->price, 0, ',', '.') ?> đ x <?= $item->quantity ?>
                                                         </td>
                                                     </tr>

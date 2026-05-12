@@ -3,7 +3,7 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="header-title">Quản lý Bình luận</h4>
-                
+
                 <?php if(isset($_GET['success'])): ?>
                     <div class="alert alert-success">Thao tác thành công!</div>
                 <?php endif; ?>
@@ -52,11 +52,11 @@
                                             <td><?= date('d/m/Y H:i', strtotime($cmt->created_at)) ?></td>
                                             <td>
                                                 <?php if($cmt->status == 'approved'): ?>
-                                                    <span class="badge badge-success">Đã duyệt</span>
+                                                    <span class="badge badge-pill bg-success text-white" style="padding: 8px 12px; font-size: 13px;">Đã duyệt</span>
                                                 <?php elseif($cmt->status == 'pending'): ?>
-                                                    <span class="badge badge-warning">Chờ duyệt</span>
+                                                    <span class="badge badge-pill bg-warning text-dark" style="padding: 8px 12px; font-size: 13px;">Chờ duyệt</span>
                                                 <?php else: ?>
-                                                    <span class="badge badge-secondary">Đã ẩn</span>
+                                                    <span class="badge badge-pill bg-secondary text-white" style="padding: 8px 12px; font-size: 13px;">Đã ẩn</span>
                                                 <?php endif; ?>
                                             </td>
                                             <td>
@@ -68,7 +68,7 @@
                                                         <option value="hidden" <?= $cmt->status == 'hidden' ? 'selected' : '' ?>>Ẩn</option>
                                                     </select>
                                                 </form>
-                                                
+
                                                 <a href="<?= URLROOT ?>/AdminComment/delete/<?= $cmt->commentId ?>" class="text-danger ml-2" onclick="return confirm('Bạn có chắc muốn xóa bình luận này?')"><i class="ti-trash"></i></a>
                                             </td>
                                         </tr>

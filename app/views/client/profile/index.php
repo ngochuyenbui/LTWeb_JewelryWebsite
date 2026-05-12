@@ -1,7 +1,7 @@
 <div class="bg-slate-50 py-12 min-h-screen">
     <div class="container mx-auto px-4 max-w-6xl">
         <h1 class="text-3xl font-serif font-bold text-slate-900 mb-8">Tài khoản của bạn</h1>
-        
+
         <?php if (isset($_SESSION['success'])): ?>
             <div class="bg-emerald-100 border border-emerald-400 text-emerald-700 px-4 py-3 rounded mb-6 font-medium shadow-sm">
                 <?= htmlspecialchars($_SESSION['success']) ?>
@@ -15,14 +15,14 @@
             </div>
         <?php endif; ?>
 
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 items-start">
             <!-- Sidebar / Tabs -->
             <div class="lg:col-span-1 mb-8 lg:mb-0">
-                <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden sticky top-24">               
+                <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden sticky top-24">
                 <ul class="flex flex-col py-2 items-start">
-                    <li><button type="button" class="w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 hover:text-amber-600 font-medium transition-colors tab-btn" data-target="tab-profile">Thông tin tài khoản</button></li>
-                    <li><button type="button" class="w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 hover:text-amber-600 font-medium transition-colors tab-btn" data-target="tab-orders">Lịch sử đơn hàng</button></li>
-                    <li><button type="button" class="w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 hover:text-amber-600 font-medium transition-colors tab-btn" data-target="tab-password">Đổi mật khẩu</button></li>
+                    <li><button type="button" class="w-full text-left px-4 py-3 text-slate-700 hover:bg-slate-50 hover:text-amber-600 font-medium transition-colors tab-btn" data-target="tab-profile">Thông tin tài khoản</button></li>
+                    <li><button type="button" class="w-full text-left px-4 py-3 text-slate-700 hover:bg-slate-50 hover:text-amber-600 font-medium transition-colors tab-btn" data-target="tab-orders">Lịch sử đơn hàng</button></li>
+                    <li><button type="button" class="w-full text-left px-4 py-3 text-slate-700 hover:bg-slate-50 hover:text-amber-600 font-medium transition-colors tab-btn" data-target="tab-password">Đổi mật khẩu</button></li>
                     <li><a href="<?= URLROOT ?>/Login/logout" class="block px-6 py-3 !text-red-600 !hover:bg-red-50 font-medium transition-colors">Đăng xuất</a></li>
                 </ul>
                 </div>
@@ -35,7 +35,7 @@
                     <h2 class="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-4">Thông tin cá nhân</h2>
                     <div class="p-6 text-center border-b border-slate-200">
                     <div class="relative mx-auto group mb-3 rounded-full shadow-md border-4 border-white overflow-hidden" style="width: 100px; height: 100px; min-width: 100px; display: block;">
-                        <?php 
+                        <?php
                         $u = $data['user'] ?? null;
                         $avatar = is_object($u) ? ($u->avatar ?? '') : ($u['avatar'] ?? '');
                         $username = is_object($u) ? $u->username : $u['username'];
@@ -94,12 +94,12 @@
                         </div>
                     <?php else: ?>
                         <div class="space-y-5">
-                            <?php foreach ($data['orders'] as $order): 
+                            <?php foreach ($data['orders'] as $order):
                                 $o_id = is_object($order) ? $order->orderId : $order['orderId'];
                                 $o_date = is_object($order) ? $order->created_at : $order['created_at'];
                                 $o_status = is_object($order) ? $order->status : $order['status'];
                                 $items = is_object($order) ? $order->items : $order['items'];
-                                
+
                                 $totalOrderPrice = 0;
                                 foreach ($items as $item) {
                                     $price = is_object($item) ? $item->purchase_price : $item['purchase_price'];
@@ -130,7 +130,7 @@
                                     </div>
                                     <div id="order-details-<?= $o_id ?>" class="hidden">
                                         <div class="p-6 divide-y divide-slate-100">
-                                            <?php foreach ($items as $item): 
+                                            <?php foreach ($items as $item):
                                                 $i_name = is_object($item) ? $item->name : $item['name'];
                                                 $i_img = is_object($item) ? $item->image_url : $item['image_url'];
                                                 $i_size = is_object($item) ? $item->size : $item['size'];
@@ -148,7 +148,7 @@
                                             <div class="text-sm text-amber-600 font-medium flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg> Điểm thưởng nhận được: +<?= $rewardPoints ?> điểm</div>
                                             <div class="text-slate-600">Tổng thanh toán: <span class="text-xl font-bold text-amber-600 ml-2"><?= number_format($finalTotal, 0, ',', '.') ?> đ</span></div>
                                         </div>
-                                        
+
                                         <?php if (in_array($o_status, ['pending', 'processing'])): ?>
                                             <div class="bg-slate-50 px-6 py-4 border-t border-slate-200 flex justify-end">
                                                 <form action="<?= URLROOT ?>/client/Profile/cancelOrder/<?= $o_id ?>" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
@@ -168,12 +168,12 @@
                             <div class="mt-8 flex justify-center">
                                 <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
                                     <!-- Previous Button -->
-                                    <a href="?tab=orders&page=<?= max(1, $data['currentPage'] - 1) ?>" 
+                                    <a href="?tab=orders&page=<?= max(1, $data['currentPage'] - 1) ?>"
                                     class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-slate-300 bg-white text-sm font-medium text-slate-500 hover:bg-slate-50 <?= ($data['currentPage'] <= 1) ? 'pointer-events-none opacity-50' : '' ?>">
                                         <span class="sr-only">Trước</span>
                                         <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
                                     </a>
-                                    
+
                                     <?php for ($i = 1; $i <= $data['totalPages']; $i++): ?>
                                         <a href="?tab=orders&page=<?= $i ?>" aria-current="page" class="relative inline-flex items-center px-4 py-2 border text-sm font-medium <?= ($i == $data['currentPage']) ? 'z-10 bg-amber-50 border-amber-500 text-amber-600' : 'bg-white border-slate-300 text-slate-500 hover:bg-slate-50' ?>">
                                             <?= $i ?>

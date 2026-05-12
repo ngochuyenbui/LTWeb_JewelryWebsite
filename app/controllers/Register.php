@@ -25,7 +25,7 @@ class Register extends Controller {
             $this->view('client/auth/Register', $data);
             return;
         }
-        
+
         $data = [
             'username' => trim($_POST['username'] ?? ''),
             'email' => trim($_POST['email'] ?? ''),
@@ -33,8 +33,8 @@ class Register extends Controller {
             'confirm_password' => trim($_POST['confirm_password'] ?? ''),
             'error' => ''
         ];
-        
-        $isInvalid = empty($data['username']) || empty($data['email']) || 
+
+        $isInvalid = empty($data['username']) || empty($data['email']) ||
                      empty($data['password']) || empty($data['confirm_password']) ||
                      !preg_match('/^[a-zA-Z0-9_]{3,50}$/', $data['username']) ||
                      !filter_var($data['email'], FILTER_VALIDATE_EMAIL) ||
@@ -57,7 +57,7 @@ class Register extends Controller {
         $_SESSION['otp_exp'] = time() + 300;
 
         if(Mail::sendOTP($data['email'], $otp)) {
-            $this->jsonResponse(['redirectUrl' => URLROOT . '/Register/verify_email']);
+            $this->jsonResponse(['redirect' => URLROOT . '/Register/verify_email']);
         } else {
             $this->jsonResponse(['error' => 'Đăng ký thất bại. Vui lòng thử lại sau.']);
         }
@@ -112,7 +112,7 @@ class Register extends Controller {
             $this->jsonResponse(['error' => 'Mã OTP đã hết hạn!']);
         } elseif ($otp != $_SESSION['otp']) {
             $this->jsonResponse(['error' => 'Mã OTP không chính xác!']);
-        } 
+        }
 
         try {
             if ($this->userModel->addUser($_SESSION['temp_user'])) {

@@ -78,7 +78,7 @@ $inputValue = static function ($value, $type) {
                                 $inputType = in_array($type, ['email', 'tel', 'number', 'datetime-local'], true) ? $type : 'text';
                             ?>
                             <div class="<?= $isWide ? 'col-md-12' : 'col-md-6' ?>">
-                                <div class="form-group">
+                                <div class="mb-3">
                                     <label for="<?= $e($fieldName) ?>" class="col-form-label">
                                         <?= $e($field['label']) ?>
                                         <?php if (!empty($field['required'])): ?><span class="text-danger">*</span><?php endif; ?>

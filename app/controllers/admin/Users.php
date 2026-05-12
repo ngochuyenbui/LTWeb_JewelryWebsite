@@ -9,7 +9,7 @@ class Users extends Controller {
     }
 
     public function index() {
-        $limit = 10;
+        $limit = 5;
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $offset = ($page - 1) * $limit;
         $search = trim($_GET['search'] ?? '');
@@ -19,6 +19,7 @@ class Users extends Controller {
         $totalPages = ceil($totalItems / $limit);
 
         $this->view('admin/users/index', [
+            'title' => 'Quản lý Khách hàng',
             'users' => $users,
             'currentPage' => $page,
             'totalPages' => $totalPages,
@@ -34,9 +35,9 @@ class Users extends Controller {
         $user = $this->userAdminModel->getUserDetails($userId);
         if ($user) {
             if (is_object($user)) $user = (array)$user;
-            
-            $statusBadge = ($user['role'] === 'locked') ? '<span class="badge badge-danger">Bị khóa</span>' : '<span class="badge badge-success">Hoạt động</span>';
-            
+
+            $statusBadge = ($user['role'] === 'locked') ? '<span class="badge badge-pill bg-danger text-white" style="padding: 8px 12px; font-size: 13px;">Bị khóa</span>' : '<span class="badge badge-pill bg-success text-white" style="padding: 8px 12px; font-size: 13px;">Hoạt động</span>';
+
             echo '<table class="table table-bordered">';
             echo '<tr><th style="width: 35%;">Mã khách hàng</th><td>#' . htmlspecialchars($user['userId']) . '</td></tr>';
             echo '<tr><th>Tên tài khoản</th><td>' . htmlspecialchars($user['username']) . '</td></tr>';

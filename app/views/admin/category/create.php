@@ -5,30 +5,27 @@
                 <div class="card-body">
                     <h4 class="header-title text-primary">Thêm Danh Mục Mới</h4>
                     <?php if (!empty($data['error'])): ?>
-                        <div class="alert alert-danger font-weight-bold"><?= htmlspecialchars($data['error']) ?></div>
+                        <div class="alert alert-danger fw-bold"><?= htmlspecialchars($data['error']) ?></div>
                     <?php endif; ?>
                     <form action="<?= URLROOT ?>/admin/Categories/create" method="POST" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="name" class="font-weight-bold">Tên danh mục <span class="text-danger">(*)</span></label>
+                        <div class="mb-3">
+                            <label for="name" class="fw-bold">Tên danh mục <span class="text-danger">(*)</span></label>
                             <input type="text" class="form-control" id="name" name="name" required>
                         </div>
-                        <div class="form-group">
-                            <label for="type" class="font-weight-bold">Phân loại (Type)</label>
+                        <div class="mb-3">
+                            <label for="type" class="fw-bold">Phân loại (Type)</label>
                             <select class="form-control" id="type" name="type" style="height: auto;">
                                 <option value="product">Sản phẩm (Product)</option>
                                 <option value="article">Bài viết (Article)</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="slug" class="font-weight-bold">Đường dẫn tĩnh (Slug) - Tự động tạo nếu để trống</label>
+                        <div class="mb-3">
+                            <label for="slug" class="fw-bold">Đường dẫn tĩnh (Slug) - Tự động tạo nếu để trống</label>
                             <input type="text" class="form-control" id="slug" name="slug" placeholder="VD: vong-co-nu">
                         </div>
-                        <div class="form-group">
-                            <label class="font-weight-bold">Hình ảnh danh mục</label>
-                            <div class="custom-file mb-3">
-                                <input type="file" class="custom-file-input" id="image" name="image" accept="image/*" onchange="previewImage(event)">
-                                <label class="custom-file-label" for="image">Chọn tệp...</label>
-                            </div>
+                        <div class="mb-3">
+                            <label class="fw-bold">Hình ảnh danh mục</label>
+                            <input type="file" class="form-control mb-3" id="image" name="image" accept="image/*" onchange="previewImage(event)">
                             <div id="preview-container" class="mt-2 d-none">
                                 <img id="image-preview" src="#" alt="Preview" class="border rounded shadow-sm" style="max-width: 200px; max-height: 200px; object-fit: contain;">
                             </div>
@@ -64,7 +61,7 @@ document.getElementById('name').addEventListener('input', function() {
         .replace(/[^a-z0-9\-]+/g, '-')
         .replace(/\-+/g, '-')
         .replace(/^\-+|\-+$/g, '');
-    
+
     document.getElementById('slug').value = slug;
 });
 </script>

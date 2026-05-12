@@ -28,12 +28,12 @@ $statusLabel = static function ($value) {
 };
 $statusClass = static function ($value) {
     if (in_array($value, ['active', 'answered'], true)) {
-        return 'badge-success';
+        return 'bg-success text-white';
     }
     if (in_array($value, ['new', 'processing'], true)) {
-        return 'badge-warning';
+        return 'bg-warning text-dark';
     }
-    return 'badge-secondary';
+    return 'bg-secondary text-white';
 };
 $shortText = static function ($value) {
     $value = (string)$value;
@@ -108,8 +108,8 @@ $formatDate = static function ($value) {
                 <?php endif; ?>
 
                 <form class="faq-admin-filter mb-4" method="get" action="<?= URLROOT ?>/AdminFaq/index/<?= $e($sectionKey) ?>">
-                    <div class="form-row align-items-end">
-                        <div class="form-group col-md-6 mb-2">
+                    <div class="row align-items-end">
+                        <div class="mb-3 col-md-6 mb-2">
                             <label for="faq-search" class="small text-muted mb-1">Tìm kiếm</label>
                             <input
                                 type="text"
@@ -121,7 +121,7 @@ $formatDate = static function ($value) {
                             >
                         </div>
                         <?php if (!empty($section['fields']['status']['options'] ?? [])): ?>
-                            <div class="form-group col-md-3 mb-2">
+                            <div class="mb-3 col-md-3 mb-2">
                                 <label for="faq-status" class="small text-muted mb-1">Trạng thái</label>
                                 <select id="faq-status" name="status" class="form-control">
                                     <option value="">Tất cả</option>
@@ -133,7 +133,7 @@ $formatDate = static function ($value) {
                                 </select>
                             </div>
                         <?php endif; ?>
-                        <div class="form-group col-md-3 mb-2">
+                        <div class="mb-3 col-md-3 mb-2">
                             <button type="submit" class="btn btn-primary">
                                 <i class="ti-search"></i> Lọc
                             </button>
@@ -171,7 +171,7 @@ $formatDate = static function ($value) {
                                                 <?php $value = $row->{$fieldName} ?? ''; ?>
                                                 <td>
                                                     <?php if (($column['type'] ?? '') === 'status'): ?>
-                                                        <span class="badge <?= $e($statusClass($value)) ?>"><?= $e($statusLabel($value)) ?></span>
+                                                        <span class="badge badge-pill <?= $e($statusClass($value)) ?>" style="padding: 8px 12px; font-size: 13px;"><?= $e($statusLabel($value)) ?></span>
                                                     <?php elseif (($column['type'] ?? '') === 'datetime'): ?>
                                                         <?= $e($formatDate($value)) ?>
                                                     <?php else: ?>

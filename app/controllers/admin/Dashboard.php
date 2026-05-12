@@ -2,12 +2,14 @@
 class Dashboard extends Controller {
     private $productModel;
     private $userModel;
+    private $orderModel;
 
     public function __construct() {
         parent::__construct();
         $this->requireAdmin(); // Chặn user bình thường, chỉ admin mới được vào
         $this->productModel = $this->model('ProductModel');
         $this->userModel = $this->model('UserModel');
+        $this->orderModel = $this->model('OrderModel');
     }
 
     public function index() {
@@ -15,11 +17,16 @@ class Dashboard extends Controller {
         $totalUsers = $this->userModel->getTotalUsers();
         $recentProducts = $this->productModel->getProducts([], 5, 0); // Lấy 5 sản phẩm mới nhất
 
+        $totalOrders = $this->orderModel->getTotalOrders('', ''); // Lấy tổng tất cả đơn hàng
+        $recentOrders = $this->orderModel->getAllOrdersPaginated(5, 0, '', '', 'date_desc'); // Lấy 5 đơn mới nhất
+
         $this->view('admin/dashboard/index', [
+            'title' => 'Tổng quan (Dashboard)',
             'totalProducts' => $totalProducts,
             'totalUsers' => $totalUsers,
-            'totalOrders' => 0, // Hiện tại hệ thống chưa có tính năng đơn hàng (Order) nên tạm để 0
-            'recentProducts' => $recentProducts
+            'totalOrders' => $totalOrders,
+            'recentProducts' => $recentProducts,
+            'recentOrders' => $recentOrders
         ]);
     }
 }

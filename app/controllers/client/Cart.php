@@ -38,7 +38,7 @@ class Cart extends Controller {
             }
 
             $isLoggedIn = isset($_SESSION['user_id']) && ($_SESSION['user_role'] ?? $_SESSION['role'] ?? 'member') === 'member';
-            
+
             // Gom nhóm sản phẩm theo ID và Size
             $cartKey = $productId . '_' . $size;
 
@@ -46,7 +46,7 @@ class Cart extends Controller {
                 try {
                     $userId = $_SESSION['user_id'];
                     $existingItem = $this->cartModel->getCartItem($userId, $productId, $size);
-                    
+
                     if ($existingItem) {
                         $newQty = $existingItem['quantity'] + $quantity;
                         if ($newQty > $product->stock_quantity) {
@@ -57,7 +57,7 @@ class Cart extends Controller {
                     } else {
                         $this->cartModel->addItem($userId, $productId, $size, $quantity);
                     }
-                    
+
                     $totalItems = $this->cartModel->getTotalItems($userId);
                     $_SESSION['cart_total_items'] = $totalItems;
                 } catch (PDOException $e) {
@@ -66,7 +66,7 @@ class Cart extends Controller {
                 }
             } else {
                 if (!isset($_SESSION['cart']) || !is_array($_SESSION['cart'])) $_SESSION['cart'] = [];
-                
+
                 if (isset($_SESSION['cart'][$cartKey])) {
                     $newQty = $_SESSION['cart'][$cartKey]['quantity'] + $quantity;
                     if ($newQty > $product->stock_quantity) {
@@ -99,7 +99,7 @@ class Cart extends Controller {
     public function index() {
         $cartItems = [];
         $totalPrice = 0;
-        
+
         $isLoggedIn = isset($_SESSION['user_id']) && ($_SESSION['user_role'] ?? $_SESSION['role'] ?? 'member') === 'member';
         $items = [];
 
@@ -119,14 +119,27 @@ class Cart extends Controller {
             $items = $_SESSION['cart'] ?? [];
         }
 
+        $hasUnavailableItems = false;
+
         if (!empty($items)) {
             foreach ($items as $key => $item) {
                 $product = $this->productModel->getProductById($item['productId']);
                 if ($product) {
                     if (is_array($product)) $product = (object)$product;
-                    $itemTotal = $product->price * $item['quantity'];
-                    $totalPrice += $itemTotal;
-                    
+
+                    $isDeleted = isset($product->is_deleted) ? (bool)$product->is_deleted : false;
+                    $stock = (int)$product->stock_quantity;
+
+                    $isAvailable = !$isDeleted && $stock > 0;
+
+                    if ($isAvailable) {
+                        $itemTotal = $product->price * $item['quantity'];
+                        $totalPrice += $itemTotal;
+                    } else {
+                        $itemTotal = 0;
+                        $hasUnavailableItems = true;
+                    }
+
                     $cartItems[] = [
                         'key' => $key,
                         'productId' => $product->productId,
@@ -136,21 +149,42 @@ class Cart extends Controller {
                         'quantity' => $item['quantity'],
                         'size' => $item['size'],
                         'itemTotal' => $itemTotal,
-                        'stock' => $product->stock_quantity
+                        'stock' => $stock,
+                        'isDeleted' => $isDeleted,
+                        'isAvailable' => $isAvailable,
+                        'stockWarning' => $stock > 0 && $stock < $item['quantity']
+                    ];
+                } else {
+                    $hasUnavailableItems = true;
+                    $cartItems[] = [
+                        'key' => $key,
+                        'productId' => $item['productId'],
+                        'name' => 'Sản phẩm không còn tồn tại',
+                        'image' => 'https://placehold.co/100x100?text=N/A',
+                        'price' => 0,
+                        'quantity' => $item['quantity'],
+                        'size' => $item['size'],
+                        'itemTotal' => 0,
+                        'stock' => 0,
+                        'isDeleted' => true,
+                        'isAvailable' => false,
+                        'stockWarning' => false
                     ];
                 }
             }
         }
-        
+
         // Tính phí vận chuyển
         $shippingFee = ($totalPrice >= 5000000 || $totalPrice == 0) ? 0 : 100000;
         $finalTotal = $totalPrice + $shippingFee;
 
         $this->view('client/cart/index', [
+            'title' => 'Giỏ hàng',
             'cartItems' => $cartItems,
             'totalPrice' => $totalPrice,
             'shippingFee' => $shippingFee,
-            'finalTotal' => $finalTotal
+            'finalTotal' => $finalTotal,
+            'hasUnavailableItems' => $hasUnavailableItems
         ]);
     }
 
@@ -159,9 +193,9 @@ class Cart extends Controller {
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['key'], $_POST['quantity'])) {
             $key = $_POST['key'];
             $quantity = (int)$_POST['quantity'];
-            
+
             $isLoggedIn = isset($_SESSION['user_id']) && ($_SESSION['user_role'] ?? $_SESSION['role'] ?? 'member') === 'member';
-            
+
             $parts = explode('_', $key, 2);
             $productId = (int)$parts[0];
             $size = $parts[1] ?? '';
@@ -169,7 +203,7 @@ class Cart extends Controller {
             if ($isLoggedIn) {
                 $product = $this->productModel->getProductById($productId);
                 if (is_array($product)) $product = (object)$product;
-                
+
                 if (!$product || $product->stock_quantity < $quantity) {
                     echo json_encode(['success' => false, 'message' => 'Số lượng tồn kho không đủ.']);
                     exit;
@@ -190,7 +224,7 @@ class Cart extends Controller {
                     } else {
                         $product = $this->productModel->getProductById($_SESSION['cart'][$key]['productId']);
                         if (is_array($product)) $product = (object)$product;
-                        
+
                         if ($product && $product->stock_quantity >= $quantity) {
                             $_SESSION['cart'][$key]['quantity'] = $quantity;
                         } else {
@@ -215,7 +249,7 @@ class Cart extends Controller {
             $parts = explode('_', $key, 2);
             $productId = (int)$parts[0];
             $size = $parts[1] ?? '';
-            
+
             $isLoggedIn = isset($_SESSION['user_id']) && ($_SESSION['user_role'] ?? $_SESSION['role'] ?? 'member') === 'member';
 
             if ($isLoggedIn) {
@@ -306,7 +340,7 @@ class Cart extends Controller {
                     $orderModel = $this->model('OrderModel');
                     // Bắt đầu transaction
                     $orderModel->beginTransaction();
-                    
+
                     // Cập nhật tên và sdt vào bảng member
                     $orderModel->updateMemberInfo($userId, $fullname, $phone);
 
@@ -325,7 +359,7 @@ class Cart extends Controller {
                     }
                     $this->cartModel->clearCart($userId);
                     $_SESSION['cart_total_items'] = 0;
-                    
+
                     // Hoàn tất, commit transaction
                     $orderModel->commit();
 
@@ -348,6 +382,7 @@ class Cart extends Controller {
         $finalTotal = $totalPrice + $shippingFee;
 
         $this->view('client/cart/checkout', [
+            'title' => 'Thanh toán',
             'cartItems' => $cartItems,
             'totalPrice' => $totalPrice,
             'shippingFee' => $shippingFee,

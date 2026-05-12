@@ -69,7 +69,7 @@
                                                 <?= htmlspecialchars($article->author_name ?? '') ?>
                                             </td>
                                             <td>
-                                                <?= date('d/m/Y', strtotime($article->published_at ?? $article->created_at)) ?>
+                                                <?= date('d/m/Y', strtotime($article->published_at)) ?>
                                             </td>
                                             <td>
                                                 <a href="<?= URLROOT ?>/AdminArticle/edit/<?= $article->articleId ?>" class="btn btn-sm btn-info" title="Sửa">
